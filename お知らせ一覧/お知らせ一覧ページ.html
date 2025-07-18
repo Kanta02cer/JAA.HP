@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お知らせ - 日本アンバサダー協会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        .page-header { background-color: #f9fafb; padding: 4rem 1.5rem; text-align: center; }
+        .news-card { transition: background-color 0.3s ease; }
+        .news-card:hover { background-color: #f9fafb; }
+        .category-tag { font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px; }
+        .tag-release { background-color: #db2777; color: white; }
+        .tag-media { background-color: #4f46e5; color: white; }
+        .tag-event { background-color: #16a34a; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center"><img src="https://i.ibb.co/XZyfhHZn/image.png" alt="日本アンバサダー協会 ロゴ" class="h-10 mr-3"></a>
+            <nav class="hidden lg:flex items-center space-x-8 font-bold">
+                <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
+                <a href="business.html" class="text-gray-600 hover:text-orange-500 transition">事業内容</a>
+                <a href="news.html" class="text-orange-500 border-b-2 border-orange-500 pb-1">お知らせ</a>
+                <a href="partnership.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
+            </nav>
+            <a href="contact.html" class="hidden lg:inline-block btn btn-primary text-sm" style="background-color: #f97316; color: white;">お問い合わせ</a>
+            <button id="mobile-menu-button" class="lg:hidden text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+        </div>
+        <div id="mobile-menu" class="hidden lg:hidden"><div class="px-6 pt-2 pb-4 border-t"><a href="about.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">協会について</a><a href="business.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">事業内容</a><a href="news.html" class="block py-2 text-orange-500 font-bold">お知らせ</a><a href="partnership.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">パートナーシップ</a><a href="contact.html" class="block mt-2 btn btn-primary text-center" style="background-color: #f97316; color: white;">お問い合わせ</a></div></div>
+    </header>
+
+    <main>
+        <section class="page-header"><h1 class="text-4xl md:text-5xl font-black text-gray-800">お知らせ</h1><p class="mt-4 text-lg text-gray-600">協会の最新情報、プレスリリース、イベント情報などをお届けします。</p></section>
+        <div class="container mx-auto px-6 py-20">
+            <div class="border-b-2 pb-4 mb-8">
+                <div class="flex space-x-4">
+                    <button class="font-bold text-orange-500">すべて</button>
+                    <button class="font-bold text-gray-500 hover:text-orange-500">プレスリリース</button>
+                    <button class="font-bold text-gray-500 hover:text-orange-500">メディア掲載</button>
+                    <button class="font-bold text-gray-500 hover:text-orange-500">イベント</button>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <!-- News List -->
+                <a href="news-detail.html" class="block news-card border-b py-6">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-10-01">2025.10.01</time><span class="category-tag tag-release">プレスリリース</span></div>
+                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">一般社団法人化に関するお知らせ</h3>
+                </a>
+                <a href="news-detail.html" class="block news-card border-b py-6">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-07-17">2025.07.17</time><span class="category-tag tag-media">メディア掲載</span></div>
+                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">「人材版令和の虎」に出演しました</h3>
+                </a>
+                <a href="news-detail.html" class="block news-card border-b py-6">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-06-30">2025.06.30</time><span class="category-tag tag-event">イベント</span></div>
+                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">第一期学生アンバサダー募集説明会を開催しました</h3>
+                </a>
+                 <a href="news-detail.html" class="block news-card border-b py-6">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-06-01">2025.06.01</time><span class="category-tag tag-release">プレスリリース</span></div>
+                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">株式会社CBT-Solutions様とのパートナーシップ締結のお知らせ</h3>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-12"><div class="grid md:grid-cols-4 gap-8"><div><h3 class="font-bold mb-4">日本アンバサダー協会</h3><p class="text-sm text-gray-400">学生の挑戦に寄り添うパートナーであり続ける</p></div><div><h4 class="font-bold mb-4">協会について</h4><ul class="space-y-2 text-sm"><li><a href="about.html#mission" class="text-gray-300 hover:text-white">Mission/Vision</a></li><li><a href="about.html#message" class="text-gray-300 hover:text-white">代表者メッセージ</a></li><li><a href="about.html#profile" class="text-gray-300 hover:text-white">団体概要</a></li></ul></div><div><h4 class="font-bold mb-4">リンク</h4><ul class="space-y-2 text-sm"><li><a href="business.html" class="text-gray-300 hover:text-white">事業内容</a></li><li><a href="news.html" class="text-gray-300 hover:text-white">お知らせ</a></li><li><a href="partnership.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li><li><a href="contact.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li></ul></div><div><h4 class="font-bold mb-4">フォローする</h4><a href="https://www.instagram.com/jaa_ed.official/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Instagram</a></div></div><div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500"><p>&copy; 2025 Japan Ambassador Association. All Rights Reserved.</p></div></div>
+    </footer>
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+    </script>
+</body>
+</html>
+

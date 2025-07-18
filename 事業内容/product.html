@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事業内容 - 日本アンバサダー協会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: #ffffff; color: #1f2937; }
+        .page-header { background-color: #f9fafb; padding: 4rem 1.5rem; text-align: center; }
+        .section-title { font-weight: 900; color: #111827; display: inline-block; }
+        .section-subtitle { font-weight: 700; color: #f97316; }
+        .business-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .business-card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .card-content {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center"><img src="https://i.ibb.co/XZyfhHZn/image.png" alt="日本アンバサダー協会 ロゴ" class="h-10 mr-3"></a>
+            <nav class="hidden lg:flex items-center space-x-8 font-bold">
+                <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
+                <a href="business.html" class="text-orange-500 border-b-2 border-orange-500 pb-1">事業内容</a>
+                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
+                <a href="partnership.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
+            </nav>
+            <a href="contact.html" class="hidden lg:inline-block btn btn-primary text-sm" style="background-color: #f97316; color: white;">お問い合わせ</a>
+            <button id="mobile-menu-button" class="lg:hidden text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+        </div>
+        <div id="mobile-menu" class="hidden lg:hidden"><div class="px-6 pt-2 pb-4 border-t"><a href="about.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">協会について</a><a href="business.html" class="block py-2 text-orange-500 font-bold">事業内容</a><a href="news.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">お知らせ</a><a href="partnership.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">パートナーシップ</a><a href="contact.html" class="block mt-2 btn btn-primary text-center" style="background-color: #f97316; color: white;">お問い合わせ</a></div></div>
+    </header>
+
+    <main>
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="text-4xl md:text-5xl font-black text-gray-800">事業内容</h1>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">学生の可能性を企業と社会の力へ。私たちは多角的なアプローチで、新しい価値創造に貢献します。</p>
+        </section>
+
+        <div class="container mx-auto px-6 py-20">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- アンバサダー認定サービス -->
+                <div class="business-card">
+                    <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop" alt="アンバサダー認定サービス" class="w-full h-48 object-cover">
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">アンバサダー認定サービス</h3>
+                        <p class="text-gray-600">独自の評価基準で学生の能力と情熱を可視化。企業が求めるポテンシャルを持つ人材を発掘します。</p>
+                    </div>
+                </div>
+                <!-- 教育・学習支援事業 -->
+                <div class="business-card">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop" alt="教育・学習支援事業" class="w-full h-48 object-cover">
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">教育・学習支援事業</h3>
+                        <p class="text-gray-600">社会で活躍するための実践的なスキルとマインドセットを育む、独自の教育プログラムを提供します。</p>
+                    </div>
+                </div>
+                <!-- ワカモノ向け広報・ブランディング戦略支援 -->
+                <div class="business-card">
+                    <div class="grid grid-cols-2 gap-1 h-48">
+                        <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=2070&auto=format&fit=crop" alt="ワカモノ向け広報・ブランディング戦略支援1" class="w-full h-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop" alt="ワカモノ向け広報・ブランディング戦略支援2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">ワカモノ向け広報・ブランディング戦略支援</h3>
+                        <p class="text-gray-600">学生のリアルな視点を活かし、若者世代に響く企業の魅力発信やブランディングをサポートします。</p>
+                    </div>
+                </div>
+                <!-- 企業内学生コミュニティ設立支援 -->
+                <div class="business-card">
+                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2070&auto=format&fit=crop" alt="企業内学生コミュニティ設立支援" class="w-full h-48 object-cover">
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">企業内学生コミュニティ設立支援</h3>
+                        <p class="text-gray-600">企業のファンとなる学生コミュニティの設立から運営までを伴走支援し、未来の仲間を育てます。</p>
+                    </div>
+                </div>
+                <!-- 企業運営ゼミナール運営マネイジメント -->
+                <div class="business-card">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop" alt="企業運営ゼミナール運営マネイジメント" class="w-full h-48 object-cover">
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">企業運営ゼミナール運営マネイジメント</h3>
+                        <p class="text-gray-600">企業が主催するゼミ形式のプログラムを企画・運営。専門知識を持つ学生との共創を促進します。</p>
+                    </div>
+                </div>
+                <!-- ゼロイチ創設支援 -->
+                <div class="business-card">
+                    <img src="https://images.unsplash.com/photo-1497215842964-222b430dc094?q=80&w=2070&auto=format&fit=crop" alt="ゼロイチ創設支援" class="w-full h-48 object-cover">
+                    <div class="p-6 card-content">
+                        <h3 class="text-xl font-bold mb-2">ゼロイチ創設支援</h3>
+                        <p class="text-gray-600">学生の革新的なアイデアを事業化するためのインキュベーションプログラムを提供し、新規事業創出を支援します。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Common component) -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-12"><div class="grid md:grid-cols-4 gap-8"><div><h3 class="font-bold mb-4">日本アンバサダー協会</h3><p class="text-sm text-gray-400">学生の挑戦に寄り添うパートナーであり続ける</p></div><div><h4 class="font-bold mb-4">協会について</h4><ul class="space-y-2 text-sm"><li><a href="about.html#mission" class="text-gray-300 hover:text-white">Mission/Vision</a></li><li><a href="about.html#message" class="text-gray-300 hover:text-white">代表者メッセージ</a></li><li><a href="about.html#profile" class="text-gray-300 hover:text-white">団体概要</a></li></ul></div><div><h4 class="font-bold mb-4">リンク</h4><ul class="space-y-2 text-sm"><li><a href="business.html" class="text-gray-300 hover:text-white">事業内容</a></li><li><a href="news.html" class="text-gray-300 hover:text-white">お知らせ</a></li><li><a href="partnership.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li><li><a href="contact.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li></ul></div><div><h4 class="font-bold mb-4">フォローする</h4><a href="https://www.instagram.com/jaa_ed.official/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Instagram</a></div></div><div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500"><p>&copy; 2025 Japan Ambassador Association. All Rights Reserved.</p></div></div>
+    </footer>
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+    </script>
+</body>
+</html>
+

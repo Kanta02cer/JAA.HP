@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本アンバサダー協会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        .hero-section {
+            position: relative;
+            background-color: #f9fafb;
+        }
+        .hero-section .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .section-title {
+            font-weight: 900;
+            color: #111827;
+            display: inline-block;
+        }
+        .section-subtitle {
+            font-weight: 700;
+            color: #f97316;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border-radius: 9999px;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            gap: 0.5rem;
+        }
+        .btn-primary {
+            background-color: #f97316;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #ea580c;
+        }
+        .btn-secondary {
+            background-color: #0891b2;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #0e7490;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .carousel-track {
+            display: flex;
+            width: calc(200px * 10); /* ロゴの幅 × ロゴの数 */
+            animation: scroll 30s linear infinite;
+        }
+        .carousel-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .carousel-container:hover .carousel-track {
+            animation-play-state: paused;
+        }
+        .partner-logo {
+            width: 200px;
+            padding: 0 2rem;
+            filter: grayscale(100%);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <img src="https://i.ibb.co/XZyfhHZn/image.png" alt="日本アンバサダー協会 ロゴ" class="h-10 mr-3">
+            </a>
+            <nav class="hidden lg:flex items-center space-x-8 font-bold">
+                <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
+                <a href="business.html" class="text-gray-600 hover:text-orange-500 transition">事業内容</a>
+                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
+                <a href="partnership.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
+            </nav>
+            <a href="contact.html" class="hidden lg:inline-block btn btn-primary text-sm">お問い合わせ</a>
+            <button id="mobile-menu-button" class="lg:hidden text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <div class="px-6 pt-2 pb-4 border-t">
+                <a href="about.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">協会について</a>
+                <a href="business.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">事業内容</a>
+                <a href="news.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">お知らせ</a>
+                <a href="partnership.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">パートナーシップ</a>
+                <a href="contact.html" class="block mt-2 btn btn-primary text-center">お問い合わせ</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-image"></div>
+            <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center">
+                <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4 text-gray-800">学生の挑戦に寄り添う</h1>
+                <p class="text-lg md:text-xl mb-10 text-gray-600 font-medium">学生の力で企業の未来を共に創造する</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                    <a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" class="btn btn-primary">学生AMB応募はこちら</a>
+                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">企業連携はこちら</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container mx-auto px-6 py-20">
+            <!-- Mission/Vision Section -->
+            <section id="mission" class="mb-24 fade-in">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center md:text-left">
+                        <p class="section-subtitle">OUR MISSION</p>
+                        <h2 class="section-title text-3xl md:text-4xl mb-4">学生だから<br>信頼されないを、なくす。</h2>
+                        <p class="text-gray-600 leading-relaxed">私たちは、学生が持つ無限の可能性を信じています。年齢や経験だけで判断されることなく、一人ひとりの挑戦が正当に評価され、応援される社会の実現を目指します。</p>
+                    </div>
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop" alt="Mission Image" class="rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="mb-24 fade-in">
+                 <div class="text-center">
+                    <p class="section-subtitle">ABOUT US</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">日本アンバサダー協会について</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-8">私たちは、学生と企業、そして社会を繋ぐハブとなり、次世代を担う若者の円滑な社会進出をリードするパートナー団体です。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold mb-3">代表者メッセージ</h3>
+                        <div class="flex items-center mb-4">
+                            <img src="https://i.ibb.co/5W3fDRJs/WHO-Emergency-Health-Organization.jpg" alt="代表者 井上幹太" class="w-16 h-16 rounded-full mr-4 object-cover">
+                            <div>
+                                <p class="font-bold">井上幹太</p>
+                                <p class="text-sm text-gray-500">日本アンバサダー協会 代表</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">「すべての学生が、自身の可能性を信じ、挑戦できる社会へ。」</p>
+                        <a href="about.html#message" class="font-bold text-orange-500 hover:text-orange-600 transition">続きを読む &rarr;</a>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold mb-3">団体概要</h3>
+                        <p class="text-gray-600 mb-4">協会の理念、役員、沿革など、私たちについての基本情報をご紹介します。</p>
+                        <a href="about.html#profile" class="font-bold text-orange-500 hover:text-orange-600 transition">詳しく見る &rarr;</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Section -->
+            <section id="business" class="mb-24 fade-in">
+                <div class="text-center">
+                    <p class="section-subtitle">OUR BUSINESS</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-12">事業内容</h2>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Business Cards -->
+                    <div class="card p-6"><h3 class="text-xl font-bold mb-2">アンバサダー認定サービス</h3><p class="text-gray-600">独自の評価基準で学生の能力と情熱を可視化します。</p></div>
+                    <div class="card p-6"><h3 class="text-xl font-bold mb-2">教育・学習支援</h3><p class="text-gray-600">次世代リーダーを育成するプログラムを提供します。</p></div>
+                    <div class="card p-6"><h3 class="text-xl font-bold mb-2">ワカモノ向け広報・PR支援</h3><p class="text-gray-600">学生の視点を活かしたリアルな企業ブランディングを支援します。</p></div>
+                </div>
+                 <div class="text-center mt-8">
+                    <a href="business.html" class="btn btn-primary">全ての事業を見る</a>
+                </div>
+            </section>
+
+            <!-- News Section -->
+            <section id="news" class="mb-24 fade-in">
+                <div class="text-center">
+                    <p class="section-subtitle">NEWS</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
+                </div>
+                <div class="space-y-4">
+                    <!-- News Items -->
+                    <a href="news-detail.html" class="block card p-4 flex justify-between items-center"><span class="font-bold">【プレスリリース】一般社団法人化に関するお知らせ</span> <span class="text-sm text-gray-500">2025.10.01</span></a>
+                    <a href="news-detail.html" class="block card p-4 flex justify-between items-center"><span class="font-bold">【メディア掲載】「人材版令和の虎」に出演しました</span> <span class="text-sm text-gray-500">2025.07.17</span></a>
+                    <a href="news-detail.html" class="block card p-4 flex justify-between items-center"><span class="font-bold">【イベント】第一期学生アンバサダー募集説明会を開催</span> <span class="text-sm text-gray-500">2025.06.30</span></a>
+                </div>
+                <div class="text-center mt-8">
+                    <a href="news.html" class="font-bold text-orange-500 hover:text-orange-600 transition">お知らせ一覧へ &rarr;</a>
+                </div>
+            </section>
+
+            <!-- Partnership Section -->
+            <section id="partnership" class="fade-in">
+                <div class="text-center">
+                    <p class="section-subtitle">PARTNERSHIP</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">学生の未来を、共に創る。</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">私たちの活動は、理念に共感してくださる多くの企業・個人の皆様からのご支援によって支えられています。</p>
+                </div>
+                <div class="carousel-container bg-white py-8">
+                    <div class="carousel-track">
+                        <!-- Partner Logos x2 for seamless loop -->
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+A" alt="Partner A" class="partner-logo">
+                        <div class="flex items-center justify-center partner-logo"><span class="font-bold text-lg text-center">株式会社CBT-Solutions 様</span></div>
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+C" alt="Partner C" class="partner-logo">
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+D" alt="Partner D" class="partner-logo">
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+E" alt="Partner E" class="partner-logo">
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+A" alt="Partner A" class="partner-logo">
+                        <div class="flex items-center justify-center partner-logo"><span class="font-bold text-lg text-center">株式会社CBT-Solutions 様</span></div>
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+C" alt="Partner C" class="partner-logo">
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+D" alt="Partner D" class="partner-logo">
+                        <img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+E" alt="Partner E" class="partner-logo">
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <a href="partnership.html" class="btn btn-secondary">パートナーシップについて</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold mb-4">日本アンバサダー協会</h3>
+                    <p class="text-sm text-gray-400">学生の挑戦に寄り添うパートナーであり続ける</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">協会について</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="about.html#mission" class="text-gray-300 hover:text-white">Mission/Vision</a></li>
+                        <li><a href="about.html#message" class="text-gray-300 hover:text-white">代表者メッセージ</a></li>
+                        <li><a href="about.html#profile" class="text-gray-300 hover:text-white">団体概要</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">リンク</h4>
+                     <ul class="space-y-2 text-sm">
+                        <li><a href="business.html" class="text-gray-300 hover:text-white">事業内容</a></li>
+                        <li><a href="news.html" class="text-gray-300 hover:text-white">お知らせ</a></li>
+                        <li><a href="partnership.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">フォローする</h4>
+                    <a href="https://www.instagram.com/jaa_ed.official/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Instagram</a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+                <p>&copy; 2025 Japan Ambassador Association. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Fade-in animation on scroll
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('visible');
+                    appearOnScroll.unobserve(entry.target);
+                }
+            });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+            appearOnScroll.observe(fader);
+        });
+    </script>
+
+</body>
+</html>
+
