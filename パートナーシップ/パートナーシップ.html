@@ -18,11 +18,29 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
-        .carousel-track { display: flex; width: calc(200px * 10); animation: scroll 30s linear infinite; }
+        .carousel-track {
+            display: flex;
+            width: auto;
+            animation: scroll 30s linear infinite;
+            gap: 48px;
+        }
         .carousel-container { overflow: hidden; white-space: nowrap; position: relative; }
         .carousel-container:hover .carousel-track { animation-play-state: paused; }
         .partner-logo { width: 200px; padding: 0 2rem; filter: grayscale(100%); opacity: 0.6; transition: all 0.3s ease; }
         .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
+        .partner-card {
+            min-width: 16rem;
+            min-height: 10rem;
+            background: #f3f4f6;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 24px;
+        }
     </style>
 </head>
 <body>
@@ -30,14 +48,16 @@
     <!-- Header -->
     <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 shadow-sm">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center"><img src="https://i.ibb.co/XZyfhHZn/image.png" alt="日本アンバサダー協会 ロゴ" class="h-10 mr-3"></a>
+            <a href="../TOP.html" class="flex items-center">
+                <img src="https://i.ibb.co/XZyfhHZn/image.png" alt="日本アンバサダー協会 ロゴ" class="h-10 mr-3">
+            </a>
             <nav class="hidden lg:flex items-center space-x-8 font-bold">
-                <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
-                <a href="business.html" class="text-gray-600 hover:text-orange-500 transition">事業内容</a>
-                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
-                <a href="partnership.html" class="text-orange-500 border-b-2 border-orange-500 pb-1">パートナーシップ</a>
+                <a href="../事業内容/product.html" class="text-gray-600 hover:text-orange-500 transition">事業内容</a>
+                <a href="../協会について/Summary.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
+                <a href="../パートナーシップ/パートナーシップ.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
+                <a href="../お知らせ一覧/お知らせ一覧ページ.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
+                <a href="../お問い合わせ/お問い合わせ.html" class="btn btn-primary text-sm ml-4">お問い合わせ</a>
             </nav>
-            <a href="contact.html" class="hidden lg:inline-block btn btn-primary text-sm">お問い合わせ</a>
             <button id="mobile-menu-button" class="lg:hidden text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
         </div>
         <div id="mobile-menu" class="hidden lg:hidden"><div class="px-6 pt-2 pb-4 border-t"><a href="about.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">協会について</a><a href="business.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">事業内容</a><a href="news.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">お知らせ</a><a href="partnership.html" class="block py-2 text-orange-500 font-bold">パートナーシップ</a><a href="contact.html" class="block mt-2 btn btn-primary text-center">お問い合わせ</a></div></div>
@@ -50,8 +70,8 @@
             <section class="mb-20">
                 <div class="text-center"><p class="section-subtitle">FOR CORPORATIONS</p><h2 class="section-title text-3xl md:text-4xl mb-12">法人・団体の皆様へ</h2></div>
                 <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="pr-8"><h3 class="text-2xl font-bold mb-4">未来への投資、しませんか？</h3><p class="text-gray-600 leading-relaxed">次世代を担う優秀な学生との早期接点、CSR活動を通じた企業価値向上、そして新しい事業の種。日本アンバサダー協会との連携は、貴社に多くのメリットをもたらします。事業連携、寄付、共同プロジェクトなど、様々な形でのご支援をお待ちしております。</p><a href="contact.html" class="btn btn-primary mt-6">法人としてのお問い合わせ</a></div>
-                    <div><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop" alt="法人・団体の皆様へ" class="rounded-lg shadow-lg"></div>
+                    <div class="pr-8"><h3 class="text-2xl font-bold mb-4">未来への投資、しませんか？</h3><p class="text-gray-600 leading-relaxed">次世代を担う優秀な学生との早期接点、CSR活動を通じた企業価値向上、そして新しい事業の種。日本アンバサダー協会との連携は、貴社に多くのメリットをもたらします。事業連携、寄付、共同プロジェクトなど、様々な形でのご支援をお待ちしております。</p><a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-6">法人としてのお問い合わせ</a></div>
+                    <div><img src="https://i.ibb.co/954Zv4M/2.png" alt="法人・団体の皆様へ" class="rounded-lg shadow-lg"></div>
                 </div>
             </section>
             <!-- For Individuals -->
@@ -59,17 +79,75 @@
                 <div class="text-center"><p class="section-subtitle">FOR INDIVIDUALS</p><h2 class="section-title text-3xl md:text-4xl mb-12">個人の皆様へ</h2></div>
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div><img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop" alt="個人の皆様へ" class="rounded-lg shadow-lg"></div>
-                    <div><h3 class="text-2xl font-bold mb-4">その想いを、未来の力に。</h3><p class="text-gray-600 leading-relaxed">「若者を応援したい」「社会に貢献したい」。その温かい想いを、寄付やプロボノ（専門スキルでのボランティア）という形で、未来への投資に変えませんか。皆様からのご支援が、学生たちの挑戦を支え、新しい可能性を切り拓きます。</p><a href="contact.html" class="btn btn-secondary mt-6" style="background-color: #0891b2;">個人として支援する</a></div>
+                    <div><h3 class="text-2xl font-bold mb-4">その想いを、未来の力に。</h3><p class="text-gray-600 leading-relaxed">「若者を応援したい」「社会に貢献したい」。その温かい想いを、寄付やプロボノ（専門スキルでのボランティア）という形で、未来への投資に変えませんか。皆様からのご支援が、学生たちの挑戦を支え、新しい可能性を切り拓きます。</p><a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-6">個人として支援する</a></div>
                 </div>
             </section>
             <!-- Our Partners -->
-            <section><div class="text-center"><p class="section-subtitle">OUR PARTNERS</p><h2 class="section-title text-3xl md:text-4xl mb-12">支援パートナー団体様</h2></div><div class="carousel-container bg-white py-8"><div class="carousel-track"><div class="flex items-center justify-center partner-logo"><span class="font-bold text-lg text-center">株式会社CBT-Solutions 様</span></div><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+A" alt="Partner A" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+B" alt="Partner B" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+C" alt="Partner C" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+D" alt="Partner D" class="partner-logo"><div class="flex items-center justify-center partner-logo"><span class="font-bold text-lg text-center">株式会社CBT-Solutions 様</span></div><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+A" alt="Partner A" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+B" alt="Partner B" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+C" alt="Partner C" class="partner-logo"><img src="https://placehold.co/200x80/f0f0f0/cccccc?text=Partner+D" alt="Partner D" class="partner-logo"></div></div></section>
+            <section id="partnership" class="fade-in">
+                <div class="text-center">
+                    <p class="section-subtitle">PARTNERSHIP</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">学生の未来を、共に創る。</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">私たちの活動は、理念に共感してくださる多くの企業・個人の皆様からのご支援によって支えられています。</p>
+                </div>
+                <div class="carousel-container bg-white py-8">
+                    <div class="carousel-track" style="gap: 48px;">
+                        <!-- Partner Cards (15枚分) -->
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-12"><div class="grid md:grid-cols-4 gap-8"><div><h3 class="font-bold mb-4">日本アンバサダー協会</h3><p class="text-sm text-gray-400">学生の挑戦に寄り添うパートナーであり続ける</p></div><div><h4 class="font-bold mb-4">協会について</h4><ul class="space-y-2 text-sm"><li><a href="about.html#mission" class="text-gray-300 hover:text-white">Mission/Vision</a></li><li><a href="about.html#message" class="text-gray-300 hover:text-white">代表者メッセージ</a></li><li><a href="about.html#profile" class="text-gray-300 hover:text-white">団体概要</a></li></ul></div><div><h4 class="font-bold mb-4">リンク</h4><ul class="space-y-2 text-sm"><li><a href="business.html" class="text-gray-300 hover:text-white">事業内容</a></li><li><a href="news.html" class="text-gray-300 hover:text-white">お知らせ</a></li><li><a href="partnership.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li><li><a href="contact.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li></ul></div><div><h4 class="font-bold mb-4">フォローする</h4><a href="https://www.instagram.com/jaa_ed.official/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Instagram</a></div></div><div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500"><p>&copy; 2025 Japan Ambassador Association. All Rights Reserved.</p></div></div>
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold mb-4">日本アンバサダー協会</h3>
+                    <p class="text-sm text-gray-400">学生の挑戦に寄り添うパートナーであり続ける</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">協会について</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="../協会について/Summary.html#mission" class="text-gray-300 hover:text-white">Mission/Vision</a></li>
+                        <li><a href="../協会について/Summary.html#message" class="text-gray-300 hover:text-white">代表者メッセージ</a></li>
+                        <li><a href="../協会について/Summary.html#profile" class="text-gray-300 hover:text-white">団体概要</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">リンク</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="../事業内容/product.html" class="text-gray-300 hover:text-white">事業内容</a></li>
+                        <li><a href="../お知らせ一覧/お知らせ一覧ページ.html" class="text-gray-300 hover:text-white">お知らせ</a></li>
+                        <li><a href="../パートナーシップ/パートナーシップ.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li>
+                        <li><a href="../お問い合わせ/お問い合わせ.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">フォローする</h4>
+                    <a href="https://www.instagram.com/jaa_ed.official/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Instagram</a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+                <p>&copy; 2025 Japan Ambassador Association. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
