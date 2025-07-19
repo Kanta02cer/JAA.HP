@@ -83,105 +83,12 @@
             flex-grow: 1;
         }
 
-        /* Cookie同意バナー */
-        .cookie-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(17, 24, 39, 0.95);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 1rem;
-            z-index: 1000;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
 
-        .cookie-banner.show {
-            transform: translateY(0);
-        }
-
-        .cookie-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .cookie-text {
-            flex: 1;
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-
-        .cookie-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
-
-        .cookie-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-        .cookie-btn-accept {
-            background: #f97316;
-            color: white;
-        }
-
-        .cookie-btn-accept:hover {
-            background: #ea580c;
-        }
-
-        .cookie-btn-decline {
-            background: transparent;
-            color: #9ca3af;
-            border: 1px solid #4b5563;
-        }
-
-        .cookie-btn-decline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .cookie-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .cookie-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Cookie同意バナー -->
-    <div id="cookie-banner" class="cookie-banner">
-        <div class="cookie-content">
-            <div class="cookie-text">
-                当サイトでは、ユーザーエクスペリエンスの向上とサイト分析のためにCookieを使用しています。
-                サイトを利用することで、<a href="privacy.html" class="text-orange-400 hover:text-orange-300 underline">プライバシーポリシー</a>に同意したものとみなされます。
-            </div>
-            <div class="cookie-buttons">
-                <button id="cookie-decline" class="cookie-btn cookie-btn-decline">拒否</button>
-                <button id="cookie-accept" class="cookie-btn cookie-btn-accept">同意</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Header -->
     <header id="header" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 shadow-sm">
@@ -319,90 +226,28 @@
         const mobileMenu = document.getElementById('mobile-menu');
         mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
 
-        // Cookie管理
-        class CookieManager {
-            constructor() {
-                this.cookieBanner = document.getElementById('cookie-banner');
-                this.acceptBtn = document.getElementById('cookie-accept');
-                this.declineBtn = document.getElementById('cookie-decline');
-                this.cookieConsent = this.getCookieConsent();
-                
-                this.init();
-            }
-
-            init() {
-                if (!this.cookieConsent) {
-                    this.showBanner();
-                } else if (this.cookieConsent === 'accepted') {
-                    this.enableAnalytics();
-                }
-
-                this.acceptBtn.addEventListener('click', () => this.acceptCookies());
-                this.declineBtn.addEventListener('click', () => this.declineCookies());
-            }
-
-            showBanner() {
-                setTimeout(() => {
-                    this.cookieBanner.classList.add('show');
-                }, 1000);
-            }
-
-            hideBanner() {
-                this.cookieBanner.classList.remove('show');
-            }
-
-            acceptCookies() {
-                this.setCookieConsent('accepted');
-                this.hideBanner();
-                this.enableAnalytics();
-            }
-
-            declineCookies() {
-                this.setCookieConsent('declined');
-                this.hideBanner();
-                this.disableAnalytics();
-            }
-
-            setCookieConsent(status) {
-                const expiryDate = new Date();
-                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-                // ドメイン全体で共有されるCookie設定
-                document.cookie = `cookie_consent=${status}; expires=${expiryDate.toUTCString()}; path=/; domain=${window.location.hostname}; SameSite=Lax`;
-            }
-
-            getCookieConsent() {
-                const cookies = document.cookie.split(';');
-                for (let cookie of cookies) {
-                    const [name, value] = cookie.trim().split('=');
-                    if (name === 'cookie_consent') {
-                        return value;
+        // Cookie同意状態をチェックしてGoogle Analyticsを制御
+        function checkCookieConsent() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'cookie_consent') {
+                    if (value === 'accepted') {
+                        // Google Analyticsを有効化
+                        if (typeof gtag !== 'undefined') {
+                            gtag('consent', 'update', {
+                                'analytics_storage': 'granted'
+                            });
+                        }
                     }
-                }
-                return null;
-            }
-
-            enableAnalytics() {
-                // Google Analyticsを有効化
-                if (typeof gtag !== 'undefined') {
-                    gtag('consent', 'update', {
-                        'analytics_storage': 'granted'
-                    });
-                }
-            }
-
-            disableAnalytics() {
-                // Google Analyticsを無効化
-                if (typeof gtag !== 'undefined') {
-                    gtag('consent', 'update', {
-                        'analytics_storage': 'denied'
-                    });
+                    break;
                 }
             }
         }
 
-        // Cookie管理を初期化
+        // ページ読み込み時にCookie同意状態をチェック
         document.addEventListener('DOMContentLoaded', () => {
-            new CookieManager();
+            checkCookieConsent();
         });
     </script>
 </body>
