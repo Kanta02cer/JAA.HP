@@ -327,7 +327,8 @@
             setCookieConsent(status) {
                 const expiryDate = new Date();
                 expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-                document.cookie = `cookie_consent=${status}; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+                // ドメイン全体で共有されるCookie設定
+                document.cookie = `cookie_consent=${status}; expires=${expiryDate.toUTCString()}; path=/; domain=${window.location.hostname}; SameSite=Lax`;
             }
 
             getCookieConsent() {
