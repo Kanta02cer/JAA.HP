@@ -194,7 +194,10 @@
                         // Google Analyticsを有効化
                         if (typeof gtag !== 'undefined') {
                             gtag('consent', 'update', {
-                                'analytics_storage': 'granted'
+                                'analytics_storage": "granted",
+                                "ad_storage": "granted",
+                                "functionality_storage": "granted",
+                                "personalization_storage": "granted"'
                             });
                         }
                     }

@@ -51,7 +51,10 @@
         // 初期設定（Cookie同意前は無効）
         gtag('consent', 'default', {
             'analytics_storage': 'denied',
-            'ad_storage': 'denied'
+            'ad_storage': 'denied',
+            'functionality_storage': 'denied',
+            'personalization_storage': 'denied',
+            'security_storage': 'granted'
         });
         
         gtag('config', 'G-L9D609G0ML', {
@@ -981,19 +984,37 @@
             }
 
             enableAnalytics() {
-                // Google Analyticsを有効化
+                // Google Analyticsを有効化（詳細な同意設定）
                 if (typeof gtag !== 'undefined') {
                     gtag('consent', 'update', {
-                        'analytics_storage': 'granted'
+                        'analytics_storage': 'granted',
+                        'ad_storage': 'granted',
+                        'functionality_storage': 'granted',
+                        'personalization_storage': 'granted'
+                    });
+                    
+                    // 同意後のイベント送信
+                    gtag('event', 'cookie_consent_granted', {
+                        'event_category': 'consent',
+                        'event_label': 'analytics'
                     });
                 }
             }
 
             disableAnalytics() {
-                // Google Analyticsを無効化
+                // Google Analyticsを無効化（詳細な同意設定）
                 if (typeof gtag !== 'undefined') {
                     gtag('consent', 'update', {
-                        'analytics_storage': 'denied'
+                        'analytics_storage': 'denied',
+                        'ad_storage': 'denied',
+                        'functionality_storage': 'denied',
+                        'personalization_storage': 'denied'
+                    });
+                    
+                    // 拒否後のイベント送信
+                    gtag('event', 'cookie_consent_denied', {
+                        'event_category': 'consent',
+                        'event_label': 'analytics'
                     });
                 }
             }
