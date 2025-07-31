@@ -692,7 +692,7 @@
                     <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
                 </div>
                 <div class="space-y-4" id="news-container">
-                    <!-- News Items (最初の3件のみ表示) -->
+                    <!-- News Items (2件のみ表示) -->
                     <a href="news-detail-1.html" class="block card p-4 flex justify-between items-center news-item">
                         <span class="font-bold">【プレスリリース】一般社団法人化に関するお知らせ</span>
                         <span class="text-sm text-gray-500">2025.10.01</span>
@@ -701,23 +701,9 @@
                         <span class="font-bold">【メディア掲載】「人材版令和の虎」に出演しました</span>
                         <span class="text-sm text-gray-500">2025.07.17</span>
                     </a>
-                    <a href="news-detail-3.html" class="block card p-4 flex justify-between items-center news-item">
-                        <span class="font-bold">【イベント】第一期学生アンバサダー募集説明会を開催</span>
-                        <span class="text-sm text-gray-500">2025.06.30</span>
-                    </a>
-                    <!-- 追加のNews Items (非表示) -->
-                    <a href="news-detail-4.html" class="block card p-4 flex justify-between items-center news-item hidden">
-                        <span class="font-bold">【イベント】学生アンバサダー研修プログラム開始</span>
-                        <span class="text-sm text-gray-500">2025.05.15</span>
-                    </a>
-                    <a href="news-detail-5.html" class="block card p-4 flex justify-between items-center news-item hidden">
-                        <span class="font-bold">【メディア掲載】学生支援活動が新聞で紹介されました</span>
-                        <span class="text-sm text-gray-500">2025.05.01</span>
-                    </a>
                 </div>
                 <div class="text-center mt-8">
-                    <button id="show-more-news" class="btn btn-primary">もっと見る</button>
-                    <a href="news.html" class="font-bold text-orange-500 hover:text-orange-600 transition ml-4">お知らせ一覧へ &rarr;</a>
+                    <a href="news.html" class="btn btn-primary">お知らせ一覧へ &rarr;</a>
                 </div>
             </section>
 
@@ -1057,16 +1043,10 @@
         // News表示制御
         const showMoreNewsBtn = document.getElementById('show-more-news');
         const newsItems = document.querySelectorAll('.news-item');
-        let visibleCount = 3;
+        let visibleCount = 2;
 
         if (showMoreNewsBtn) {
             showMoreNewsBtn.addEventListener('click', () => {
-                // 非表示のNewsアイテムを表示
-                for (let i = visibleCount; i < Math.min(visibleCount + 3, newsItems.length); i++) {
-                    newsItems[i].classList.remove('hidden');
-                }
-                visibleCount += 3;
-
                 // すべてのNewsアイテムが表示されたらボタンを非表示
                 if (visibleCount >= newsItems.length) {
                     showMoreNewsBtn.style.display = 'none';
