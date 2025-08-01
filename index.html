@@ -692,7 +692,7 @@
                     <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
                 </div>
                 <div class="space-y-4" id="news-container">
-                    <!-- News Items (2件のみ表示) -->
+                    <!-- News Items (3件表示) -->
                     <a href="news-detail-1.html" class="block card p-4 flex justify-between items-center news-item">
                         <span class="font-bold">【プレスリリース】一般社団法人化に関するお知らせ</span>
                         <span class="text-sm text-gray-500">2025.10.01</span>
@@ -700,6 +700,10 @@
                     <a href="news-detail-2.html" class="block card p-4 flex justify-between items-center news-item">
                         <span class="font-bold">【メディア掲載】「人材版令和の虎」に出演しました</span>
                         <span class="text-sm text-gray-500">2025.07.17</span>
+                    </a>
+                    <a href="news-detail-3.html" class="block card p-4 flex justify-between items-center news-item">
+                        <span class="font-bold">【お知らせ】公式ホームページリニューアルのお知らせ</span>
+                        <span class="text-sm text-gray-500">2025.01.15</span>
                     </a>
                 </div>
                 <div class="text-center mt-8">
@@ -1043,7 +1047,7 @@
         // News表示制御
         const showMoreNewsBtn = document.getElementById('show-more-news');
         const newsItems = document.querySelectorAll('.news-item');
-        let visibleCount = 2;
+        let visibleCount = 3;
 
         if (showMoreNewsBtn) {
             showMoreNewsBtn.addEventListener('click', () => {
