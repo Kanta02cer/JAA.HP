@@ -8,3 +8,6 @@
 
 # Fallback for SPA
 /*    /index.html   200
+
+# Netlify CMS redirects
+/admin/config.yml   /admin/config.yml  200

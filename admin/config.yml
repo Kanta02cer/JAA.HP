@@ -2,12 +2,7 @@ backend:
   name: github
   repo: Kanta02cer/JAA.HP
   branch: main
-  commit_messages:
-    create: 'content: create {{collection}} "{{slug}}"'
-    update: 'content: update {{collection}} "{{slug}}"'
-    delete: 'content: delete {{collection}} "{{slug}}"'
-    uploadMedia: 'media: upload {{path}}'
-    deleteMedia: 'media: delete {{path}}'
+  auth_endpoint: https://api.netlify.com/auth
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
@@ -44,5 +39,4 @@ collections:
           - {label: "ミッション 説明", name: "mission_description", widget: "text"}
           - {label: "表示するニュース数", name: "news_count", widget: "number", default: 3}
 
-# GitHub Pages用の設定
 local_backend: false
