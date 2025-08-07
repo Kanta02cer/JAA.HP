@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub直接編集ガイド - 日本学生アンバサダー協会</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: #f9fafb;
+        }
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .guide-header {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .guide-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .guide-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .guide-content {
+            line-height: 1.8;
+            color: #374151;
+        }
+        .guide-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .guide-button:hover {
+            background: #2563eb;
+        }
+        .guide-button.success {
+            background: #16a34a;
+        }
+        .guide-button.success:hover {
+            background: #15803d;
+        }
+        .guide-button.danger {
+            background: #dc2626;
+        }
+        .guide-button.danger:hover {
+            background: #b91c1c;
+        }
+        .code-block {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .step-number {
+            background: #f97316;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1>GitHub直接編集ガイド</h1>
+            <p>最も簡単で確実なコンテンツ編集方法</p>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">📝 方法1: GitHub Webエディタ</div>
+            <div class="guide-content">
+                <p><span class="step-number">1</span>GitHubリポジトリにアクセス</p>
+                <a href="https://github.com/Kanta02cer/JAA.HP" class="guide-button" target="_blank">
+                    📁 リポジトリを開く
+                </a>
+                
+                <p><span class="step-number">2</span>編集したいファイルをクリック</p>
+                <p><span class="step-number">3</span>鉛筆アイコン（編集）をクリック</p>
+                <p><span class="step-number">4</span>内容を編集</p>
+                <p><span class="step-number">5</span>「Commit changes」で保存</p>
+                
+                <div class="code-block">
+                    # 編集可能なファイル
+                    _news/2025-01-20-test-article.md
+                    _news/2025-10-01-press-release.md
+                    index.html
+                    about.html
+                    news.html
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">🔧 方法2: 新しい記事の作成</div>
+            <div class="guide-content">
+                <p><span class="step-number">1</span>GitHubリポジトリで「Add file」→「Create new file」</p>
+                <p><span class="step-number">2</span>ファイル名を入力（例: <code>_news/2025-01-25-new-article.md</code>）</p>
+                <p><span class="step-number">3</span>以下のテンプレートを使用</p>
+                
+                <div class="code-block">
+---
+layout: news-detail
+title: "新しい記事のタイトル"
+description: "記事の説明"
+date: 2025-01-25
+category: "お知らせ"
+tags: []
+image: ""
+keywords: ""
+author: "日本学生アンバサダー協会"
+draft: false
+---
+
+ここに記事の内容を書きます。
+
+## 見出し1
+
+段落の内容...
+
+## 見出し2
+
+- リスト項目1
+- リスト項目2
+- リスト項目3
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">⚡ 方法3: ローカル開発環境</div>
+            <div class="guide-content">
+                <p><span class="step-number">1</span>リポジトリをクローン</p>
+                <div class="code-block">
+git clone https://github.com/Kanta02cer/JAA.HP.git
+cd JAA.HP
+                </div>
+                
+                <p><span class="step-number">2</span>お好みのエディタで編集</p>
+                <p><span class="step-number">3</span>変更をコミット・プッシュ</p>
+                <div class="code-block">
+git add .
+git commit -m "記事を更新"
+git push origin main
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">🎯 推奨方法</div>
+            <div class="guide-content">
+                <p><strong>初心者向け:</strong> 方法1（GitHub Webエディタ）</p>
+                <p><strong>上級者向け:</strong> 方法3（ローカル開発環境）</p>
+                <p><strong>緊急時:</strong> 方法1（GitHub Webエディタ）</p>
+                
+                <a href="https://github.com/Kanta02cer/JAA.HP" class="guide-button success" target="_blank">
+                    🚀 今すぐ編集を開始
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
