@@ -2,6 +2,9 @@
   publish = "."
   command = ""
 
+[build.environment]
+  NODE_VERSION = "18"
+
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
@@ -19,3 +22,20 @@
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 静的サイトの設定
+[build.processing]
+  skip_processing = false
+
+# デプロイ設定
+[build.processing.css]
+  bundle = false
+  minify = false
+
+[build.processing.js]
+  bundle = false
+  minify = false
+
+[build.processing.html]
+  pretty_urls = true
