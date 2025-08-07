@@ -87,14 +87,13 @@
         // CMS初期化
         function initializeCMS() {
             try {
-                // GitHub Pages用のCMS設定
+                // シンプルなCMS設定（URL重複問題を回避）
                 CMS.init({
                     config: {
                         backend: {
                             name: 'github',
                             repo: 'Kanta02cer/JAA.HP',
-                            branch: 'main',
-                            base_url: 'https://kanta02cer.github.io/JAA.HP'
+                            branch: 'main'
                         },
                         local_backend: false,
                         media_folder: 'images/uploads',

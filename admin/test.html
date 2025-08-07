@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>認証URLテスト - 日本学生アンバサダー協会</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: #f9fafb;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .test-header {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .test-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .test-content {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .test-button.danger {
+            background: #dc2626;
+        }
+        .test-button.danger:hover {
+            background: #b91c1c;
+        }
+        .test-button.success {
+            background: #16a34a;
+        }
+        .test-button.success:hover {
+            background: #15803d;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>認証URLテスト</h1>
+            <p>GitHub認証のURL重複問題を診断します</p>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">1. 現在のURL情報</div>
+            <div class="test-content" id="current-url">読み込み中...</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">2. CMS設定確認</div>
+            <div class="test-content" id="cms-config">読み込み中...</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">3. 認証URLテスト</div>
+            <div class="test-content" id="auth-urls">読み込み中...</div>
+            <button class="test-button" onclick="testAuthURLs()">認証URLをテスト</button>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">4. 修正されたCMS設定</div>
+            <div class="test-content" id="fixed-config">読み込み中...</div>
+            <button class="test-button success" onclick="applyFixedConfig()">修正された設定を適用</button>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">5. テスト結果</div>
+            <div class="test-content" id="test-results">読み込み中...</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+    <script>
+        // 現在のURL情報を取得
+        function getCurrentURLInfo() {
+            const info = {
+                currentURL: window.location.href,
+                baseURL: window.location.origin,
+                pathname: window.location.pathname,
+                search: window.location.search,
+                hash: window.location.hash,
+                timestamp: new Date().toISOString()
+            };
+            return JSON.stringify(info, null, 2);
+        }
+
+        // CMS設定を確認
+        function checkCMSConfig() {
+            const config = {
+                cmsLoaded: typeof CMS !== 'undefined',
+                cmsVersion: typeof CMS !== 'undefined' ? CMS.version : 'N/A',
+                windowCMS: typeof window.CMS !== 'undefined',
+                documentReady: document.readyState
+            };
+            return JSON.stringify(config, null, 2);
+        }
+
+        // 認証URLをテスト
+        function testAuthURLs() {
+            const results = [];
+            
+            // 問題のあるURL
+            const problematicURL = 'https://api.netlify.com/https://api.netlify.com/auth?provider=github&site_id=kanta02cer.github.io&scope=repo';
+            results.push('❌ 問題のあるURL:');
+            results.push(problematicURL);
+            results.push('');
+            
+            // 正しいURL
+            const correctURL = 'https://api.netlify.com/auth?provider=github&site_id=kanta02cer.github.io&scope=repo';
+            results.push('✅ 正しいURL:');
+            results.push(correctURL);
+            results.push('');
+            
+            // GitHub Pages用のURL
+            const githubPagesURL = 'https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=https://kanta02cer.github.io/JAA.HP/admin/&scope=repo';
+            results.push('🔧 GitHub Pages用URL:');
+            results.push(githubPagesURL);
+            
+            document.getElementById('auth-urls').textContent = results.join('\n');
+        }
+
+        // 修正されたCMS設定
+        function getFixedConfig() {
+            const config = {
+                backend: {
+                    name: 'github',
+                    repo: 'Kanta02cer/JAA.HP',
+                    branch: 'main'
+                },
+                local_backend: false,
+                media_folder: 'images/uploads',
+                public_folder: '/images/uploads',
+                collections: [
+                    {
+                        name: 'news',
+                        label: 'ニュース記事',
+                        folder: '_news',
+                        create: true,
+                        slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
+                        fields: [
+                            { label: 'タイトル', name: 'title', widget: 'string' },
+                            { label: '内容', name: 'body', widget: 'markdown' }
+                        ]
+                    }
+                ]
+            };
+            return JSON.stringify(config, null, 2);
+        }
+
+        // 修正された設定を適用
+        function applyFixedConfig() {
+            try {
+                if (typeof CMS !== 'undefined') {
+                    CMS.init({
+                        config: {
+                            backend: {
+                                name: 'github',
+                                repo: 'Kanta02cer/JAA.HP',
+                                branch: 'main'
+                            },
+                            local_backend: false,
+                            media_folder: 'images/uploads',
+                            public_folder: '/images/uploads',
+                            collections: [
+                                {
+                                    name: 'news',
+                                    label: 'ニュース記事',
+                                    folder: '_news',
+                                    create: true,
+                                    slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
+                                    fields: [
+                                        { label: 'タイトル', name: 'title', widget: 'string' },
+                                        { label: '内容', name: 'body', widget: 'markdown' }
+                                    ]
+                                }
+                            ]
+                        }
+                    });
+                    
+                    document.getElementById('test-results').textContent = '✅ 修正された設定が適用されました。\n\n次のステップ:\n1. ページを再読み込み\n2. 「Login with GitHub」ボタンをクリック\n3. 認証が正常に動作することを確認';
+                } else {
+                    document.getElementById('test-results').textContent = '❌ CMSが読み込まれていません。ページを再読み込みしてください。';
+                }
+            } catch (error) {
+                document.getElementById('test-results').textContent = `❌ エラーが発生しました: ${error.message}`;
+            }
+        }
+
+        // 初期化
+        function initializeTest() {
+            document.getElementById('current-url').textContent = getCurrentURLInfo();
+            document.getElementById('cms-config').textContent = checkCMSConfig();
+            document.getElementById('fixed-config').textContent = getFixedConfig();
+            document.getElementById('test-results').textContent = 'テストを開始してください...';
+        }
+
+        // ページ読み込み後に実行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeTest);
+        } else {
+            initializeTest();
+        }
+    </script>
+</body>
+</html>
