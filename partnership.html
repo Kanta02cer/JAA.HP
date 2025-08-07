@@ -253,23 +253,79 @@
                 </div>
                 <div class="carousel-container bg-white py-8">
                     <div class="carousel-track" style="gap: 48px;">
-                        <!-- Partner Cards (15枚分) -->
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <!-- CBTS Partner Card -->
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-white rounded-xl shadow-lg mx-6 p-4 hover:shadow-xl transition-all duration-300">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <!-- 3D Cube Logo -->
+                                <div class="relative w-12 h-12">
+                                    <div class="absolute inset-0 transform rotate-45">
+                                        <!-- Cube faces with CBT letters -->
+                                        <div class="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 80% 20%, 20% 20%, 0 0);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">C</div>
+                                        </div>
+                                        <div class="absolute top-0 right-0 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 80%, 20% 0);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">B</div>
+                                        </div>
+                                        <div class="absolute bottom-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 20%, 80% 20%, 80% 100%, 0 100%, 0 20%);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">T</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- CBTS Text -->
+                                <div class="text-center">
+                                    <div class="text-2xl font-black text-gray-900 tracking-wider">CBTS</div>
+                                    <div class="w-full h-0.5 bg-blue-600 relative">
+                                        <div class="absolute right-0 top-0 w-2 h-2 bg-blue-600 transform rotate-45"></div>
+                                    </div>
+                                    <div class="text-xs text-blue-600 font-medium tracking-wide">CBT-SOLUTIONS</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-600 text-center mt-2">テクノロジーソリューション</div>
+                        </div>
+                        
+                        <!-- Additional Partner Cards -->
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner E</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner F</div>
+                        
+                        <!-- CBTS Partner Card (Duplicate for seamless loop) -->
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-white rounded-xl shadow-lg mx-6 p-4 hover:shadow-xl transition-all duration-300">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <!-- 3D Cube Logo -->
+                                <div class="relative w-12 h-12">
+                                    <div class="absolute inset-0 transform rotate-45">
+                                        <!-- Cube faces with CBT letters -->
+                                        <div class="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 80% 20%, 20% 20%, 0 0);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">C</div>
+                                        </div>
+                                        <div class="absolute top-0 right-0 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 80%, 20% 0);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">B</div>
+                                        </div>
+                                        <div class="absolute bottom-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 20%, 80% 20%, 80% 100%, 0 100%, 0 20%);">
+                                            <div class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">T</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- CBTS Text -->
+                                <div class="text-center">
+                                    <div class="text-2xl font-black text-gray-900 tracking-wider">CBTS</div>
+                                    <div class="w-full h-0.5 bg-blue-600 relative">
+                                        <div class="absolute right-0 top-0 w-2 h-2 bg-blue-600 transform rotate-45"></div>
+                                    </div>
+                                    <div class="text-xs text-blue-600 font-medium tracking-wide">CBT-SOLUTIONS</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-600 text-center mt-2">テクノロジーソリューション</div>
+                        </div>
+                        
+                        <!-- Additional Partner Cards (Duplicates for seamless loop) -->
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
                         <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner A</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner B</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner C</div>
-                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner D</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner E</div>
+                        <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-xl font-bold">Partner F</div>
                     </div>
                 </div>
             </section>
