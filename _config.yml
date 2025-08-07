@@ -2,7 +2,6 @@ backend:
   name: github
   repo: Kanta02cer/JAA.HP
   branch: main
-  auth_endpoint: https://api.netlify.com/auth
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
