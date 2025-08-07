@@ -2,8 +2,6 @@ backend:
   name: github
   repo: Kanta02cer/JAA.HP
   branch: main
-  base_url: https://kanta02cer.github.io/JAA.HP
-  auth_endpoint: https://kanta02cer.github.io/JAA.HP/auth
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
