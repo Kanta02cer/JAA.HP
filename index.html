@@ -707,47 +707,104 @@
                     <h2 class="section-title text-3xl md:text-4xl mb-4">学生の未来を、共に創る。</h2>
                     <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">私たちの活動は、理念に共感してくださる多くの企業・個人の皆様からのご支援によって支えられています。</p>
                 </div>
-                <!-- CBTS Partner Section -->
+                <!-- Partner Carousel Section -->
                 <div class="text-center mb-16">
                     <h3 class="text-2xl font-bold text-gray-800 mb-8">パートナー企業</h3>
-                    <div class="flex justify-center items-center">
-                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md">
-                            <div class="flex flex-col items-center space-y-4">
-                                <!-- CBTS Logo Image -->
-                                <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-64 h-32 object-contain mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                <!-- Fallback CBTS Logo (CSS-based) -->
-                                <div class="w-64 h-32 mb-4 flex items-center justify-center" style="display: none;">
-                                    <div class="flex items-center space-x-4">
-                                        <!-- CBTS Cube Logo -->
-                                        <div class="relative w-16 h-16">
+                    <div class="carousel-container bg-white py-8">
+                        <div class="carousel-track" style="gap: 48px;">
+                            <!-- CBTS Partner Card -->
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-white rounded-xl shadow-lg mx-6 p-4">
+                                <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-32 h-16 object-contain mb-2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <!-- Fallback CBTS Logo -->
+                                <div class="w-32 h-16 mb-2 flex items-center justify-center" style="display: none;">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="relative w-8 h-8">
                                             <div class="absolute inset-0 transform rotate-45">
-                                                <!-- Cube faces with CBT letters -->
-                                                <div class="absolute top-0 left-0 w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                <div class="absolute top-0 left-0 w-4 h-4 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
                                                     <div class="absolute inset-1 bg-white opacity-20"></div>
                                                 </div>
-                                                <div class="absolute top-0 right-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                <div class="absolute top-0 right-0 w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
                                                     <div class="absolute inset-1 bg-white opacity-20"></div>
                                                 </div>
-                                                <div class="absolute bottom-0 left-0 w-8 h-8 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                <div class="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
                                                     <div class="absolute inset-1 bg-white opacity-20"></div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- CBTS Text -->
                                         <div class="text-left">
-                                            <div class="text-xl font-bold text-gray-800" style="font-family: 'Arial Black', sans-serif;">CBTS</div>
-                                            <div class="w-20 h-0.5 bg-blue-500 relative">
-                                                <div class="absolute right-0 top-0 w-2 h-2 bg-blue-500 transform rotate-45"></div>
+                                            <div class="text-sm font-bold text-gray-800" style="font-family: 'Arial Black', sans-serif;">CBTS</div>
+                                            <div class="w-12 h-0.5 bg-blue-500 relative">
+                                                <div class="absolute right-0 top-0 w-1 h-1 bg-blue-500 transform rotate-45"></div>
                                             </div>
-                                            <div class="text-sm text-blue-500 font-medium">CBT-SOLUTIONS</div>
+                                            <div class="text-xs text-blue-500 font-medium">CBT-SOLUTIONS</div>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Company Name -->
                                 <div class="text-center">
-                                    <h4 class="text-xl font-bold text-gray-800 mb-2">株式会社CBT-Solutions</h4>
-                                    <p class="text-sm text-gray-600">Technology Solutions</p>
+                                    <h4 class="text-sm font-bold text-gray-800">株式会社CBT-Solutions</h4>
+                                    <p class="text-xs text-gray-600">Technology Solutions</p>
                                 </div>
+                            </div>
+                            
+                            <!-- Additional Partner Cards -->
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            
+                            <!-- CBTS Partner Card (Repeat for carousel effect) -->
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-white rounded-xl shadow-lg mx-6 p-4">
+                                <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-32 h-16 object-contain mb-2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <!-- Fallback CBTS Logo -->
+                                <div class="w-32 h-16 mb-2 flex items-center justify-center" style="display: none;">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="relative w-8 h-8">
+                                            <div class="absolute inset-0 transform rotate-45">
+                                                <div class="absolute top-0 left-0 w-4 h-4 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                                <div class="absolute top-0 right-0 w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                                <div class="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-left">
+                                            <div class="text-sm font-bold text-gray-800" style="font-family: 'Arial Black', sans-serif;">CBTS</div>
+                                            <div class="w-12 h-0.5 bg-blue-500 relative">
+                                                <div class="absolute right-0 top-0 w-1 h-1 bg-blue-500 transform rotate-45"></div>
+                                            </div>
+                                            <div class="text-xs text-blue-500 font-medium">CBT-SOLUTIONS</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <h4 class="text-sm font-bold text-gray-800">株式会社CBT-Solutions</h4>
+                                    <p class="text-xs text-gray-600">Technology Solutions</p>
+                                </div>
+                            </div>
+                            
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
+                            </div>
+                            <div class="partner-card flex flex-col items-center justify-center w-64 h-40 bg-gray-100 rounded-xl shadow-lg mx-6 text-lg font-bold text-gray-500">
+                                パートナー企業募集中
                             </div>
                         </div>
                     </div>
