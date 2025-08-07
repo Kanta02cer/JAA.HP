@@ -1,108 +1,99 @@
-# GitHub Pages デプロイメントガイド
+# GitHub Pages デプロイ手順
 
-## 概要
+## 自動デプロイ（推奨）
 
-このプロジェクトはGitHub Pagesを使用して自動デプロイされます。
+このプロジェクトはGitHub Actionsを使用して自動デプロイが設定されています。
 
-## デプロイメント設定
+### 1. リポジトリの設定
 
-### 1. GitHubリポジトリの設定
-
-1. GitHubリポジトリの設定ページに移動
-2. **Pages** セクションを選択
+1. GitHubでリポジトリの設定ページに移動
+2. **Settings** → **Pages** を選択
 3. **Source** で **GitHub Actions** を選択
-4. **Save** をクリック
 
-### 2. 権限の確認
+### 2. デプロイの実行
 
-リポジトリの設定で以下を確認してください：
+`main` ブランチにプッシュすると自動的にデプロイされます：
 
-- **Settings > Actions > General**
-  - Actions permissions: "Allow all actions and reusable workflows"
-  - Workflow permissions: "Read and write permissions"
+```bash
+git add .
+git commit -m "Update website content"
+git push origin main
+```
 
-### 3. 環境の設定
+## 手動デプロイ
 
-1. **Settings > Environments**
-2. **New environment** をクリック
-3. Environment name: `github-pages`
-4. **Configure environment** をクリック
-5. **Save protection rules** をクリック
+### 1. リポジトリの設定
 
-## デプロイメントプロセス
+1. GitHubでリポジトリの設定ページに移動
+2. **Settings** → **Pages** を選択
+3. **Source** で **Deploy from a branch** を選択
+4. **Branch** で **main** を選択
+5. **Folder** で **/ (root)** を選択
+6. **Save** をクリック
 
-### 自動デプロイ
+### 2. デプロイの確認
 
-- `main` ブランチにプッシュすると自動的にデプロイされます
-- GitHub Actionsが以下の処理を実行：
-  1. コードのチェックアウト
-  2. Ruby環境のセットアップ
-  3. 依存関係のインストール
-  4. Jekyllサイトのビルド
-  5. GitHub Pagesへのデプロイ
-
-### 手動デプロイ
-
-1. GitHubリポジトリの **Actions** タブに移動
-2. **Deploy to GitHub Pages** ワークフローを選択
-3. **Run workflow** をクリック
+デプロイが完了すると、以下のURLでアクセスできます：
+```
+https://[username].github.io/[repository-name]/
+```
 
 ## トラブルシューティング
 
-### 権限エラー
+### デプロイが失敗する場合
+
+1. **Actions** タブでワークフローの実行状況を確認
+2. エラーログを確認して問題を特定
+3. 必要に応じてワークフローファイルを修正
+
+### ページが表示されない場合
+
+1. **Settings** → **Pages** でデプロイ状況を確認
+2. ブランチとフォルダの設定が正しいか確認
+3. ファイル名が正しいか確認（`index.html` が存在するか）
+
+### カスタムドメインの設定
+
+1. **Settings** → **Pages** → **Custom domain** でドメインを設定
+2. `CNAME` ファイルにドメイン名を記入
+3. DNS設定でGitHub PagesのIPアドレスを設定
+
+## ファイル構成
 
 ```
-remote: Permission to Kanta02cer/JAA.HP.git denied to github-actions[bot].
+JAA.HP-1/
+├── .github/workflows/     # GitHub Actions設定
+│   ├── deploy.yml         # デプロイワークフロー
+│   └── static.yml         # 静的サイトデプロイ
+├── index.html             # トップページ
+├── about.html             # 協会について
+├── business.html          # 事業内容
+├── ambassador.html        # アンバサダー制度
+├── partnership.html       # パートナーシップ
+├── news.html             # ニュース一覧
+├── contact.html          # お問い合わせ
+├── privacy.html          # プライバシーポリシー
+├── robots.txt            # 検索エンジン設定
+├── sitemap.xml           # サイトマップ
+├── _redirects            # リダイレクト設定
+├── CNAME                 # カスタムドメイン設定
+├── package.json          # プロジェクト設定
+├── .gitignore            # Git除外設定
+└── DEPLOYMENT.md         # このファイル
 ```
-
-**解決方法:**
-1. リポジトリの設定で **Settings > Actions > General** を確認
-2. Workflow permissionsを "Read and write permissions" に設定
-3. 環境設定で `github-pages` 環境が正しく設定されているか確認
-
-### ビルドエラー
-
-**解決方法:**
-1. GitHub Actionsのログを確認
-2. ローカルで `bundle exec jekyll build` を実行してエラーを確認
-3. 依存関係を更新: `bundle update`
-
-### デプロイエラー
-
-**解決方法:**
-1. GitHub Pagesの設定を確認
-2. ブランチ名が `main` であることを確認
-3. ワークフローファイルの構文を確認
-
-## ファイル構造
-
-```
-.github/
-└── workflows/
-    └── pages.yml          # GitHub Pages用ワークフロー
-
-_config.yml                # Jekyll設定
-Gemfile                    # Ruby依存関係
-.nojekyll                 # Jekyll処理無効化
-```
-
-## アクセスURL
-
-デプロイ成功後、以下のURLでアクセス可能：
-
-- **本番環境**: https://kanta02cer.github.io/JAA.HP/
-- **開発環境**: ローカルで `bundle exec jekyll serve`
-
-## 更新手順
-
-1. コードを変更
-2. 変更をコミット
-3. `main` ブランチにプッシュ
-4. GitHub Actionsでデプロイ状況を確認
-5. デプロイ完了後、サイトを確認
 
 ## 注意事項
 
-- デプロイには数分かかる場合があります
-- 初回デプロイは特に時間がかかります
-- エラーが発生した場合は、GitHub Actionsのログを確認してください
+- 静的サイトのため、サーバーサイドの処理はできません
+- JavaScriptによる動的コンテンツは正常に動作します
+- 外部APIとの連携は可能です
+- ファイルサイズは制限があります（100MB以下推奨）
+
+## サポート
+
+デプロイに関する問題が発生した場合は、以下を確認してください：
+
+1. GitHub Actionsのログ
+2. ブラウザの開発者ツール
+3. ネットワークタブでのエラー
+4. コンソールでのJavaScriptエラー

@@ -6,53 +6,30 @@ on:
   pull_request:
     branches: [ main ]
 
-# 権限を明示的に設定
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 環境変数を設定
-env:
-  JEKYLL_ENV: production
-
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
-    # 並行実行を制限
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
       
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
-        ruby-version: '3.2'
-        bundler-cache: true
+        node-version: '18'
         
-    - name: Install dependencies
+    - name: Install dependencies (if any)
       run: |
-        gem install bundler
-        bundle install
+        # 必要に応じて依存関係をインストール
+        # npm install
+        echo "No dependencies to install"
         
-    - name: Build site
-      run: bundle exec jekyll build
-      
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+    - name: Build and Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
       with:
-        path: ./_site
-        
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+        publish_branch: gh-pages
+        force_orphan: true
