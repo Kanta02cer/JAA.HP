@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ニュース記事投稿エディタ - 日本学生アンバサダー協会</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+        }
+        .editor-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .editor-header {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .editor-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .editor-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        .form-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            resize: vertical;
+        }
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            background-color: white;
+        }
+        .editor-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .editor-button:hover {
+            background: #2563eb;
+        }
+        .editor-button.success {
+            background: #16a34a;
+        }
+        .editor-button.success:hover {
+            background: #15803d;
+        }
+        .editor-button.danger {
+            background: #dc2626;
+        }
+        .editor-button.danger:hover {
+            background: #b91c1c;
+        }
+        .toolbar {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .toolbar-button {
+            background: white;
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .toolbar-button:hover {
+            background: #f9fafb;
+            border-color: #f97316;
+        }
+        .toolbar-button.active {
+            background: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
+        .preview-container {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .preview-header {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+        }
+        .preview-content {
+            padding: 2rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .file-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload:hover {
+            border-color: #f97316;
+            background-color: #fef3c7;
+        }
+        .file-upload input {
+            display: none;
+        }
+        .coauthor-section {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+        .coauthor-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .coauthor-input input {
+            flex: 1;
+        }
+        .coauthor-input button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+        .auto-format-info {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="editor-container">
+        <div class="editor-header">
+            <h1>ニュース記事投稿エディタ</h1>
+            <p>日本学生アンバサダー協会 公式リリース編集部</p>
+        </div>
+
+        <div class="editor-layout">
+            <!-- 編集セクション -->
+            <div class="editor-section">
+                <div class="editor-title">✏️ 記事編集</div>
+                
+                <div class="auto-format-info">
+                    <strong>自動フォーマット機能:</strong><br>
+                    • 「#」で始まる行 → 見出し1<br>
+                    • 「##」で始まる行 → 見出し2<br>
+                    • 「**テキスト**」 → 太文字<br>
+                    • 「*テキスト*」 → 斜体<br>
+                    • 「- 項目」 → リスト
+                </div>
+
+                <form id="editor-form">
+                    <div class="form-group">
+                        <label class="form-label">記事タイトル *</label>
+                        <input type="text" id="title" class="form-input" placeholder="記事のタイトルを入力" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">記事説明</label>
+                        <textarea id="description" class="form-input" rows="3" placeholder="記事の説明を入力"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">カテゴリ *</label>
+                        <select id="category" class="form-select" required>
+                            <option value="">カテゴリを選択</option>
+                            <option value="プレスリリース">プレスリリース</option>
+                            <option value="メディア掲載">メディア掲載</option>
+                            <option value="イベント">イベント</option>
+                            <option value="お知らせ">お知らせ</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">投稿日 *</label>
+                        <input type="date" id="publish-date" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">共著企業（オプション）</label>
+                        <div class="coauthor-section">
+                            <div id="coauthor-list">
+                                <div class="coauthor-input">
+                                    <input type="text" placeholder="企業名を入力" class="form-input coauthor-input-field">
+                                    <button type="button" onclick="removeCoauthor(this)" class="coauthor-remove">削除</button>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addCoauthor()" class="editor-button">+ 共著企業を追加</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">トップ画像</label>
+                        <div class="file-upload" onclick="document.getElementById('top-image').click()">
+                            <input type="file" id="top-image" accept="image/*" onchange="handleImageUpload(event)">
+                            <div id="image-upload-text">
+                                📷 クリックして画像をアップロード<br>
+                                <small>推奨サイズ: 1200x630px</small>
+                            </div>
+                            <div id="image-preview" style="display: none;">
+                                <img id="preview-img" style="max-width: 100%; max-height: 200px; margin-top: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">記事内容 *</label>
+                        <div class="toolbar">
+                            <button type="button" class="toolbar-button" onclick="insertFormat('# ', '見出し1')">見出し1</button>
+                            <button type="button" class="toolbar-button" onclick="insertFormat('## ', '見出し2')">見出し2</button>
+                            <button type="button" class="toolbar-button" onclick="insertFormat('**', '**太文字**')">太文字</button>
+                            <button type="button" class="toolbar-button" onclick="insertFormat('*', '*斜体*')">斜体</button>
+                            <button type="button" class="toolbar-button" onclick="insertFormat('- ', 'リスト項目')">リスト</button>
+                            <button type="button" class="toolbar-button" onclick="insertFormat('[', '](リンクURL)')">リンク</button>
+                        </div>
+                        <textarea id="content" class="form-textarea" placeholder="記事の内容を入力してください..." required></textarea>
+                    </div>
+
+                    <button type="button" class="editor-button" onclick="generatePreview()">👁️ プレビュー</button>
+                    <button type="button" class="editor-button success" onclick="generateHTML()">📝 HTML生成</button>
+                    <button type="button" class="editor-button" onclick="copyToClipboard()">📋 クリップボードにコピー</button>
+                    <button type="button" class="editor-button danger" onclick="resetForm()">🔄 リセット</button>
+                </form>
+            </div>
+
+            <!-- プレビューセクション -->
+            <div class="editor-section">
+                <div class="editor-title">👁️ プレビュー</div>
+                <div class="preview-container">
+                    <div class="preview-header">実際のデザインでのプレビュー</div>
+                    <div class="preview-content" id="preview-content">
+                        <p style="text-align: center; color: #6b7280;">プレビューを生成してください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="editor-section">
+            <div class="editor-title">🚀 次のステップ</div>
+            <div id="next-steps">
+                <p>1. 上記のフォームで記事を編集</p>
+                <p>2. 「HTML生成」ボタンをクリック</p>
+                <p>3. 生成されたHTMLをコピー</p>
+                <p>4. <a href="https://github.com/Kanta02cer/JAA.HP" target="_blank">GitHubリポジトリ</a>で新しいファイルを作成</p>
+                <p>5. コピーしたHTMLを貼り付けて保存</p>
+                <p>6. 自動でnews.htmlとindex.htmlに反映されます</p>
+                
+                <a href="https://github.com/Kanta02cer/JAA.HP" class="editor-button success" target="_blank">
+                    📁 GitHubリポジトリを開く
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedImage = null;
+        let coauthorCount = 0;
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 今日の日付を設定
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('publish-date').value = today;
+        });
+
+        // 共著企業の追加
+        function addCoauthor() {
+            coauthorCount++;
+            const coauthorList = document.getElementById('coauthor-list');
+            const newCoauthor = document.createElement('div');
+            newCoauthor.className = 'coauthor-input';
+            newCoauthor.innerHTML = `
+                <input type="text" placeholder="企業名を入力" class="form-input coauthor-input-field">
+                <button type="button" onclick="removeCoauthor(this)" class="coauthor-remove">削除</button>
+            `;
+            coauthorList.appendChild(newCoauthor);
+        }
+
+        // 共著企業の削除
+        function removeCoauthor(button) {
+            button.parentElement.remove();
+        }
+
+        // 画像アップロード処理
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    document.getElementById('preview-img').src = uploadedImage;
+                    document.getElementById('image-upload-text').style.display = 'none';
+                    document.getElementById('image-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // フォーマット挿入
+        function insertFormat(prefix, placeholder) {
+            const textarea = document.getElementById('content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            if (start === end) {
+                // カーソル位置に挿入
+                const newText = text.substring(0, start) + prefix + placeholder + text.substring(end);
+                textarea.value = newText;
+                textarea.focus();
+                textarea.setSelectionRange(start + prefix.length, start + prefix.length + placeholder.length);
+            } else {
+                // 選択範囲を囲む
+                const selectedText = text.substring(start, end);
+                const newText = text.substring(0, start) + prefix + selectedText + text.substring(end);
+                textarea.value = newText;
+                textarea.focus();
+                textarea.setSelectionRange(start, start + prefix.length + selectedText.length);
+            }
+        }
+
+        // プレビュー生成
+        function generatePreview() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+            const publishDate = document.getElementById('publish-date').value;
+            const content = document.getElementById('content').value;
+            
+            // 共著企業を取得
+            const coauthors = [];
+            document.querySelectorAll('.coauthor-input-field').forEach(input => {
+                if (input.value.trim()) {
+                    coauthors.push(input.value.trim());
+                }
+            });
+
+            const previewHTML = generateNewsDetailHTML(title, description, category, publishDate, content, coauthors);
+            document.getElementById('preview-content').innerHTML = previewHTML;
+        }
+
+        // HTML生成
+        function generateHTML() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+            const publishDate = document.getElementById('publish-date').value;
+            const content = document.getElementById('content').value;
+            
+            if (!title || !category || !publishDate || !content) {
+                alert('必須項目を入力してください。');
+                return;
+            }
+
+            // 共著企業を取得
+            const coauthors = [];
+            document.querySelectorAll('.coauthor-input-field').forEach(input => {
+                if (input.value.trim()) {
+                    coauthors.push(input.value.trim());
+                }
+            });
+
+            // ファイル名を生成
+            const date = new Date(publishDate);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const filename = `_news/${year}${month}${day}/${title.replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF]/g, '-')}.html`;
+
+            const htmlContent = generateNewsDetailHTML(title, description, category, publishDate, content, coauthors);
+            
+            // 結果を表示
+            const result = `ファイル名: ${filename}\n\nHTML内容:\n${htmlContent}`;
+            
+            // プレビューに表示
+            document.getElementById('preview-content').innerHTML = `
+                <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem;">
+                    <strong>生成されたファイル名:</strong><br>
+                    ${filename}
+                </div>
+                <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.375rem;">
+                    <strong>HTML内容:</strong><br>
+                    <pre style="white-space: pre-wrap; font-size: 0.875rem;">${htmlContent}</pre>
+                </div>
+            `;
+        }
+
+        // ニュース詳細HTML生成
+        function generateNewsDetailHTML(title, description, category, publishDate, content, coauthors) {
+            const date = new Date(publishDate);
+            const formattedDate = date.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            // 内容をMarkdownからHTMLに変換
+            const htmlContent = convertMarkdownToHTML(content);
+
+            // 共著者表示
+            const coauthorHTML = coauthors.length > 0 
+                ? `<div style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">共著: ${coauthors.join(', ')}</div>`
+                : '';
+
+            return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} | 日本学生アンバサダー協会</title>
+    <meta name="description" content="${description}">
+    <link href="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', 'Noto Sans JP', sans-serif; 
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .article-header {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .article-meta {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #f97316;
+        }
+        .category-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .tag-release { background-color: #db2777; color: white; }
+        .tag-media { background-color: #4f46e5; color: white; }
+        .tag-event { background-color: #16a34a; color: white; }
+        .tag-update { background-color: #059669; color: white; }
+        .article-body {
+            line-height: 1.8;
+            color: #374151;
+        }
+        .article-body h1, .article-body h2, .article-body h3 {
+            color: #1f2937;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-body h1 { font-size: 1.875rem; font-weight: 900; }
+        .article-body h2 { font-size: 1.5rem; font-weight: 700; }
+        .article-body h3 { font-size: 1.25rem; font-weight: 600; }
+        .article-body p { margin-bottom: 1rem; }
+        .article-body ul, .article-body ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .article-body li { margin-bottom: 0.5rem; }
+        .article-body strong { font-weight: 700; }
+        .article-body em { font-style: italic; }
+        .article-body a { color: #f97316; text-decoration: underline; }
+        .article-body a:hover { color: #ea580c; }
+        .article-footer {
+            background-color: #f9fafb;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .back-link {
+            display: inline-block;
+            background: #f97316;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .back-link:hover {
+            background: #ea580c;
+        }
+    </style>
+</head>
+<body>
+    <div class="article-header">
+        <div class="article-meta">
+            <div style="margin-bottom: 1rem;">
+                <span style="color: #fbbf24; font-size: 0.875rem;">${formattedDate}</span>
+                <span class="category-tag tag-${getCategoryClass(category)}">${category}</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0;">${title}</h1>
+            ${description ? `<p style="color: #fbbf24; margin-top: 1rem; font-size: 1.1rem;">${description}</p>` : ''}
+        </div>
+    </div>
+    
+    <article class="article-content">
+        ${uploadedImage ? `<img src="${uploadedImage}" alt="${title}" style="width: 100%; max-width: 800px; height: auto; border-radius: 0.5rem; margin: 2rem 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">` : ''}
+        
+        <div class="article-body">
+            ${htmlContent}
+        </div>
+        
+        <div class="article-footer">
+            <div style="color: #374151; font-weight: 600;">日本学生アンバサダー協会 公式リリース編集部</div>
+            ${coauthorHTML}
+            <a href="/news.html" class="back-link">← ニュース一覧に戻る</a>
+        </div>
+    </article>
+</body>
+</html>`;
+        }
+
+        // MarkdownからHTMLへの変換
+        function convertMarkdownToHTML(markdown) {
+            let html = markdown;
+            
+            // 見出し1
+            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+            
+            // 見出し2
+            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            
+            // 見出し3
+            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            
+            // 太文字
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // 斜体
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            
+            // リスト
+            html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            // リンク
+            html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
+            
+            // 段落
+            html = html.replace(/^(?!<[h|u|o]|<li>)(.+)$/gm, '<p>$1</p>');
+            
+            // 空の段落を削除
+            html = html.replace(/<p><\/p>/g, '');
+            
+            return html;
+        }
+
+        // カテゴリクラス取得
+        function getCategoryClass(category) {
+            const categoryMap = {
+                'プレスリリース': 'release',
+                'メディア掲載': 'media',
+                'イベント': 'event',
+                'お知らせ': 'update'
+            };
+            return categoryMap[category] || 'update';
+        }
+
+        // クリップボードにコピー
+        function copyToClipboard() {
+            const previewContent = document.getElementById('preview-content');
+            const htmlContent = previewContent.innerHTML;
+            
+            if (htmlContent && !htmlContent.includes('プレビューを生成してください')) {
+                navigator.clipboard.writeText(htmlContent).then(() => {
+                    alert('HTMLがクリップボードにコピーされました！');
+                }).catch(err => {
+                    console.error('コピーに失敗しました:', err);
+                    const textArea = document.createElement('textarea');
+                    textArea.value = htmlContent;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('HTMLがクリップボードにコピーされました！');
+                });
+            } else {
+                alert('まずHTMLを生成してください。');
+            }
+        }
+
+        // フォームリセット
+        function resetForm() {
+            document.getElementById('editor-form').reset();
+            document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('preview-content').innerHTML = '<p style="text-align: center; color: #6b7280;">プレビューを生成してください</p>';
+            uploadedImage = null;
+            document.getElementById('image-upload-text').style.display = 'block';
+            document.getElementById('image-preview').style.display = 'none';
+            
+            // 共著企業をリセット
+            const coauthorList = document.getElementById('coauthor-list');
+            coauthorList.innerHTML = `
+                <div class="coauthor-input">
+                    <input type="text" placeholder="企業名を入力" class="form-input coauthor-input-field">
+                    <button type="button" onclick="removeCoauthor(this)" class="coauthor-remove">削除</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

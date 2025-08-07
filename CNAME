@@ -1,0 +1,5 @@
+# カスタムドメインを使用する場合は、このファイルにドメイン名を記入してください
+# 例: your-domain.com
+# 
+# 現在はGitHub PagesのデフォルトURLを使用しています
+# https://[username].github.io/[repository-name]/
