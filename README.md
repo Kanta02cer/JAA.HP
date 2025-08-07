@@ -1,176 +1,168 @@
-# 日本学生アンバサダー協会 公式ホームページ
+# 日本学生アンバサダー協会 公式ウェブサイト
 
 ## 概要
 
-日本学生アンバサダー協会の公式ホームページです。学生の挑戦に寄り添うパートナーとして、企業と学生をつなぐ架け橋となる一般社団法人の活動を紹介しています。
-
-## 機能
-
-### 主要機能
-- **レスポンシブデザイン**: モバイル・タブレット・デスクトップに対応
-- **SEO最適化**: メタタグ、構造化データ、サイトマップ対応
-- **アクセシビリティ**: WCAG準拠のデザイン
-- **Cookie管理**: GDPR準拠のCookie同意システム
-- **Google Analytics**: アクセス解析機能
-
-### ニュース機能（CMS対応）
-- **動的コンテンツ**: JavaScriptによる動的ニュース表示
-- **カテゴリフィルター**: プレスリリース、メディア掲載、イベント、お知らせ
-- **管理画面**: Netlify CMSによる記事管理
-- **自動デプロイ**: GitHub Actionsによる自動更新
+日本学生アンバサダー協会の公式ウェブサイトです。Jekyllを使用して構築されており、GitHub Pagesでホストされています。
 
 ## 技術スタック
 
-### フロントエンド
-- **HTML5**: セマンティックマークアップ
-- **CSS3**: Tailwind CSS + カスタムスタイル
-- **JavaScript**: ES6+ モジュラー設計
-- **フォント**: Inter, Noto Sans JP, Zen Old Mincho
-
-### CMS・管理
-- **Netlify CMS**: ヘッドレスCMS
+- **Jekyll**: 静的サイトジェネレーター
 - **GitHub Pages**: ホスティング
-- **GitHub Actions**: CI/CD
-
-### 分析・SEO
-- **Google Analytics**: アクセス解析
-- **Google Tag Manager**: タグ管理
-- **構造化データ**: JSON-LD
-
-## ファイル構成
-
-```
-JAA.HP-1/
-├── index.html              # トップページ
-├── about.html              # 協会について
-├── business.html           # 事業内容
-├── ambassador.html         # アンバサダー制度
-├── partnership.html        # パートナーシップ
-├── news.html              # ニュース一覧
-├── news-detail.html       # 動的ニュース詳細
-├── contact.html           # お問い合わせ
-├── privacy.html           # プライバシーポリシー
-├── robots.txt             # 検索エンジン設定
-├── sitemap.xml            # サイトマップ
-├── _config.yml            # Netlify CMS設定
-├── admin/
-│   └── index.html         # CMS管理画面
-├── _news/                 # ニュース記事（Markdown）
-│   └── 2025-10-01-press-release.md
-├── js/
-│   └── news-loader.js     # ニュース管理スクリプト
-├── .github/
-│   └── workflows/
-│       └── deploy.yml     # GitHub Actions設定
-└── README.md              # このファイル
-```
+- **HTML/CSS/JavaScript**: フロントエンド
+- **Netlify CMS**: コンテンツ管理
 
 ## セットアップ
 
-### 1. リポジトリのクローン
+### 前提条件
+
+- Ruby 3.2以上
+- Bundler
+- Git
+
+### ローカル開発環境の構築
+
+1. リポジトリをクローン
 ```bash
-git clone https://github.com/your-username/JAA.HP-1.git
-cd JAA.HP-1
+git clone https://github.com/Kanta02cer/JAA.HP.git
+cd JAA.HP
 ```
 
-### 2. ローカル開発サーバーの起動
+2. 依存関係をインストール
 ```bash
-# Python 3の場合
-python -m http.server 8000
-
-# Node.jsの場合
-npx serve .
-
-# PHPの場合
-php -S localhost:8000
+bundle install
 ```
 
-### 3. CMS管理画面へのアクセス
+3. ローカルサーバーを起動
+```bash
+bundle exec jekyll serve
 ```
-http://localhost:8000/admin/
+
+4. ブラウザで `http://localhost:4000` にアクセス
+
+## GitHub Pagesでの公開
+
+### 1. リポジトリの設定
+
+1. GitHubリポジトリの設定ページに移動
+2. **Pages** セクションを選択
+3. **Source** で **GitHub Actions** を選択
+
+### 2. ブランチの設定
+
+- **Source**: `main` ブランチ
+- **Build and deployment**: GitHub Actions
+
+### 3. カスタムドメイン（オプション）
+
+1. **Custom domain** フィールドにドメインを入力
+2. **Save** をクリック
+3. DNSレコードを設定
+
+## ファイル構造
+
+```
+JAA.HP/
+├── _config.yml          # Jekyll設定
+├── _layouts/            # レイアウトテンプレート
+├── _news/              # ニュース記事
+├── assets/             # CSS、画像、その他アセット
+├── js/                 # JavaScriptファイル
+├── admin/              # Netlify CMS管理画面
+├── .github/            # GitHub Actions設定
+└── Gemfile             # Ruby依存関係
 ```
 
-## ニュース記事の管理
+## コンテンツ管理
 
-### 記事の追加
-1. `/admin/` にアクセス
-2. "ニュース記事" → "新規作成"
-3. 以下の項目を入力：
-   - タイトル
-   - 説明
-   - 日付
-   - カテゴリ
-   - タグ
-   - 画像（オプション）
-   - 内容（Markdown形式）
+### ニュース記事の追加
 
-### 記事の編集
-1. `/admin/` にアクセス
-2. "ニュース記事" → 編集したい記事を選択
-3. 内容を変更して保存
+1. `_news/` フォルダに新しいMarkdownファイルを作成
+2. ファイル名は `YYYY-MM-DD-title.md` の形式
+3. フロントマターに必要なメタデータを追加
 
-### 手動での記事追加
-`_news/` ディレクトリにMarkdownファイルを作成：
-
+例：
 ```markdown
 ---
+layout: news-detail
 title: "記事タイトル"
 description: "記事の説明"
-date: 2025-01-01
+date: 2025-01-20
 category: "プレスリリース"
 tags: ["タグ1", "タグ2"]
-image: "画像URL"
-keywords: "SEOキーワード"
-author: "著者名"
-draft: false
+author: "日本学生アンバサダー協会"
 ---
 
-記事の内容（Markdown形式）
+記事の内容...
 ```
+
+### Netlify CMSでの管理
+
+1. `/admin` にアクセス
+2. GitHubアカウントでログイン
+3. 記事の作成・編集・削除が可能
 
 ## デプロイ
 
 ### 自動デプロイ
-- `main` ブランチにプッシュすると自動的にGitHub Pagesにデプロイされます
-- GitHub Actionsが設定済み
+
+- `main` ブランチにプッシュすると自動的にデプロイされます
+- GitHub Actionsがビルドとデプロイを実行
 
 ### 手動デプロイ
-1. 変更をコミット
+
 ```bash
+# ビルド
+bundle exec jekyll build
+
+# デプロイ（GitHub Pages）
 git add .
-git commit -m "Update content"
+git commit -m "Update site"
 git push origin main
 ```
-
-2. GitHub Pagesの設定でソースブランチを `main` に設定
 
 ## カスタマイズ
 
 ### スタイルの変更
-- `index.html` の `<style>` タグ内を編集
-- Tailwind CSSクラスを追加・変更
 
-### ニュース機能の拡張
-- `js/news-loader.js` を編集
-- 新しいカテゴリやフィールドを追加
+- `assets/css/style.css` を編集
+- レスポンシブデザイン対応済み
 
-### CMS設定の変更
-- `_config.yml` を編集
-- 新しいコレクションやフィールドを追加
+### レイアウトの変更
 
-## ブラウザサポート
+- `_layouts/` フォルダ内のファイルを編集
+- 新しいレイアウトは `_layouts/` に追加
 
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+### 設定の変更
+
+- `_config.yml` でサイト全体の設定を変更
+- 変更後は再ビルドが必要
+
+## トラブルシューティング
+
+### ビルドエラー
+
+1. Rubyのバージョンを確認
+2. 依存関係を再インストール
+```bash
+bundle update
+```
+
+### デプロイエラー
+
+1. GitHub Actionsのログを確認
+2. ファイルパスとファイル名を確認
+3. フロントマターの構文を確認
 
 ## ライセンス
 
-© 2025 Japan Ambassador Association. All Rights Reserved.
+このプロジェクトはMITライセンスの下で公開されています。
 
 ## お問い合わせ
 
-- **公式サイト**: [https://kanta02cer.github.io/JAA.HP/](https://kanta02cer.github.io/JAA.HP/)
-- **Instagram**: [@jaa_ed.official](https://www.instagram.com/jaa_ed.official/)
-- **お問い合わせ**: [contact.html](contact.html)
+- メール: info@jaa.or.jp
+- GitHub: [Kanta02cer/JAA.HP](https://github.com/Kanta02cer/JAA.HP)
+
+## 更新履歴
+
+- 2025-01-20: 初回リリース
+- 2025-01-20: GitHub Pages対応

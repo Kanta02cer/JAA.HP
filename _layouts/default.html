@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+    
+    <!-- SEO -->
+    {% seo %}
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ '/favicon.ico' | relative_url }}">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <nav>
+            <div class="container">
+                <a href="{{ '/' | relative_url }}" class="logo">
+                    <img src="{{ '/images/logo.png' | relative_url }}" alt="{{ site.title }}">
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="{{ '/' | relative_url }}">ホーム</a></li>
+                    <li><a href="{{ '/about.html' | relative_url }}">私たちについて</a></li>
+                    <li><a href="{{ '/business.html' | relative_url }}">事業内容</a></li>
+                    <li><a href="{{ '/news.html' | relative_url }}">ニュース</a></li>
+                    <li><a href="{{ '/contact.html' | relative_url }}">お問い合わせ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main>
+        {{ content }}
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>{{ site.title }}</h3>
+                    <p>{{ site.description }}</p>
+                </div>
+                <div class="footer-section">
+                    <h4>リンク</h4>
+                    <ul>
+                        <li><a href="{{ '/' | relative_url }}">ホーム</a></li>
+                        <li><a href="{{ '/about.html' | relative_url }}">私たちについて</a></li>
+                        <li><a href="{{ '/business.html' | relative_url }}">事業内容</a></li>
+                        <li><a href="{{ '/news.html' | relative_url }}">ニュース</a></li>
+                        <li><a href="{{ '/contact.html' | relative_url }}">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>お問い合わせ</h4>
+                    <p>Email: {{ site.author.email }}</p>
+                    <div class="social-links">
+                        {% if site.social.twitter %}
+                        <a href="https://twitter.com/{{ site.social.twitter | remove: '@' }}" target="_blank">Twitter</a>
+                        {% endif %}
+                        {% if site.social.facebook %}
+                        <a href="https://facebook.com/{{ site.social.facebook }}" target="_blank">Facebook</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ site.time | date: '%Y' }} {{ site.title }}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ '/js/main.js' | relative_url }}"></script>
+    {% if page.layout == 'news-detail' %}
+    <script src="{{ '/js/news-loader.js' | relative_url }}"></script>
+    {% endif %}
+</body>
+</html>

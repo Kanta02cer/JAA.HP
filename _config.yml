@@ -1,0 +1,59 @@
+# GitHub Pages用のJekyll設定
+title: 日本学生アンバサダー協会
+description: 日本学生アンバサダー協会の公式ウェブサイト
+url: "https://kanta02cer.github.io"
+baseurl: "/JAA.HP"
+
+# ビルド設定
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# プラグイン
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# 除外ファイル
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .gitignore
+  - README.md
+  - netlify.toml
+
+# コレクション
+collections:
+  news:
+    output: true
+    permalink: /news/:title/
+
+# デフォルト設定
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "news"
+    values:
+      layout: "news-detail"
+
+# サイト設定
+author:
+  name: 日本学生アンバサダー協会
+  email: info@jaa.or.jp
+
+# ソーシャルメディア
+social:
+  twitter: "@JAA_Official"
+  facebook: "JAA.Official"
+
+# SEO設定
+google_analytics: ""
+google_analytics_anonymize_ip: true
