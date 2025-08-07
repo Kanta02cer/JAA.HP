@@ -258,7 +258,35 @@
                         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md">
                             <div class="flex flex-col items-center space-y-4">
                                 <!-- CBTS Logo Image -->
-                                <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-48 h-24 object-contain mb-4">
+                                <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-48 h-24 object-contain mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <!-- Fallback CBTS Logo (CSS-based) -->
+                                <div class="w-48 h-24 mb-4 flex items-center justify-center" style="display: none;">
+                                    <div class="flex items-center space-x-3">
+                                        <!-- CBTS Cube Logo -->
+                                        <div class="relative w-12 h-12">
+                                            <div class="absolute inset-0 transform rotate-45">
+                                                <!-- Cube faces with CBT letters -->
+                                                <div class="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-600 to-blue-400 transform rotate-45 origin-bottom-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                                <div class="absolute top-0 right-0 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-300 transform rotate-45 origin-bottom-left" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                                <div class="absolute bottom-0 left-0 w-6 h-6 bg-gradient-to-br from-blue-700 to-blue-500 transform rotate-45 origin-top-right" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);">
+                                                    <div class="absolute inset-1 bg-white opacity-20"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- CBTS Text -->
+                                        <div class="text-left">
+                                            <div class="text-lg font-bold text-gray-800" style="font-family: 'Arial Black', sans-serif;">CBTS</div>
+                                            <div class="w-16 h-0.5 bg-blue-500 relative">
+                                                <div class="absolute right-0 top-0 w-2 h-2 bg-blue-500 transform rotate-45"></div>
+                                            </div>
+                                            <div class="text-xs text-blue-500 font-medium">CBT-SOLUTIONS</div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Company Name -->
                                 <div class="text-center">
                                     <h4 class="text-xl font-bold text-gray-800 mb-2">株式会社CBT-Solutions</h4>
@@ -360,7 +388,26 @@
             }
         }
 
+        // 画像読み込みチェック機能
+        function checkImageLoad() {
+            const cbtsImages = document.querySelectorAll('img[src*="CBTS-1.jpg"]');
+            cbtsImages.forEach(img => {
+                img.addEventListener('load', function() {
+                    console.log('CBTS logo loaded successfully');
+                });
+                img.addEventListener('error', function() {
+                    console.log('CBTS logo failed to load, showing fallback');
+                    this.style.display = 'none';
+                    const fallback = this.nextElementSibling;
+                    if (fallback && fallback.classList.contains('w-48')) {
+                        fallback.style.display = 'block';
+                    }
+                });
+            });
+        }
+
         // ページ読み込み時にCookie同意状態をチェック
         document.addEventListener("DOMContentLoaded", () => {
             checkCookieConsent();
+            checkImageLoad();
         });
