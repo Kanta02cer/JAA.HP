@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+# GitHub Pages用のgem
 gem "github-pages", group: :jekyll_plugins
 gem "jekyll-feed", "~> 0.6"
 gem "jekyll-seo-tag", "~> 2.0"
@@ -18,3 +19,7 @@ end
 # パフォーマンス向上のため
 gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 gem "webrick", "~> 1.7"
+
+# GitHub Pages用の追加設定
+gem "jekyll-remote-theme"
+gem "jekyll-include-cache"

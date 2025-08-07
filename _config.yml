@@ -24,6 +24,7 @@ exclude:
   - .gitignore
   - README.md
   - netlify.toml
+  - .github
 
 # コレクション
 collections:
@@ -57,3 +58,12 @@ social:
 # SEO設定
 google_analytics: ""
 google_analytics_anonymize_ip: true
+
+# GitHub Pages用の追加設定
+safe: true
+lsi: false
+future: false
+show_drafts: false
+show_excerpts: true
+gist:
+  noscript: false
