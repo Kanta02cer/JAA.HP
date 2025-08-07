@@ -116,6 +116,7 @@
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/news-loader.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -692,19 +693,7 @@
                     <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
                 </div>
                 <div class="space-y-4" id="news-container">
-                    <!-- News Items (3件表示) -->
-                    <a href="news-detail-1.html" class="block card p-4 flex justify-between items-center news-item">
-                        <span class="font-bold">【プレスリリース】一般社団法人化に関するお知らせ</span>
-                        <span class="text-sm text-gray-500">2025.10.01</span>
-                    </a>
-                    <a href="news-detail-2.html" class="block card p-4 flex justify-between items-center news-item">
-                        <span class="font-bold">【メディア掲載】「人材版令和の虎」に出演しました</span>
-                        <span class="text-sm text-gray-500">2025.07.17</span>
-                    </a>
-                    <a href="news-detail-3.html" class="block card p-4 flex justify-between items-center news-item">
-                        <span class="font-bold">【お知らせ】公式ホームページリニューアルのお知らせ</span>
-                        <span class="text-sm text-gray-500">2025.01.15</span>
-                    </a>
+                    <!-- 最新ニュースが動的にここに挿入されます -->
                 </div>
                 <div class="text-center mt-8">
                     <a href="news.html" class="btn btn-primary">お知らせ一覧へ &rarr;</a>
@@ -1044,23 +1033,19 @@
             }
         }
 
-        // News表示制御
-        const showMoreNewsBtn = document.getElementById('show-more-news');
-        const newsItems = document.querySelectorAll('.news-item');
-        let visibleCount = 3;
-
-        if (showMoreNewsBtn) {
-            showMoreNewsBtn.addEventListener('click', () => {
-                // すべてのNewsアイテムが表示されたらボタンを非表示
-                if (visibleCount >= newsItems.length) {
-                    showMoreNewsBtn.style.display = 'none';
-                }
-            });
+        // 最新ニュースの表示
+        if (window.newsManager) {
+            window.newsManager.renderLatestNews(3);
         }
 
         // Cookie管理を初期化
         document.addEventListener('DOMContentLoaded', () => {
             new CookieManager();
+            
+            // 最新ニュースの表示
+            if (window.newsManager) {
+                window.newsManager.renderLatestNews(3);
+            }
         });
 
 

@@ -124,26 +124,15 @@
         <div class="container mx-auto px-6 py-20">
             <div class="border-b-2 pb-4 mb-8">
                 <div class="flex space-x-4">
-                    <button class="font-bold text-orange-500">すべて</button>
-                    <button class="font-bold text-gray-500 hover:text-orange-500">プレスリリース</button>
-                    <button class="font-bold text-gray-500 hover:text-orange-500">メディア掲載</button>
-                    <button class="font-bold text-gray-500 hover:text-orange-500">イベント</button>
+                    <button class="category-filter-btn font-bold text-orange-500" data-category="all">すべて</button>
+                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="プレスリリース">プレスリリース</button>
+                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="メディア掲載">メディア掲載</button>
+                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="イベント">イベント</button>
+                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="お知らせ">お知らせ</button>
                 </div>
             </div>
-            <div class="space-y-6">
-                <!-- News List -->
-                <a href="news-detail-1.html" class="block news-card border-b py-6">
-                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-10-01">2025.10.01</time><span class="category-tag tag-release">プレスリリース</span></div>
-                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">一般社団法人化に関するお知らせ</h3>
-                </a>
-                <a href="news-detail-2.html" class="block news-card border-b py-6">
-                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-07-17">2025.07.17</time><span class="category-tag tag-media">メディア掲載</span></div>
-                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">「人材版令和の虎」に出演しました</h3>
-                </a>
-                <a href="news-detail-3.html" class="block news-card border-b py-6">
-                    <div class="flex items-center space-x-4 text-sm text-gray-500 mb-2"><time datetime="2025-01-15">2025.01.15</time><span class="category-tag tag-update">お知らせ</span></div>
-                    <h3 class="text-xl font-bold text-gray-800 hover:text-orange-600">公式ホームページリニューアルのお知らせ</h3>
-                </a>
+            <div id="news-container" class="space-y-6">
+                <!-- ニュース記事が動的にここに挿入されます -->
             </div>
         </div>
     </main>
@@ -189,6 +178,7 @@
             </div>
         </div>
     </footer>
+    <script src="js/news-loader.js"></script>
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
