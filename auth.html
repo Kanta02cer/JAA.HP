@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GitHub認証</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .auth-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .auth-button {
+            background: white;
+            color: #f97316;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        .auth-button:hover {
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h1>GitHub認証</h1>
+        <p>CMSにアクセスするにはGitHub認証が必要です。</p>
+        <a href="/admin/" class="auth-button">管理画面に戻る</a>
+    </div>
+</body>
+</html>

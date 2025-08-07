@@ -37,6 +37,15 @@
             text-align: center;
             color: #374151;
         }
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 </head>
@@ -49,13 +58,27 @@
     <div class="login-info">
         <p><strong>GitHub認証が必要です</strong></p>
         <p>ログイン後、記事の作成・編集が可能になります。</p>
+        <p><small>※ GitHub Pagesでは認証に制限があります。ローカル開発環境での使用を推奨します。</small></p>
     </div>
     
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
     <script>
-        // GitHub APIを使用する設定
+        // エラーハンドリング
+        window.addEventListener('error', function(e) {
+            console.error('CMS Error:', e.error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <h3>認証エラー</h3>
+                <p>GitHub Pagesでは認証に制限があります。</p>
+                <p>ローカル開発環境でテストしてください：</p>
+                <code>npx serve . && npx netlify-cms-proxy-server</code>
+            `;
+            document.body.appendChild(errorDiv);
+        });
+
+        // カスタムプレビューテンプレート
         if (typeof CMS !== 'undefined') {
-            // カスタムプレビューテンプレート
             CMS.registerPreviewTemplate('news', function(props) {
                 const entry = props.entry;
                 const title = entry.getIn(['data', 'title']) || '';

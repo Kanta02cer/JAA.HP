@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Kanta02cer/JAA.HP
   branch: main
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
@@ -43,4 +44,5 @@ collections:
           - {label: "ミッション 説明", name: "mission_description", widget: "text"}
           - {label: "表示するニュース数", name: "news_count", widget: "number", default: 3}
 
-local_backend: true
+# GitHub Pages用の設定
+local_backend: false

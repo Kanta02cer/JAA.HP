@@ -1,9 +1,6 @@
 backend:
-  name: github
-  repo: Kanta02cer/JAA.HP
+  name: git-gateway
   branch: main
-  base_url: https://kanta02cer.github.io/JAA.HP
-  auth_endpoint: https://kanta02cer.github.io/JAA.HP/auth
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
@@ -46,5 +43,4 @@ collections:
           - {label: "ミッション 説明", name: "mission_description", widget: "text"}
           - {label: "表示するニュース数", name: "news_count", widget: "number", default: 3}
 
-# GitHub Pages用の設定
-local_backend: false
+local_backend: true
