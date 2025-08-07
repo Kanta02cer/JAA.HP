@@ -1,0 +1,10 @@
+# Admin redirects
+/admin    /admin/    301
+/admin/*  /admin/index.html  200
+
+# GitHub Pages redirects
+/admin    /admin/    301
+/admin/*  /admin/index.html  200
+
+# Fallback for SPA
+/*    /index.html   200

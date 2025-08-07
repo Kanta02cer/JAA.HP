@@ -46,23 +46,3 @@ collections:
 
 # GitHub Pages用の設定
 local_backend: false
-
-# GitHub Pages設定
-baseurl: "/JAA.HP"
-url: "https://kanta02cer.github.io"
-
-# プラグイン設定
-plugins:
-  - jekyll-redirect-from
-
-# 除外設定
-exclude:
-  - README.md
-  - netlify.toml
-  - admin/config.yml
-
-# インクルード設定
-include:
-  - admin/
-  - _news/
-  - images/

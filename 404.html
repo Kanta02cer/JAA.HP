@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ページが見つかりません | 日本学生アンバサダー協会</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: 900;
+            color: #f97316;
+            margin: 0;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 1rem 0;
+        }
+        .error-message {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        .back-btn {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+        .admin-link {
+            background: #24292e;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        .admin-link:hover {
+            background: #1b1f23;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">ページが見つかりません</h2>
+        <p class="error-message">
+            お探しのページは存在しないか、移動された可能性があります。
+        </p>
+        <div>
+            <a href="/" class="back-btn">トップページに戻る</a>
+            <a href="/admin/" class="admin-link">管理画面へ</a>
+        </div>
+    </div>
+    
+    <script>
+        // adminディレクトリへのリダイレクト処理
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('/admin') && !currentPath.endsWith('/admin/')) {
+            window.location.href = '/admin/';
+        }
+    </script>
+</body>
+</html>
