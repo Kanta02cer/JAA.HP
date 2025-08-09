@@ -142,6 +142,7 @@
               : React.createElement('p', { className: 'text-red-500 font-bold' }, '認証リンクの有効期限が切れました。再送してください。'),
             React.createElement('button', { onClick: handleResendEmail, disabled: resendDisabled, className: 'w-full py-3 font-bold text-white bg-orange-500 rounded-md hover:bg-orange-600 transition-colors duration-300 disabled:bg-gray-400' }, resendDisabled ? '60秒後に再送可能' : '確認メールを再送する'),
             message && React.createElement('p', { className: 'text-green-600 text-sm' }, message),
+             React.createElement('p', { className: 'text-sm text-gray-500' }, 'メールが見当たらない場合は、迷惑メールフォルダをご確認ください。迷惑メールに分類されている場合は「迷惑メールではない」としてマークしてください。'),
             React.createElement('p', { className: 'text-sm text-gray-500 pt-4' }, '認証が完了したら、ページをリロードしてください。'),
             React.createElement('button', { onClick: () => signOut(auth), className: 'mt-2 text-sm text-gray-500 hover:underline' }, 'ログアウト')
           )
