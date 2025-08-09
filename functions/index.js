@@ -22,7 +22,14 @@ exports.sendVerificationEmail = functions.https.onCall(async (data, context) => 
     handleCodeInApp: false,
   };
 
-  const link = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+  let link = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+  try {
+    const u = new URL(link);
+    u.searchParams.set('lang', 'ja');
+    link = u.toString();
+  } catch (e) {
+    // ignore URL parse error
+  }
 
   const msg = {
     to: email,
@@ -45,6 +52,13 @@ exports.sendVerificationEmail = functions.https.onCall(async (data, context) => 
       <hr />
       <p style="font-size:12px;color:#6b7280;">このメールは送信専用です。お問い合わせはサイトの「お問い合わせ」からお願いします。</p>
     `,
+    headers: {
+      'List-Unsubscribe': '<mailto:unsubscribe@jaa-ambassadors.jp>, <https://jaa-ambassadors.jp/unsubscribe>'
+    },
+    trackingSettings: {
+      clickTracking: { enable: false, enableText: false },
+      openTracking: { enable: false }
+    },
   };
 
   if (!process.env.SENDGRID_API_KEY) {
