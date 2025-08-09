@@ -116,7 +116,7 @@
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/news-loader.js"></script>
+    <script type="module" src="js/news-loader.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -692,7 +692,7 @@
                     <p class="section-subtitle">NEWS</p>
                     <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
                 </div>
-                <div class="space-y-4" id="news-container">
+                <div class="space-y-4" id="news-list-home">
                     <!-- 最新ニュースが動的にここに挿入されます -->
                 </div>
                 <div class="text-center mt-8">
@@ -1052,10 +1052,7 @@
             }
         }
 
-        // 最新ニュースの表示
-        if (window.newsManager) {
-            window.newsManager.renderLatestNews(3);
-        }
+        // 最新ニュースは Firebase 連携ローダーが自動描画します
 
         // 画像読み込みチェック機能
         function checkImageLoad() {
@@ -1082,10 +1079,7 @@
             // 画像読み込みチェック
             checkImageLoad();
             
-            // 最新ニュースの表示
-            if (window.newsManager) {
-                window.newsManager.renderLatestNews(3);
-            }
+            // 最新ニュースは Firebase 連携ローダーが自動描画します
         });
 
 
