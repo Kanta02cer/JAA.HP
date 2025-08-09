@@ -1,18 +1,32 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 9, 8);
+
+    // news コレクション: 公開読み取り、認証済み（メール認証済み）ユーザーのみ書き込み
+    match /news/{id} {
+      // 誰でも閲覧可能
+      allow read: if true;
+
+      // 作成: 必須フィールドの型と値を検証し、createdAt はサーバー時刻のみ許可
+      allow create: if request.auth != null
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasAll(['title','content','category','status','createdAt'])
+        && request.resource.data.title is string
+        && request.resource.data.content is string
+        && request.resource.data.category in ['お知らせ','プレスリリース','メディア掲載','イベント']
+        && request.resource.data.status in ['draft','published']
+        && request.resource.data.createdAt == request.time;
+
+      // 更新: 許可する変更キーを限定し、updatedAt はサーバー時刻のみ許可
+      allow update: if request.auth != null
+        && request.auth.token.email_verified == true
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['title','content','category','status','updatedAt'])
+        && request.resource.data.updatedAt == request.time;
+
+      // 削除: 認証済みユーザーのみ
+      allow delete: if request.auth != null
+        && request.auth.token.email_verified == true;
     }
   }
 }
