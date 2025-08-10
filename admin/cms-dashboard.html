@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS管理画面 - 日本学生アンバサダー協会</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="../js/toast-notifications.js"></script>
+    <script src="../js/github-sync.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+</head>
+<body class="bg-gray-50 font-['Inter','Noto_Sans_JP',sans-serif]">
+    <!-- ヘッダー -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-900">JAA CMS管理画面</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-info" class="text-sm text-gray-700"></span>
+                    <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700">
+                        ログアウト
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- 統計カード -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-newspaper text-3xl text-blue-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">総記事数</dt>
+                                <dd id="total-articles" class="text-lg font-medium text-gray-900">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-eye text-3xl text-green-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">今月の閲覧数</dt>
+                                <dd id="monthly-views" class="text-lg font-medium text-gray-900">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-clock text-3xl text-yellow-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">下書き記事</dt>
+                                <dd id="draft-articles" class="text-lg font-medium text-gray-900">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar text-3xl text-purple-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">今月の投稿</dt>
+                                <dd id="monthly-posts" class="text-lg font-medium text-gray-900">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- クイックアクション -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">クイックアクション</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="createNewArticle()" class="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>
+                        新規記事作成
+                    </button>
+                    <button onclick="openMediaManager()" class="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-images mr-2"></i>
+                        メディア管理
+                    </button>
+                    <button onclick="githubSync.startSync()" class="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fab fa-github mr-2"></i>
+                        GitHub同期
+                    </button>
+                    <button onclick="githubSync.showConfigModal()" class="flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-cog mr-2"></i>
+                        GitHub設定
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記事一覧 -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900">記事一覧</h3>
+                    <div class="flex space-x-2">
+                        <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+                            <option value="">全カテゴリ</option>
+                            <option value="プレスリリース">プレスリリース</option>
+                            <option value="メディア掲載">メディア掲載</option>
+                            <option value="イベント">イベント</option>
+                            <option value="お知らせ">お知らせ</option>
+                        </select>
+                        <select id="status-filter" class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+                            <option value="">全ステータス</option>
+                            <option value="published">公開済み</option>
+                            <option value="draft">下書き</option>
+                        </select>
+                        <input type="text" id="search-input" placeholder="記事を検索..." class="border border-gray-300 rounded-md px-3 py-2 text-sm w-64">
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">タイトル</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">カテゴリ</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ステータス</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">投稿日</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">閲覧数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articles-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- 記事データがここに動的に挿入されます -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 最近のアクティビティ -->
+        <div class="bg-white shadow rounded-lg mt-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">最近のアクティビティ</h3>
+            </div>
+            <div class="p-6">
+                <div id="recent-activity" class="space-y-4">
+                    <!-- アクティビティがここに動的に挿入されます -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- モーダル -->
+    <div id="article-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-lg font-medium text-gray-900">記事の詳細</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="modal-content">
+                    <!-- モーダルの内容がここに動的に挿入されます -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ローディングオーバーレイ -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl">
+            <div class="flex items-center space-x-3">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span class="text-gray-700">処理中...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUm0XzV9wPIHJSTsKiJ9LXqjlIA81l1Rc",
+            authDomain: "jaa-hp.firebaseapp.com",
+            projectId: "jaa-hp",
+            storageBucket: "jaa-hp.appspot.com",
+            messagingSenderId: "549447513177",
+            appId: "1:549447513177:web:2f2fc2f9bfe0ddd29d6d48",
+            measurementId: "G-JLRH848YQS"
+        };
+
+        // Firebase初期化
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+
+        // グローバル変数
+        let currentUser = null;
+        let articles = [];
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAuth();
+            setupEventListeners();
+        });
+
+        // 認証初期化
+        function initializeAuth() {
+            auth.onAuthStateChanged(function(user) {
+                if (user && user.emailVerified) {
+                    currentUser = user;
+                    document.getElementById('user-info').textContent = `${user.email} (認証済み)`;
+                    loadDashboard();
+                } else {
+                    // ログイン画面にリダイレクト
+                    window.location.href = 'news-console.html';
+                }
+            });
+        }
+
+        // イベントリスナー設定
+        function setupEventListeners() {
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            document.getElementById('category-filter').addEventListener('change', filterArticles);
+            document.getElementById('status-filter').addEventListener('change', filterArticles);
+            document.getElementById('search-input').addEventListener('input', filterArticles);
+        }
+
+        // ログアウト
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'news-console.html';
+            }).catch((error) => {
+                console.error('ログアウトエラー:', error);
+            });
+        }
+
+        // ダッシュボード読み込み
+        async function loadDashboard() {
+            showLoading();
+            try {
+                await Promise.all([
+                    loadStatistics(),
+                    loadArticles(),
+                    loadRecentActivity()
+                ]);
+            } catch (error) {
+                console.error('ダッシュボード読み込みエラー:', error);
+                showError('ダッシュボードの読み込みに失敗しました');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 統計データ読み込み
+        async function loadStatistics() {
+            try {
+                const newsRef = db.collection('news');
+                
+                // 総記事数
+                const totalSnapshot = await newsRef.get();
+                document.getElementById('total-articles').textContent = totalSnapshot.size;
+
+                // 下書き記事数
+                const draftSnapshot = await newsRef.where('status', '==', 'draft').get();
+                document.getElementById('draft-articles').textContent = draftSnapshot.size;
+
+                // 今月の投稿数
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const monthlySnapshot = await newsRef
+                    .where('createdAt', '>=', startOfMonth)
+                    .where('status', '==', 'published')
+                    .get();
+                document.getElementById('monthly-posts').textContent = monthlySnapshot.size;
+
+                // 今月の閲覧数（仮の値）
+                document.getElementById('monthly-views').textContent = '統計準備中';
+
+            } catch (error) {
+                console.error('統計読み込みエラー:', error);
+            }
+        }
+
+        // 記事一覧読み込み
+        async function loadArticles() {
+            try {
+                const newsRef = db.collection('news');
+                const snapshot = await newsRef.orderBy('createdAt', 'desc').get();
+                
+                articles = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                renderArticlesTable();
+            } catch (error) {
+                console.error('記事読み込みエラー:', error);
+                showError('記事の読み込みに失敗しました');
+            }
+        }
+
+        // 記事テーブル描画
+        function renderArticlesTable() {
+            const tbody = document.getElementById('articles-table-body');
+            tbody.innerHTML = '';
+
+            articles.forEach(article => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const date = article.createdAt?.toDate?.() || new Date();
+                const formattedDate = date.toLocaleDateString('ja-JP');
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${article.title || '無題'}</div>
+                        <div class="text-sm text-gray-500">${article.excerpt || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}">
+                            ${article.category || '未分類'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(article.status)}">
+                            ${getStatusText(article.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formattedDate}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${article.viewCount || 0}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editArticle('${article.id}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                            編集
+                        </button>
+                        <button onclick="deleteArticle('${article.id}')" class="text-red-600 hover:text-red-900">
+                            削除
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // カテゴリ色取得
+        function getCategoryColor(category) {
+            const colors = {
+                'プレスリリース': 'bg-red-100 text-red-800',
+                'メディア掲載': 'bg-blue-100 text-blue-800',
+                'イベント': 'bg-green-100 text-green-800',
+                'お知らせ': 'bg-gray-100 text-gray-800'
+            };
+            return colors[category] || 'bg-gray-100 text-gray-800';
+        }
+
+        // ステータス色取得
+        function getStatusColor(status) {
+            const colors = {
+                'published': 'bg-green-100 text-green-800',
+                'draft': 'bg-yellow-100 text-yellow-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // ステータステキスト取得
+        function getStatusText(status) {
+            const texts = {
+                'published': '公開済み',
+                'draft': '下書き'
+            };
+            return texts[status] || '不明';
+        }
+
+        // 記事フィルタリング
+        function filterArticles() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+
+            const filtered = articles.filter(article => {
+                const categoryMatch = !categoryFilter || article.category === categoryFilter;
+                const statusMatch = !statusFilter || article.status === statusFilter;
+                const searchMatch = !searchQuery || 
+                    (article.title && article.title.toLowerCase().includes(searchQuery)) ||
+                    (article.excerpt && article.excerpt.toLowerCase().includes(searchQuery));
+
+                return categoryMatch && statusMatch && searchMatch;
+            });
+
+            renderFilteredArticles(filtered);
+        }
+
+        // フィルタリングされた記事を表示
+        function renderFilteredArticles(filteredArticles) {
+            const tbody = document.getElementById('articles-table-body');
+            tbody.innerHTML = '';
+
+            filteredArticles.forEach(article => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const date = article.createdAt?.toDate?.() || new Date();
+                const formattedDate = date.toLocaleDateString('ja-JP');
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${article.title || '無題'}</div>
+                        <div class="text-sm text-gray-500">${article.excerpt || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(article.category)}">
+                            ${article.category || '未分類'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(article.status)}">
+                            ${getStatusText(article.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formattedDate}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${article.viewCount || 0}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editArticle('${article.id}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                            編集
+                        </button>
+                        <button onclick="deleteArticle('${article.id}')" class="text-red-600 hover:text-red-900">
+                            削除
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // 最近のアクティビティ読み込み
+        async function loadRecentActivity() {
+            try {
+                const newsRef = db.collection('news');
+                const snapshot = await newsRef
+                    .orderBy('updatedAt', 'desc')
+                    .limit(10)
+                    .get();
+
+                const activityContainer = document.getElementById('recent-activity');
+                activityContainer.innerHTML = '';
+
+                snapshot.docs.forEach(doc => {
+                    const article = doc.data();
+                    const date = article.updatedAt?.toDate?.() || article.createdAt?.toDate?.() || new Date();
+                    const formattedDate = date.toLocaleDateString('ja-JP', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'flex items-center space-x-3';
+                    activityItem.innerHTML = `
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-edit text-blue-500"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-gray-900">
+                                <strong>${article.title || '無題'}</strong> が更新されました
+                            </p>
+                            <p class="text-sm text-gray-500">${formattedDate}</p>
+                        </div>
+                    `;
+                    
+                    activityContainer.appendChild(activityItem);
+                });
+
+            } catch (error) {
+                console.error('アクティビティ読み込みエラー:', error);
+            }
+        }
+
+        // 新規記事作成
+        function createNewArticle() {
+            window.location.href = 'article-editor.html';
+        }
+
+        // 記事編集
+        function editArticle(articleId) {
+            window.location.href = `article-editor.html?id=${articleId}`;
+        }
+
+        // 記事削除
+        async function deleteArticle(articleId) {
+            if (!confirm('この記事を削除してもよろしいですか？この操作は取り消せません。')) {
+                return;
+            }
+
+            showLoading();
+            try {
+                await db.collection('news').doc(articleId).delete();
+                showSuccess('記事が削除されました');
+                loadDashboard();
+            } catch (error) {
+                console.error('記事削除エラー:', error);
+                showError('記事の削除に失敗しました');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // メディア管理を開く
+        function openMediaManager() {
+            window.open('media-manager.html', '_blank');
+        }
+
+        // GitHub同期
+        async function syncWithGitHub() {
+            showLoading();
+            try {
+                // GitHub同期を実行
+                await githubSync.startSync();
+            } catch (error) {
+                console.error('GitHub同期エラー:', error);
+                showError('GitHubとの同期に失敗しました');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // モーダル操作
+        function openModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('article-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('article-modal').classList.add('hidden');
+        }
+
+        // ユーティリティ関数
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            toastNotifications.success(message);
+        }
+
+        function showError(message) {
+            toastNotifications.error(message);
+        }
+
+        function showWarning(message) {
+            toastNotifications.warning(message);
+        }
+
+        function showInfo(message) {
+            toastNotifications.info(message);
+        }
+    </script>
+</body>
+</html>
