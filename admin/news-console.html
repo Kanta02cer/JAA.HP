@@ -48,13 +48,33 @@
 
     const SECRET_INVITE_CODE = "JAA-NEWS-ADMIN";
 
-    // --- 改良されたRichTextEditor ---
+    // --- 日本語入力最適化されたRichTextEditor ---
     const RichTextEditor = ({ value, onChange }) => {
       const editorRef = useRef(null);
       const [showPreview, setShowPreview] = useState(false);
       const [previewContent, setPreviewContent] = useState('');
+      const [isComposing, setIsComposing] = useState(false);
+      const [lastValue, setLastValue] = useState('');
 
+      // 日本語入力中の状態管理
+      const handleCompositionStart = () => {
+        setIsComposing(true);
+      };
 
+      const handleCompositionEnd = () => {
+        setIsComposing(false);
+        // IME入力完了後に内容を更新
+        setTimeout(() => {
+          if (editorRef.current) {
+            const currentContent = editorRef.current.innerHTML;
+            if (currentContent !== lastValue) {
+              setLastValue(currentContent);
+              onChange(currentContent);
+              setPreviewContent(currentContent);
+            }
+          }
+        }, 10);
+      };
 
       // 改良されたフォーマット処理
       const handleFormat = (type) => {
@@ -102,12 +122,62 @@
         editorRef.current?.focus();
         
         // 変更を通知
-        onChange(editorRef.current.innerHTML);
+        const updatedContent = editorRef.current.innerHTML;
+        setLastValue(updatedContent);
+        onChange(updatedContent);
+        setPreviewContent(updatedContent);
       };
 
-      const handleInput = () => {
-        onChange(editorRef.current.innerHTML);
-        setPreviewContent(editorRef.current.innerHTML);
+      // 最適化された入力処理
+      const handleInput = (e) => {
+        if (isComposing) return; // IME入力中は処理しない
+        
+        const currentContent = e.target.innerHTML;
+        if (currentContent !== lastValue) {
+          setLastValue(currentContent);
+          onChange(currentContent);
+          setPreviewContent(currentContent);
+        }
+      };
+
+      // キーダウン処理（日本語入力の改善）
+      const handleKeyDown = (e) => {
+        // Enterキーで改行
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          document.execCommand('insertLineBreak', false, null);
+          handleInput(e);
+        }
+        // 日本語入力中の特殊キー処理
+        if (isComposing) {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            // IME入力をキャンセル
+            editorRef.current?.blur();
+            editorRef.current?.focus();
+          }
+        }
+      };
+
+      // フォーカス処理（日本語入力の安定性向上）
+      const handleFocus = () => {
+        // フォーカス時にカーソルを末尾に移動
+        if (editorRef.current) {
+          const range = document.createRange();
+          const selection = window.getSelection();
+          range.selectNodeContents(editorRef.current);
+          range.collapse(false);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      };
+
+      // ペースト処理（日本語入力の改善）
+      const handlePaste = (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text/plain');
+        document.execCommand('insertText', false, text);
+        handleInput(e);
       };
 
       const togglePreview = () => {
@@ -117,15 +187,13 @@
         setShowPreview(!showPreview);
       };
 
-      // 日本語入力の改善
-      const handleCompositionStart = () => {
-        // IME入力開始時の処理
-      };
-
-      const handleCompositionEnd = () => {
-        // IME入力完了時の処理
-        handleInput();
-      };
+      // 初期値の設定
+      useEffect(() => {
+        if (value && value !== lastValue) {
+          setLastValue(value);
+          setPreviewContent(value);
+        }
+      }, [value]);
 
       return (
         React.createElement('div', { className: 'border border-gray-300 rounded-md' },
@@ -171,10 +239,20 @@
                 className: 'w-full h-64 p-3 focus:outline-none overflow-y-auto',
                 contentEditable: true,
                 onInput: handleInput,
+                onKeyDown: handleKeyDown,
+                onFocus: handleFocus,
+                onPaste: handlePaste,
                 onCompositionStart: handleCompositionStart,
                 onCompositionEnd: handleCompositionEnd,
                 dangerouslySetInnerHTML: { __html: value || '' },
-                style: { fontFamily: 'Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif' }
+                style: { 
+                  fontFamily: 'Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  caretColor: '#000000'
+                }
               })
         )
       );
