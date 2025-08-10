@@ -1,99 +1,138 @@
-# GitHub Pages デプロイ手順
+# JAA.HP デプロイメントガイド
 
-## 自動デプロイ（推奨）
+## 🚀 Firebase Functions のデプロイ
 
-このプロジェクトはGitHub Actionsを使用して自動デプロイが設定されています。
+### 1. 依存関係のインストール
+```bash
+cd firebase/functions
+npm install
+```
 
-### 1. リポジトリの設定
+### 2. Firebase Functions のデプロイ
+```bash
+cd firebase
+firebase deploy --only functions
+```
 
-1. GitHubでリポジトリの設定ページに移動
-2. **Settings** → **Pages** を選択
-3. **Source** で **GitHub Actions** を選択
+### 3. デプロイ後の確認
+デプロイが完了すると、以下のような出力が表示されます：
+```
+✔  functions[getNews(asia-northeast1)] Successful create operation. 
+✔  functions[getNewsById(asia-northeast1)] Successful create operation. 
+✔  functions[sendVerificationEmail(asia-northeast1)] Successful create operation. 
+```
 
-### 2. デプロイの実行
+## 🌐 GitHub Pages での動作確認
 
-`main` ブランチにプッシュすると自動的にデプロイされます：
-
+### 1. 変更をGitHubにプッシュ
 ```bash
 git add .
-git commit -m "Update website content"
+git commit -m "Add Firebase Functions API for news loading"
 git push origin main
 ```
 
-## 手動デプロイ
+### 2. 動作確認手順
 
-### 1. リポジトリの設定
+#### ブラウザの開発者ツールを開く
+1. F12キーを押す
+2. コンソールタブを選択
 
-1. GitHubでリポジトリの設定ページに移動
-2. **Settings** → **Pages** を選択
-3. **Source** で **Deploy from a branch** を選択
-4. **Branch** で **main** を選択
-5. **Folder** で **/ (root)** を選択
-6. **Save** をクリック
-
-### 2. デプロイの確認
-
-デプロイが完了すると、以下のURLでアクセスできます：
+#### 期待されるログ出力
 ```
-https://[username].github.io/[repository-name]/
+DOM読み込み完了 - ニュース読み込み開始
+Firebase Functions API接続成功 - ニュース読み込み開始
+ニュース読み込み開始: news-list-home, 最大件数: 5
+取得したニュース件数: X
+ニュース表示完了: news-list-home
 ```
 
-## トラブルシューティング
+#### エラーが発生した場合の対処法
 
-### デプロイが失敗する場合
+**CORSエラーの場合:**
+- Firebase Functionsのデプロイが完了しているか確認
+- ブラウザのキャッシュをクリア
+- シークレットモードでテスト
 
-1. **Actions** タブでワークフローの実行状況を確認
-2. エラーログを確認して問題を特定
-3. 必要に応じてワークフローファイルを修正
+**API接続エラーの場合:**
+- ネットワークタブでAPIリクエストの状況を確認
+- Firebase Functionsのログを確認
 
-### ページが表示されない場合
+## 🔧 トラブルシューティング
 
-1. **Settings** → **Pages** でデプロイ状況を確認
-2. ブランチとフォルダの設定が正しいか確認
-3. ファイル名が正しいか確認（`index.html` が存在するか）
+### Firebase Functions がデプロイされない場合
+```bash
+# Firebase CLIのログイン確認
+firebase login
 
-### カスタムドメインの設定
+# プロジェクトの確認
+firebase projects:list
 
-1. **Settings** → **Pages** → **Custom domain** でドメインを設定
-2. `CNAME` ファイルにドメイン名を記入
-3. DNS設定でGitHub PagesのIPアドレスを設定
+# プロジェクトの選択
+firebase use jaa-hp
 
-## ファイル構成
-
-```
-JAA.HP-1/
-├── .github/workflows/     # GitHub Actions設定
-│   ├── deploy.yml         # デプロイワークフロー
-│   └── static.yml         # 静的サイトデプロイ
-├── index.html             # トップページ
-├── about.html             # 協会について
-├── business.html          # 事業内容
-├── ambassador.html        # アンバサダー制度
-├── partnership.html       # パートナーシップ
-├── news.html             # ニュース一覧
-├── contact.html          # お問い合わせ
-├── privacy.html          # プライバシーポリシー
-├── robots.txt            # 検索エンジン設定
-├── sitemap.xml           # サイトマップ
-├── _redirects            # リダイレクト設定
-├── CNAME                 # カスタムドメイン設定
-├── package.json          # プロジェクト設定
-├── .gitignore            # Git除外設定
-└── DEPLOYMENT.md         # このファイル
+# 再デプロイ
+firebase deploy --only functions
 ```
 
-## 注意事項
+### APIエンドポイントの確認
+デプロイ後、以下のURLでAPIが利用可能になります：
+- ニュース一覧: `https://asia-northeast1-jaa-hp.cloudfunctions.net/getNews`
+- 特定記事: `https://asia-northeast1-jaa-hp.cloudfunctions.net/getNewsById/{id}`
 
-- 静的サイトのため、サーバーサイドの処理はできません
-- JavaScriptによる動的コンテンツは正常に動作します
-- 外部APIとの連携は可能です
-- ファイルサイズは制限があります（100MB以下推奨）
+### テスト用のcURLコマンド
+```bash
+# 最新5件のニュースを取得
+curl "https://asia-northeast1-jaa-hp.cloudfunctions.net/getNews?limit=5"
 
-## サポート
+# 全件取得
+curl "https://asia-northeast1-jaa-hp.cloudfunctions.net/getNews"
+```
 
-デプロイに関する問題が発生した場合は、以下を確認してください：
+## 📊 パフォーマンス最適化
 
-1. GitHub Actionsのログ
-2. ブラウザの開発者ツール
-3. ネットワークタブでのエラー
-4. コンソールでのJavaScriptエラー
+### 1. キャッシュ設定
+Firebase Functionsでレスポンスヘッダーを設定してキャッシュを有効化：
+```javascript
+res.set('Cache-Control', 'public, max-age=300'); // 5分間キャッシュ
+```
+
+### 2. エラーハンドリング
+- ネットワークエラー時の再試行機能
+- フォールバック表示の実装
+- ユーザーフレンドリーなエラーメッセージ
+
+## 🔒 セキュリティ設定
+
+### 1. CORS設定
+現在は全てのオリジンからのアクセスを許可していますが、本番環境では制限を検討：
+```javascript
+const cors = require('cors')({ 
+  origin: ['https://kanta02cer.github.io', 'https://localhost:3000'] 
+});
+```
+
+### 2. レート制限
+必要に応じて、API呼び出し回数の制限を実装：
+```javascript
+// 1分間に最大100回のリクエスト
+const rateLimit = require('express-rate-limit');
+```
+
+## 📝 今後の改善点
+
+1. **キャッシュ機能の強化**
+   - Redis等を使用したサーバーサイドキャッシュ
+   - ブラウザキャッシュの最適化
+
+2. **リアルタイム更新**
+   - WebSocketを使用したリアルタイムニュース配信
+   - プッシュ通知機能
+
+3. **SEO最適化**
+   - サーバーサイドレンダリング
+   - メタタグの動的生成
+
+4. **監視・ログ**
+   - Firebase Functionsのパフォーマンス監視
+   - エラー率の追跡
+   - ユーザー行動の分析

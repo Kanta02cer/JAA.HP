@@ -1,11 +1,94 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
+const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 
 // 環境変数に SENDGRID_API_KEY を設定してください
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
+
+// ニュース取得用のHTTP API（GitHub Pages対応）
+exports.getNews = functions.region('asia-northeast1').https.onRequest((req, res) => {
+  return cors(req, res, async () => {
+    try {
+      const { limit = 0, status = 'published' } = req.query;
+      
+      let query = admin.firestore().collection('news')
+        .where('status', '==', status)
+        .orderBy('createdAt', 'desc');
+      
+      if (limit > 0) {
+        query = query.limit(parseInt(limit));
+      }
+      
+      const snapshot = await query.get();
+      const articles = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate?.()?.toISOString(),
+        updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString()
+      }));
+      
+      res.status(200).json({
+        success: true,
+        data: articles,
+        count: articles.length
+      });
+    } catch (error) {
+      console.error('ニュース取得エラー:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        code: error.code
+      });
+    }
+  });
+});
+
+// 特定のニュース記事取得API
+exports.getNewsById = functions.region('asia-northeast1').https.onRequest((req, res) => {
+  return cors(req, res, async () => {
+    try {
+      const { id } = req.params;
+      
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          error: '記事IDが必要です'
+        });
+      }
+      
+      const doc = await admin.firestore().collection('news').doc(id).get();
+      
+      if (!doc.exists) {
+        return res.status(404).json({
+          success: false,
+          error: '記事が見つかりません'
+        });
+      }
+      
+      const article = {
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate?.()?.toISOString(),
+        updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString()
+      };
+      
+      res.status(200).json({
+        success: true,
+        data: article
+      });
+    } catch (error) {
+      console.error('記事取得エラー:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        code: error.code
+      });
+    }
+  });
+});
 
 // リージョンをサイト利用に近い asia-northeast1 に合わせる
 exports.sendVerificationEmail = functions.region('asia-northeast1').https.onCall(async (data, context) => {
