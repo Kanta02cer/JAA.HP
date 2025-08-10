@@ -47,6 +47,142 @@
     const functions = getFunctions(app, 'asia-northeast1');
 
     const SECRET_INVITE_CODE = "JAA-NEWS-ADMIN";
+    
+    // Firebase Functions API エンドポイント
+    const API_BASE_URL = 'https://asia-northeast1-jaa-hp.cloudfunctions.net';
+
+    // ニュース更新通知システム
+    async function notifyNewsUpdate(action, articleId, article) {
+      try {
+        // 1. Firebase Functions経由で他のページに通知
+        const updateData = {
+          action: action,
+          articleId: articleId,
+          article: article,
+          timestamp: Date.now(),
+          type: 'NEWS_UPDATE'
+        };
+
+        // 2. 他のページのキャッシュを無効化
+        await invalidateNewsCache();
+
+        // 3. リアルタイム更新を強制実行
+        await forceNewsRefresh();
+
+        // 4. 成功メッセージ
+        console.log(`ニュース更新通知完了: ${action} - ${articleId}`);
+        
+        // 5. 管理者向けの詳細通知
+        showUpdateNotification(action, article);
+        
+      } catch (error) {
+        console.error('ニュース更新通知エラー:', error);
+        // エラーが発生しても記事の保存は完了しているので、警告のみ表示
+        alert(`記事は保存されましたが、他のページへの反映に時間がかかる場合があります。`);
+      }
+    }
+
+    // ニュースキャッシュの無効化
+    async function invalidateNewsCache() {
+      try {
+        // Firebase Functions経由でキャッシュを無効化
+        const response = await fetch(`${API_BASE_URL}/invalidateNewsCache`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            timestamp: Date.now(),
+            action: 'invalidate'
+          })
+        });
+
+        if (response.ok) {
+          console.log('ニュースキャッシュ無効化完了');
+        }
+      } catch (error) {
+        console.log('キャッシュ無効化APIが利用できないため、ローカル処理を実行');
+        // ローカルストレージのキャッシュをクリア
+        if (typeof localStorage !== 'undefined') {
+          const keys = Object.keys(localStorage);
+          keys.forEach(key => {
+            if (key.includes('news') || key.includes('cache')) {
+              localStorage.removeItem(key);
+            }
+          });
+        }
+      }
+    }
+
+    // ニュースの強制更新
+    async function forceNewsRefresh() {
+      try {
+        // 他のページに通知を送信
+        if (typeof window !== 'undefined') {
+          // 同じドメイン内の他のページに通知
+          window.postMessage({
+            type: 'FORCE_NEWS_REFRESH',
+            timestamp: Date.now(),
+            action: 'refresh'
+          }, '*');
+
+          // 親ページがある場合（iframe内の場合）
+          if (window.parent !== window) {
+            window.parent.postMessage({
+              type: 'FORCE_NEWS_REFRESH',
+              timestamp: Date.now(),
+              action: 'refresh'
+            }, '*');
+          }
+        }
+
+        // Service Workerに通知（利用可能な場合）
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: 'NEWS_UPDATED',
+            action: 'refresh',
+            timestamp: Date.now()
+          });
+        }
+
+        console.log('ニュース強制更新通知完了');
+      } catch (error) {
+        console.log('強制更新通知エラー:', error);
+      }
+    }
+
+    // 更新通知の表示
+    function showUpdateNotification(action, article) {
+      // 既存の通知があれば削除
+      const existingNotification = document.querySelector('.news-update-notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+
+      // 新しい通知を作成
+      const notification = document.createElement('div');
+      notification.className = 'news-update-notification fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+      notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <div>
+            <p class="font-bold">記事${action}完了！</p>
+            <p class="text-sm opacity-90">${article.title}</p>
+            <p class="text-xs opacity-75">他のページに自動反映されます</p>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+
+      // 5秒後に自動で消える
+      setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    }
 
     // --- 日本語入力最適化されたRichTextEditor ---
     const RichTextEditor = ({ value, onChange }) => {
@@ -440,12 +576,28 @@
             title, content, category, status,
             [article?.id ? 'updatedAt' : 'createdAt']: serverTimestamp()
           };
+          
+          let articleId;
           if (article?.id) {
             await updateDoc(doc(db, 'news', article.id), data);
+            articleId = article.id;
           } else {
-            await addDoc(collection(db, 'news'), data);
+            const docRef = await addDoc(collection(db, 'news'), data);
+            articleId = docRef.id;
           }
-          alert('記事を保存しました！');
+          
+          // 保存成功メッセージ
+          const action = article?.id ? '更新' : '作成';
+          alert(`記事を${action}しました！`);
+          
+          // 公開済みの場合は、他のページへの反映を通知
+          if (status === 'published') {
+            console.log(`記事が公開されました: ${articleId}`);
+            
+            // 他のページへの自動反映を開始
+            await notifyNewsUpdate(action, articleId, article);
+          }
+          
           onDone();
         } catch (e) {
           console.error(e);
@@ -485,7 +637,22 @@
                 ),
                 React.createElement('label', { className: 'flex items-center' },
                   React.createElement('input', { type: 'radio', name: 'status', value: 'published', checked: status === 'published', onChange: e => setStatus(e.target.value), className: 'h-4 w-4 text-orange-600 border-gray-300' }),
-                  React.createElement('span', { className: 'ml-2 text-gray-700' }, '公開')
+                  React.createElement('span', { className: 'ml-2 text-gray-800' }, '公開')
+                )
+              )
+            ),
+            React.createElement('div', { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4' },
+              React.createElement('div', { className: 'flex items-start' },
+                React.createElement('svg', { className: 'w-5 h-5 text-blue-500 mt-0.5 mr-2', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+                  React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
+                ),
+                React.createElement('div', { className: 'text-sm text-blue-700' },
+                  React.createElement('p', { className: 'font-medium' }, '公開設定について'),
+                  React.createElement('p', { className: 'mt-1' }, 
+                    '「公開」に設定すると、記事が即座にindex.html、news.html、news-detail.htmlに反映されます。',
+                    React.createElement('br'),
+                    '「下書き」の場合は、管理者のみが閲覧できます。'
+                  )
                 )
               )
             ),

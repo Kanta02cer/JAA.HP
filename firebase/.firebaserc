@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "jaa-hp"
-  }
+    "default": "jaa-hp",
+    "production": "jaa-hp"
+  },
+  "targets": {},
+  "etags": {}
 }

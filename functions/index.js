@@ -90,6 +90,159 @@ exports.getNewsById = functions.region('asia-northeast1').https.onRequest((req, 
   });
 });
 
+// 記事の作成・更新・削除をトリガーするFirestoreトリガー
+exports.onNewsDocumentChange = functions.region('asia-northeast1').firestore
+  .document('news/{articleId}')
+  .onWrite(async (change, context) => {
+    const articleId = context.params.articleId;
+    const beforeData = change.before.exists ? change.before.data() : null;
+    const afterData = change.after.exists ? change.after.data() : null;
+    
+    try {
+      if (!change.before.exists && change.after.exists) {
+        // 新規作成
+        console.log(`記事が作成されました: ${articleId}`);
+        await updateNewsCache('create', articleId, afterData);
+      } else if (change.before.exists && change.after.exists) {
+        // 更新
+        console.log(`記事が更新されました: ${articleId}`);
+        await updateNewsCache('update', articleId, afterData);
+      } else if (change.before.exists && !change.after.exists) {
+        // 削除
+        console.log(`記事が削除されました: ${articleId}`);
+        await updateNewsCache('delete', articleId, beforeData);
+      }
+    } catch (error) {
+      console.error(`記事変更処理エラー (${articleId}):`, error);
+    }
+  });
+
+// ニュースキャッシュの更新（GitHub Pagesとの同期用）
+async function updateNewsCache(action, articleId, articleData) {
+  try {
+    // キャッシュコレクションを更新
+    const cacheRef = admin.firestore().collection('newsCache');
+    
+    if (action === 'create' || action === 'update') {
+      // 公開済みの記事のみキャッシュに保存
+      if (articleData.status === 'published') {
+        await cacheRef.doc(articleId).set({
+          ...articleData,
+          lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+          cacheVersion: Date.now()
+        });
+      } else {
+        // 下書きの場合はキャッシュから削除
+        await cacheRef.doc(articleId).delete();
+      }
+    } else if (action === 'delete') {
+      // キャッシュから削除
+      await cacheRef.doc(articleId).delete();
+    }
+    
+    // キャッシュの有効期限を設定（24時間）
+    await cacheRef.doc('metadata').set({
+      lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      cacheVersion: Date.now(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    });
+    
+    console.log(`ニュースキャッシュ更新完了: ${action} - ${articleId}`);
+  } catch (error) {
+    console.error('ニュースキャッシュ更新エラー:', error);
+  }
+}
+
+// キャッシュされたニュース取得API（高速化用）
+exports.getCachedNews = functions.region('asia-northeast1').https.onRequest((req, res) => {
+  return cors(req, res, async () => {
+    try {
+      const { limit = 0, status = 'published' } = req.query;
+      
+      // キャッシュの有効性をチェック
+      const metadataDoc = await admin.firestore().collection('newsCache').doc('metadata').get();
+      if (!metadataDoc.exists) {
+        // キャッシュが存在しない場合は通常のAPIを使用
+        return res.redirect(`${req.protocol}://${req.get('host')}/getNews?${req.url.split('?')[1] || ''}`);
+      }
+      
+      const metadata = metadataDoc.data();
+      const now = new Date();
+      const expiresAt = metadata.expiresAt?.toDate?.() || new Date(0);
+      
+      if (now > expiresAt) {
+        // キャッシュが期限切れの場合は通常のAPIを使用
+        return res.redirect(`${req.protocol}://${req.get('host')}/getNews?${req.url.split('?')[1] || ''}`);
+      }
+      
+      // キャッシュから記事を取得
+      let query = admin.firestore().collection('newsCache')
+        .where('status', '==', status)
+        .orderBy('createdAt', 'desc');
+      
+      if (limit > 0) {
+        query = query.limit(parseInt(limit));
+      }
+      
+      const snapshot = await query.get();
+      const articles = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate?.()?.toISOString(),
+        updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString()
+      }));
+      
+      res.status(200).json({
+        success: true,
+        data: articles,
+        count: articles.length,
+        fromCache: true,
+        cacheVersion: metadata.cacheVersion
+      });
+    } catch (error) {
+      console.error('キャッシュニュース取得エラー:', error);
+      // エラーの場合は通常のAPIにフォールバック
+      res.redirect(`${req.protocol}://${req.get('host')}/getNews?${req.url.split('?')[1] || ''}`);
+    }
+  });
+});
+
+// ニュース統計情報取得API
+exports.getNewsStats = functions.region('asia-northeast1').https.onRequest((req, res) => {
+  return cors(req, res, async () => {
+    try {
+      const stats = await admin.firestore().collection('news').get();
+      const totalArticles = stats.size;
+      
+      const publishedStats = await admin.firestore().collection('news')
+        .where('status', '==', 'published')
+        .get();
+      const publishedArticles = publishedStats.size;
+      
+      const draftStats = await admin.firestore().collection('news')
+        .where('status', '==', 'draft')
+        .get();
+      const draftArticles = draftStats.size;
+      
+      res.status(200).json({
+        success: true,
+        data: {
+          total: totalArticles,
+          published: publishedArticles,
+          draft: draftArticles,
+          lastUpdated: new Date().toISOString()
+        }
+      });
+    } catch (error) {
+      console.error('ニュース統計取得エラー:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+});
+
 // リージョンをサイト利用に近い asia-northeast1 に合わせる
 exports.sendVerificationEmail = functions.region('asia-northeast1').https.onCall(async (data, context) => {
   const { email, displayName } = data || {};
