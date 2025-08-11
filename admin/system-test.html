@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統合システムテスト - JAA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/unified-article-manager.js"></script>
+    <script src="../js/unified-news-loader.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- ヘッダー -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-orange-600 hover:text-orange-700">
+                        ← サイトに戻る
+                    </a>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">統合システムテスト</h1>
+                <div class="flex items-center space-x-4">
+                    <button id="testCreateBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        テスト記事作成
+                    </button>
+                    <button id="refreshBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        更新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- システム状態 -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">システム状態</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-blue-900">統合記事管理システム</h3>
+                    <p id="articleManagerStatus" class="text-blue-700">初期化中...</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-green-900">統合ニュースローダー</h3>
+                    <p id="newsLoaderStatus" class="text-green-700">初期化中...</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-purple-900">記事数</h3>
+                    <p id="articleCount" class="text-purple-700">0件</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- テスト記事一覧 -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">テスト記事一覧</h2>
+            <div id="test-article-list" class="space-y-4">
+                <p class="text-center text-gray-500">記事を読み込んでいます...</p>
+            </div>
+        </div>
+
+        <!-- ログ -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">システムログ</h2>
+            <div id="systemLog" class="bg-gray-100 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
+                <p>システムログがここに表示されます...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // システムログの表示
+        function log(message) {
+            const logElement = document.getElementById('systemLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        // システム状態の更新
+        function updateSystemStatus() {
+            // 統合記事管理システムの状態
+            const articleManagerStatus = document.getElementById('articleManagerStatus');
+            if (window.unifiedArticleManager) {
+                articleManagerStatus.textContent = '動作中';
+                articleManagerStatus.className = 'text-green-700';
+            } else {
+                articleManagerStatus.textContent = '未接続';
+                articleManagerStatus.className = 'text-red-700';
+            }
+
+            // 統合ニュースローダーの状態
+            const newsLoaderStatus = document.getElementById('newsLoaderStatus');
+            if (window.unifiedNewsLoader) {
+                newsLoaderStatus.textContent = '動作中';
+                newsLoaderStatus.className = 'text-green-700';
+            } else {
+                newsLoaderStatus.textContent = '未接続';
+                newsLoaderStatus.className = 'text-red-700';
+            }
+
+            // 記事数の表示
+            const articleCount = document.getElementById('articleCount');
+            if (window.unifiedArticleManager) {
+                const count = window.unifiedArticleManager.articles.length;
+                articleCount.textContent = `${count}件`;
+            } else {
+                articleCount.textContent = '0件';
+            }
+        }
+
+        // テスト記事の作成
+        async function createTestArticle() {
+            try {
+                if (!window.unifiedArticleManager) {
+                    log('統合記事管理システムが利用できません');
+                    return;
+                }
+
+                const testArticle = {
+                    title: `テスト記事 ${Date.now()}`,
+                    content: `これはテスト用の記事です。作成時刻: ${new Date().toLocaleString()}`,
+                    category: 'テスト',
+                    status: 'published'
+                };
+
+                const savedArticle = await window.unifiedArticleManager.saveArticle(testArticle, 'test');
+                log(`テスト記事作成完了: ${savedArticle.id}`);
+                
+                // 記事一覧を更新
+                updateArticleList();
+                
+            } catch (error) {
+                log(`テスト記事作成エラー: ${error.message}`);
+            }
+        }
+
+        // 記事一覧の更新
+        function updateArticleList() {
+            const container = document.getElementById('test-article-list');
+            
+            if (!window.unifiedArticleManager) {
+                container.innerHTML = '<p class="text-center text-red-500">統合記事管理システムが利用できません</p>';
+                return;
+            }
+
+            const articles = window.unifiedArticleManager.getArticles({ status: 'published' });
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500">記事がありません</p>';
+                return;
+            }
+
+            const html = articles.map(article => `
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-medium text-gray-900">${article.title}</h3>
+                            <p class="text-sm text-gray-600">${article.category} • ${new Date(article.createdAt).toLocaleString()}</p>
+                            <p class="text-sm text-gray-700 mt-2">${article.content.substring(0, 100)}...</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${article.source}</span>
+                            <button onclick="deleteTestArticle('${article.id}')" class="text-red-600 hover:text-red-800 text-sm">
+                                削除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // テスト記事の削除
+        async function deleteTestArticle(articleId) {
+            try {
+                if (!window.unifiedArticleManager) {
+                    log('統合記事管理システムが利用できません');
+                    return;
+                }
+
+                await window.unifiedArticleManager.deleteArticle(articleId);
+                log(`テスト記事削除完了: ${articleId}`);
+                
+                // 記事一覧を更新
+                updateArticleList();
+                
+            } catch (error) {
+                log(`テスト記事削除エラー: ${error.message}`);
+            }
+        }
+
+        // イベントリスナーの設定
+        document.addEventListener('DOMContentLoaded', () => {
+            log('ページ読み込み完了');
+            
+            // ボタンイベント
+            document.getElementById('testCreateBtn').addEventListener('click', createTestArticle);
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                updateSystemStatus();
+                updateArticleList();
+                log('手動更新実行');
+            });
+
+            // 初期状態の更新
+            setTimeout(() => {
+                updateSystemStatus();
+                updateArticleList();
+                log('初期状態更新完了');
+            }, 2000);
+
+            // 定期的な状態更新
+            setInterval(() => {
+                updateSystemStatus();
+            }, 5000);
+        });
+
+        // 統合記事管理システムの更新通知を受信
+        if (window.unifiedArticleManager) {
+            window.unifiedArticleManager.subscribe('test-page', (action, articleId, articleData) => {
+                log(`記事更新通知: ${action} - ${articleId}`);
+                updateArticleList();
+            });
+        }
+    </script>
+</body>
+</html>

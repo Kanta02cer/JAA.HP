@@ -179,8 +179,8 @@
         </div>
     </footer>
     <script src="js/news-loader.js"></script>
-    <script src="js/markdown-news-loader.js"></script>
-    <script src="js/news-auto-updater.js"></script>
+    <script src="js/unified-article-manager.js"></script>
+    <script src="js/unified-news-loader.js"></script>
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -211,6 +211,48 @@
         // ページ読み込み時にCookie同意状態をチェック
         document.addEventListener('DOMContentLoaded', () => {
             checkCookieConsent();
+            
+            // 統合ニュースローダーの初期化
+            if (window.unifiedNewsLoader) {
+                window.unifiedNewsLoader.loadNews('news-list-all', 0);
+                
+                // ページ間通信の監視を開始
+                window.addEventListener('jaa-news-update', (event) => {
+                    console.log('ニュース更新イベントを受信:', event.detail);
+                    // ニュースを再読み込み
+                    window.unifiedNewsLoader.loadNews('news-list-all', 0);
+                });
+                
+                // postMessageの監視
+                window.addEventListener('message', (event) => {
+                    if (event.data.type === 'FORCE_NEWS_REFRESH') {
+                        console.log('ニュース強制更新を受信');
+                        window.unifiedNewsLoader.forceRefresh();
+                    }
+                });
+            } else {
+                // スクリプトがまだ読み込まれていない場合は少し待ってから実行
+                setTimeout(() => {
+                    if (window.unifiedNewsLoader) {
+                        window.unifiedNewsLoader.loadNews('news-list-all', 0);
+                        
+                        // ページ間通信の監視を開始
+                        window.addEventListener('jaa-news-update', (event) => {
+                            console.log('ニュース更新イベントを受信:', event.detail);
+                            // ニュースを再読み込み
+                            window.unifiedNewsLoader.loadNews('news-list-all', 0);
+                        });
+                        
+                        // postMessageの監視
+                        window.addEventListener('message', (event) => {
+                            if (event.data.type === 'FORCE_NEWS_REFRESH') {
+                                console.log('ニュース強制更新を受信');
+                                window.unifiedNewsLoader.forceRefresh();
+                            }
+                        });
+                    }
+                }, 100);
+            }
         });
     </script>
 </body>

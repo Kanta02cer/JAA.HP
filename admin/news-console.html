@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ニュース管理コンソール</title>
   <link rel="icon" href="https://i.ibb.co/6R5nX1YH/Rogo.jpg" />
-  <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/unified-article-manager.js"></script>
 </head>
 <body>
   <div id="root"></div>
@@ -27,7 +28,6 @@
       getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
       serverTimestamp, query, orderBy
     } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-functions.js";
 
     // Firebase設定
     const firebaseConfig = {
@@ -44,31 +44,87 @@
     getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const functions = getFunctions(app, 'asia-northeast1');
-
     const SECRET_INVITE_CODE = "JAA-NEWS-ADMIN";
-    
-    // Firebase Functions API エンドポイント
-    const API_BASE_URL = 'https://asia-northeast1-jaa-hp.cloudfunctions.net';
+
+    // 統合記事管理システムとの同期
+    async function syncToUnifiedArticleManager(articleId, data, action) {
+      try {
+        // 記事データの構造を統一
+        const articleData = {
+          id: articleId,
+          title: data.title || '無題の記事',
+          content: data.content || '',
+          category: data.category || 'お知らせ',
+          status: data.status || 'draft',
+          createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+          updatedAt: data.updatedAt ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
+          source: 'news-console',
+          lastSynced: Date.now()
+        };
+
+        // 統合記事管理システムが利用可能かチェック
+        if (typeof window.unifiedArticleManager !== 'undefined') {
+          await window.unifiedArticleManager.saveArticle(articleData, 'news-console');
+          console.log(`統合記事管理システムに同期完了: ${action} - ${articleId}`);
+        } else {
+          console.log('統合記事管理システムが利用できません。ローカルストレージに保存します。');
+        }
+
+        // 常にローカルストレージにも保存（バックアップ）
+        await saveToLocalStorage(articleId, articleData, action);
+        
+      } catch (error) {
+        console.error('統合記事管理システム同期エラー:', error);
+        // エラーの場合はローカルストレージに保存
+        await saveToLocalStorage(articleId, data, action);
+      }
+    }
+
+    // ローカルストレージへの保存（フォールバック）
+    async function saveToLocalStorage(articleId, data, action) {
+      try {
+        const storageKey = 'jaa-unified-articles';
+        const existingArticles = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // 既存記事の更新または新規追加
+        const existingIndex = existingArticles.findIndex(a => a.id === articleId);
+        if (existingIndex >= 0) {
+          existingArticles[existingIndex] = { ...existingArticles[existingIndex], ...data };
+        } else {
+          existingArticles.unshift(data);
+        }
+        
+        // 記事を日付順でソート
+        existingArticles.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+          return dateB - dateA;
+        });
+        
+        // ローカルストレージに保存
+        localStorage.setItem(storageKey, JSON.stringify(existingArticles));
+        
+        console.log(`ローカルストレージに保存完了: ${action} - ${articleId}`);
+        
+      } catch (error) {
+        console.error('ローカルストレージ保存エラー:', error);
+      }
+    }
+
+
 
     // ニュース更新通知システム
     async function notifyNewsUpdate(action, articleId, article) {
       try {
-        // 1. Firebase Functions経由で他のページに通知
-        const updateData = {
-          action: action,
-          articleId: articleId,
-          article: article,
-          timestamp: Date.now(),
-          type: 'NEWS_UPDATE'
-        };
-
+        // 1. ページ間通信での通知
+        await broadcastToOtherPages(action, articleId, article);
+        
         // 2. 他のページのキャッシュを無効化
         await invalidateNewsCache();
-
+        
         // 3. リアルタイム更新を強制実行
         await forceNewsRefresh();
-
+        
         // 4. 成功メッセージ
         console.log(`ニュース更新通知完了: ${action} - ${articleId}`);
         
@@ -81,27 +137,177 @@
         alert(`記事は保存されましたが、他のページへの反映に時間がかかる場合があります。`);
       }
     }
+    
+    // ページ間通信での通知
+    async function broadcastToOtherPages(action, articleId, article) {
+      try {
+        // BroadcastChannel APIを使用
+        if (typeof BroadcastChannel !== 'undefined') {
+          const channel = new BroadcastChannel('jaa-news-update');
+          channel.postMessage({
+            type: 'NEWS_UPDATE',
+            action: action,
+            articleId: articleId,
+            article: article,
+            timestamp: Date.now(),
+            source: window.location.href
+          });
+          channel.close();
+        }
+        
+        // localStorageイベントを使用（フォールバック）
+        const eventData = {
+          action: action,
+          articleId: articleId,
+          article: article,
+          timestamp: Date.now(),
+          type: 'NEWS_UPDATE'
+        };
+        
+        // カスタムイベントを発火
+        window.dispatchEvent(new CustomEvent('jaa-news-update', { detail: eventData }));
+        
+        // localStorageの変更をトリガー
+        const triggerKey = `jaa-news-update-${Date.now()}`;
+        localStorage.setItem(triggerKey, JSON.stringify(eventData));
+        localStorage.removeItem(triggerKey);
+        
+        console.log('ページ間通信通知完了');
+        
+      } catch (error) {
+        console.error('ページ間通信エラー:', error);
+      }
+    }
+    
+    // サンプル記事の作成
+    async function createSampleArticles() {
+      if (!confirm('サンプル記事を作成しますか？これにより、システムの動作確認ができます。')) {
+        return;
+      }
+      
+      const sampleArticles = [
+        {
+          title: '日本学生アンバサダー協会 設立のお知らせ',
+          content: `
+            <h2>日本学生アンバサダー協会 設立のお知らせ</h2>
+            <p>平素より学生支援活動にご理解とご支援を賜り、誠にありがとうございます。</p>
+            
+            <p>この度、学生の可能性を最大限に引き出し、社会との架け橋となることを目指して「日本学生アンバサダー協会」を設立いたしました。</p>
+            
+            <h3>設立の背景</h3>
+            <p>現代の学生は、多くの可能性を秘めながらも、適切な機会やサポートが不足している状況にあります。私たちは、この課題を解決し、学生一人ひとりが自信を持って社会に羽ばたける環境づくりを目指します。</p>
+            
+            <h3>主な活動内容</h3>
+            <ul>
+              <li>学生アンバサダー認定プログラムの運営</li>
+              <li>企業との連携によるインターンシップ機会の創出</li>
+              <li>学生向けキャリア支援・就職支援</li>
+              <li>学生団体・プロジェクトの支援</li>
+            </ul>
+            
+            <h3>今後の展望</h3>
+            <p>今後は、全国の学生にサービスを提供し、学生と企業・社会をつなぐプラットフォームとして発展させてまいります。</p>
+            
+            <p>引き続き、ご支援とご協力を賜りますよう、心よりお願い申し上げます。</p>
+          `,
+          category: 'お知らせ',
+          status: 'published'
+        },
+        {
+          title: '第1回学生アンバサダー認定プログラム開始',
+          content: `
+            <h2>第1回学生アンバサダー認定プログラム開始</h2>
+            <p>日本学生アンバサダー協会では、学生のリーダーシップと社会貢献活動を支援する「学生アンバサダー認定プログラム」を開始いたします。</p>
+            
+            <h3>プログラム概要</h3>
+            <p>このプログラムは、学生が自らの能力を高め、社会に貢献する活動を行うことで、認定証を取得できる制度です。</p>
+            
+            <h3>認定条件</h3>
+            <ul>
+              <li>リーダーシップを発揮した活動実績</li>
+              <li>社会貢献活動への積極的な参加</li>
+              <li>継続的な学習と成長への意欲</li>
+              <li>他者への影響力と信頼性</li>
+            </ul>
+            
+            <h3>プログラムの流れ</h3>
+            <ol>
+              <li>エントリー（オンライン申請）</li>
+              <li>書類審査</li>
+              <li>面接審査</li>
+              <li>認定証授与式</li>
+            </ol>
+            
+            <h3>応募期間</h3>
+            <p>2025年2月1日〜2025年3月31日</p>
+            
+            <p>多くの学生の皆様のご応募をお待ちしております。</p>
+          `,
+          category: 'イベント',
+          status: 'published'
+        },
+        {
+          title: '企業パートナーシッププログラムの開始',
+          content: `
+            <h2>企業パートナーシッププログラムの開始</h2>
+            <p>日本学生アンバサダー協会では、学生と企業をつなぐ「企業パートナーシッププログラム」を開始いたします。</p>
+            
+            <h3>プログラムの目的</h3>
+            <p>優秀な学生と企業をマッチングし、双方にとって価値のある関係を構築することを目指しています。</p>
+            
+            <h3>企業向けサービス</h3>
+            <ul>
+              <li>優秀な学生の紹介・推薦</li>
+              <li>インターンシッププログラムの企画・運営支援</li>
+              <li>学生向け企業説明会の開催支援</li>
+              <li>学生の能力開発プログラムの提供</li>
+            </ul>
+            
+            <h3>学生向けサービス</h3>
+            <ul>
+              <li>企業インターンシップの紹介</li>
+              <li>就職活動支援・キャリア相談</li>
+              <li>企業訪問・見学会の開催</li>
+              <li>スキルアップセミナーの提供</li>
+            </ul>
+            
+            <h3>参加企業</h3>
+            <p>現在、複数の企業様とパートナーシップを結んでおり、今後も拡大予定です。</p>
+            
+            <p>企業の皆様、学生の皆様、ぜひご参加ください。</p>
+          `,
+          category: 'パートナーシップ',
+          status: 'published'
+        }
+      ];
+      
+      try {
+        for (const articleData of sampleArticles) {
+          const docRef = await addDoc(collection(db, 'news'), {
+            ...articleData,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+          
+          // 統合記事管理システムとの同期
+          await syncToUnifiedArticleManager(docRef.id, articleData, 'create');
+          
+          // ニュース更新通知
+          await notifyNewsUpdate('create', docRef.id, { ...articleData, id: docRef.id });
+        }
+        
+        alert('サンプル記事の作成が完了しました！他のページにも即座に反映されます。');
+        fetchArticles();
+        
+      } catch (error) {
+        console.error('サンプル記事作成エラー:', error);
+        alert('サンプル記事の作成に失敗しました。');
+      }
+    }
 
     // ニュースキャッシュの無効化
     async function invalidateNewsCache() {
       try {
-        // Firebase Functions経由でキャッシュを無効化
-        const response = await fetch(`${API_BASE_URL}/invalidateNewsCache`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            timestamp: Date.now(),
-            action: 'invalidate'
-          })
-        });
-
-        if (response.ok) {
-          console.log('ニュースキャッシュ無効化完了');
-        }
-      } catch (error) {
-        console.log('キャッシュ無効化APIが利用できないため、ローカル処理を実行');
         // ローカルストレージのキャッシュをクリア
         if (typeof localStorage !== 'undefined') {
           const keys = Object.keys(localStorage);
@@ -111,6 +317,9 @@
             }
           });
         }
+        console.log('ローカルキャッシュ無効化完了');
+      } catch (error) {
+        console.log('キャッシュ無効化エラー:', error);
       }
     }
 
@@ -143,6 +352,11 @@
             action: 'refresh',
             timestamp: Date.now()
           });
+        }
+
+        // 統合記事管理システムの強制更新
+        if (typeof window.unifiedArticleManager !== 'undefined') {
+          window.unifiedArticleManager.forceRefresh();
         }
 
         console.log('ニュース強制更新通知完了');
@@ -427,12 +641,7 @@
         setResendDisabled(true);
         setMessage('');
         try {
-          try {
-            const callSend = httpsCallable(functions, 'sendVerificationEmail');
-            await callSend({ email: user.email, displayName: user.displayName });
-          } catch (e) {
-            await sendEmailVerification(user);
-          }
+          await sendEmailVerification(user);
           setMessage('確認メールを再送信しました。');
         } catch (error) {
           setMessage('メールの送信に失敗しました。時間をおいて再度お試しください。');
@@ -490,12 +699,7 @@
             }
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCredential.user, { displayName });
-            try {
-              const callSend = httpsCallable(functions, 'sendVerificationEmail');
-              await callSend({ email: userCredential.user.email, displayName });
-            } catch (e) {
-              await sendEmailVerification(userCredential.user);
-            }
+            await sendEmailVerification(userCredential.user);
           }
         } catch (err) {
           setError(getFriendlyErrorMessage(err.code));
@@ -590,13 +794,17 @@
           const action = article?.id ? '更新' : '作成';
           alert(`記事を${action}しました！`);
           
-          // 公開済みの場合は、他のページへの反映を通知
-          if (status === 'published') {
-            console.log(`記事が公開されました: ${articleId}`);
-            
-            // 他のページへの自動反映を開始
-            await notifyNewsUpdate(action, articleId, article);
-          }
+          // 統合記事管理システムとの同期（公開・下書き問わず）
+          await syncToUnifiedArticleManager(articleId, data, action);
+          
+          // ニュース更新通知
+          await notifyNewsUpdate(action, articleId, { ...data, id: articleId });
+          
+          // 成功メッセージ
+          const successMessage = status === 'published' 
+            ? `記事を${action}しました！他のページにも即座に反映されます。`
+            : `記事を${action}しました！（下書きとして保存）`;
+          alert(successMessage);
           
           onDone();
         } catch (e) {
@@ -620,8 +828,10 @@
               React.createElement('select', { value: category, onChange: e => setCategory(e.target.value), className: 'w-full p-3 border border-gray-300 rounded-md bg-white' },
                 React.createElement('option', { value: 'お知らせ' }, 'お知らせ'),
                 React.createElement('option', { value: 'プレスリリース' }, 'プレスリリース'),
-                React.createElement('option', { value: 'メディア掲載' }, 'メディア掲載'),
-                React.createElement('option', { value: 'イベント' }, 'イベント')
+                React.createElement('option', { value: 'イベント' }, 'イベント'),
+                React.createElement('option', { value: 'パートナーシップ' }, 'パートナーシップ'),
+                React.createElement('option', { value: '技術情報' }, '技術情報'),
+                React.createElement('option', { value: 'その他' }, 'その他')
               )
             ),
             React.createElement('div', null,
@@ -668,16 +878,39 @@
     const Dashboard = ({ user }) => {
       const [articles, setArticles] = useState([]);
       const [editingArticle, setEditingArticle] = useState(null);
+      
       const fetchArticles = async () => {
         const qy = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
         const qs = await getDocs(qy);
         setArticles(qs.docs.map(d => ({ id: d.id, ...d.data() })));
       };
+      
       useEffect(() => { fetchArticles(); }, []);
+      
       const handleDelete = async (id) => {
         if (!confirm('この記事を削除しますか？')) return;
-        await deleteDoc(doc(db, 'news', id));
-        fetchArticles();
+        try {
+          await deleteDoc(doc(db, 'news', id));
+          
+          // 統合記事管理システムとの同期
+          if (typeof window.unifiedArticleManager !== 'undefined') {
+            await window.unifiedArticleManager.deleteArticle(id);
+          }
+          
+          // ローカルストレージからも削除
+          const storageKey = 'jaa-unified-articles';
+          const existingArticles = JSON.parse(localStorage.getItem(storageKey) || '[]');
+          const filteredArticles = existingArticles.filter(a => a.id !== id);
+          localStorage.setItem(storageKey, JSON.stringify(filteredArticles));
+          
+          // ニュース更新通知
+          await notifyNewsUpdate('delete', id, { id });
+          
+          fetchArticles();
+        } catch (error) {
+          console.error('記事削除エラー:', error);
+          alert('記事の削除に失敗しました。');
+        }
       };
       return (
         React.createElement('div', null,
@@ -694,7 +927,10 @@
             editingArticle
               ? React.createElement(ArticleEditor, { article: editingArticle, onDone: () => { setEditingArticle(null); fetchArticles(); } })
               : React.createElement('div', null,
-                  React.createElement('button', { onClick: () => setEditingArticle({ title: '', content: '', category: 'お知らせ', status: 'draft' }), className: 'mb-6 px-6 py-3 font-bold text-white bg-orange-500 rounded-lg hover:bg-orange-600 shadow-lg' }, '＋ 新しいニュースを投稿'),
+                  React.createElement('div', { className: 'flex space-x-4 mb-6' },
+                    React.createElement('button', { onClick: () => setEditingArticle({ title: '', content: '', category: 'お知らせ', status: 'draft' }), className: 'px-6 py-3 font-bold text-white bg-orange-500 rounded-lg hover:bg-orange-600 shadow-lg' }, '＋ 新しいニュースを投稿'),
+                    React.createElement('button', { onClick: createSampleArticles, className: 'px-6 py-3 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600 shadow-lg' }, '📝 サンプル記事を作成')
+                  ),
                   React.createElement('div', { className: 'bg-white rounded-xl shadow-lg overflow-hidden' },
                     React.createElement('ul', { className: 'divide-y divide-gray-200' },
                       articles.length > 0 ? articles.map(a => (

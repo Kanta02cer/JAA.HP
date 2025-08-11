@@ -1055,7 +1055,45 @@
             }
         }
 
-        // 最新ニュースは Firebase 連携ローダーが自動描画します
+        // 統合記事管理システムとニュースローダーの読み込み
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 1. 統合記事管理システムの読み込み
+                const articleManagerScript = document.createElement('script');
+                articleManagerScript.src = 'js/unified-article-manager.js';
+                document.head.appendChild(articleManagerScript);
+                
+                // 2. 統合ニュースローダーの読み込み
+                articleManagerScript.onload = () => {
+                    const newsLoaderScript = document.createElement('script');
+                    newsLoaderScript.src = 'js/unified-news-loader.js';
+                    newsLoaderScript.onload = () => {
+                        // スクリプト読み込み完了後、ニュースを表示
+                        if (window.unifiedNewsLoader) {
+                            window.unifiedNewsLoader.loadNews('news-list-home', 5);
+                            
+                            // ページ間通信の監視を開始
+                            window.addEventListener('jaa-news-update', (event) => {
+                                console.log('ニュース更新イベントを受信:', event.detail);
+                                // ニュースを再読み込み
+                                window.unifiedNewsLoader.loadNews('news-list-home', 5);
+                            });
+                            
+                            // postMessageの監視
+                            window.addEventListener('message', (event) => {
+                                if (event.data.type === 'FORCE_NEWS_REFRESH') {
+                                    console.log('ニュース強制更新を受信');
+                                    window.unifiedNewsLoader.forceRefresh();
+                                }
+                            });
+                        }
+                    };
+                    document.head.appendChild(newsLoaderScript);
+                };
+            } catch (error) {
+                console.error('ニュース読み込みエラー:', error);
+            }
+        });
 
         // 画像読み込みチェック機能
         function checkImageLoad() {

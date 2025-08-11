@@ -28,12 +28,12 @@
 - **JavaScript**: ES6+ モジュラー設計
 - **フォント**: Inter, Noto Sans JP, Zen Old Mincho
 
-### 簡易ニュース投稿システム
-- **ローカルストレージ**: ブラウザ内での記事データ保存
-- **Markdownエディタ**: リアルタイムプレビュー付き
-- **自動更新**: 5分間隔での記事データ同期
-- **エクスポート**: Markdownファイル形式での出力
-- **Firebase Functions不要**: 無料プランでも利用可能
+### 統合ニュースシステム
+- **Firebase連携**: Firestoreでの記事データ管理
+- **リアルタイム反映**: 記事保存後即座に全ページに表示
+- **統合ローダー**: 単一のスクリプトで全ページの記事表示
+- **自動更新**: 1分間隔での記事データ同期
+- **バックアップ機能**: ローカルストレージでの記事データ保存
 
 ### CMS・管理
 - **Netlify CMS**: ヘッドレスCMS
@@ -63,16 +63,14 @@ JAA.HP-1/
 ├── _config.yml            # Netlify CMS設定
 ├── admin/
 │   ├── index.html         # CMS管理画面
-│   ├── simple-news-editor.html  # 簡易ニュース投稿システム
 │   ├── cms-dashboard.html       # CMS管理ダッシュボード
 │   └── news-console.html        # ニュース管理コンソール
 ├── _news/                 # ニュース記事（Markdown）
 │   └── 2025-10-01-press-release.md
 ├── js/
 │   ├── news-loader.js           # ニュース管理スクリプト
-│   ├── simple-news-loader.js    # 簡易ニュース投稿システム連携
-│   ├── markdown-news-loader.js  # Markdownニュース読み込み
-│   └── news-auto-updater.js     # ニュース自動更新
+│   ├── unified-news-loader.js   # 統合ニュースローダー（Firebase連携）
+│   └── detail-loader.js         # 記事詳細表示
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml     # GitHub Actions設定
@@ -113,20 +111,17 @@ http://localhost:8000/admin/
    - タイトル
    - 説明
 
-### 方法2: 簡易ニュース投稿システム（Firebase Functionsなし）
-1. `/admin/simple-news-editor.html` にアクセス
-2. "新規記事"ボタンをクリック
-3. 記事情報を入力：
-   - 記事ID（例: 2025-01-21-article-title）
+### 方法2: ニュース管理コンソール（Firebase連携）
+1. `/admin/news-console.html` にアクセス
+2. ログインまたは新規登録
+3. "新しいニュースを作成"をクリック
+4. 記事情報を入力：
    - タイトル
    - カテゴリ
-   - 公開日
-   - 説明
-   - タグ
-   - 画像URL
-   - Markdown本文
-4. プレビューで確認
-5. "記事を保存"または"Markdownファイル出力"
+   - 内容（リッチテキストエディタ）
+   - ステータス（下書き/公開）
+5. "保存する"をクリック
+6. 公開済みの記事は即座に全ページに反映
    - 日付
    - カテゴリ
    - タグ
