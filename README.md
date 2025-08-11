@@ -17,6 +17,7 @@
 - **動的コンテンツ**: JavaScriptによる動的ニュース表示
 - **カテゴリフィルター**: プレスリリース、メディア掲載、イベント、お知らせ
 - **管理画面**: Netlify CMSによる記事管理
+- **簡易ニュース投稿システム**: Firebase Functionsなしでも記事管理可能
 - **自動デプロイ**: GitHub Actionsによる自動更新
 
 ## 技術スタック
@@ -26,6 +27,13 @@
 - **CSS3**: Tailwind CSS + カスタムスタイル
 - **JavaScript**: ES6+ モジュラー設計
 - **フォント**: Inter, Noto Sans JP, Zen Old Mincho
+
+### 簡易ニュース投稿システム
+- **ローカルストレージ**: ブラウザ内での記事データ保存
+- **Markdownエディタ**: リアルタイムプレビュー付き
+- **自動更新**: 5分間隔での記事データ同期
+- **エクスポート**: Markdownファイル形式での出力
+- **Firebase Functions不要**: 無料プランでも利用可能
 
 ### CMS・管理
 - **Netlify CMS**: ヘッドレスCMS
@@ -54,11 +62,17 @@ JAA.HP-1/
 ├── sitemap.xml            # サイトマップ
 ├── _config.yml            # Netlify CMS設定
 ├── admin/
-│   └── index.html         # CMS管理画面
+│   ├── index.html         # CMS管理画面
+│   ├── simple-news-editor.html  # 簡易ニュース投稿システム
+│   ├── cms-dashboard.html       # CMS管理ダッシュボード
+│   └── news-console.html        # ニュース管理コンソール
 ├── _news/                 # ニュース記事（Markdown）
 │   └── 2025-10-01-press-release.md
 ├── js/
-│   └── news-loader.js     # ニュース管理スクリプト
+│   ├── news-loader.js           # ニュース管理スクリプト
+│   ├── simple-news-loader.js    # 簡易ニュース投稿システム連携
+│   ├── markdown-news-loader.js  # Markdownニュース読み込み
+│   └── news-auto-updater.js     # ニュース自動更新
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml     # GitHub Actions設定
@@ -92,12 +106,27 @@ http://localhost:8000/admin/
 
 ## ニュース記事の管理
 
-### 記事の追加
+### 方法1: Netlify CMS（推奨）
 1. `/admin/` にアクセス
 2. "ニュース記事" → "新規作成"
 3. 以下の項目を入力：
    - タイトル
    - 説明
+
+### 方法2: 簡易ニュース投稿システム（Firebase Functionsなし）
+1. `/admin/simple-news-editor.html` にアクセス
+2. "新規記事"ボタンをクリック
+3. 記事情報を入力：
+   - 記事ID（例: 2025-01-21-article-title）
+   - タイトル
+   - カテゴリ
+   - 公開日
+   - 説明
+   - タグ
+   - 画像URL
+   - Markdown本文
+4. プレビューで確認
+5. "記事を保存"または"Markdownファイル出力"
    - 日付
    - カテゴリ
    - タグ
