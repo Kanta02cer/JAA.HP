@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記事システムテスト | 日本学生アンバサダー協会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/unified-article-manager.js"></script>
+    <script src="js/detail-loader.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-12">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">記事システムテストページ</h1>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- 記事投稿テスト -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">記事投稿テスト</h2>
+                <form id="test-article-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">タイトル</label>
+                        <input type="text" id="test-title" class="w-full p-3 border border-gray-300 rounded-md" 
+                               value="テスト記事 - システム動作確認" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">カテゴリ</label>
+                        <select id="test-category" class="w-full p-3 border border-gray-300 rounded-md">
+                            <option value="お知らせ">お知らせ</option>
+                            <option value="プレスリリース">プレスリリース</option>
+                            <option value="イベント">イベント</option>
+                            <option value="パートナーシップ">パートナーシップ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">内容</label>
+                        <textarea id="test-content" rows="6" class="w-full p-3 border border-gray-300 rounded-md" required>これは記事システムの動作確認用のテスト記事です。
+
+記事が正しく投稿され、news-detail.htmlに表示されることを確認できます。
+
+## テスト項目
+- 記事の投稿
+- 統合記事管理システムとの同期
+- 記事詳細ページでの表示
+- リアルタイム更新</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ステータス</label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="test-status" value="draft" class="mr-2">下書き
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="test-status" value="published" checked class="mr-2">公開
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-500 text-white py-3 px-6 rounded-md hover:bg-orange-600 transition-colors">
+                        テスト記事を投稿
+                    </button>
+                </form>
+            </div>
+
+            <!-- システム状態確認 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">システム状態確認</h2>
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="font-medium text-gray-700 mb-2">統合記事管理システム</h3>
+                        <div id="system-status" class="text-sm text-gray-600">
+                            確認中...
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-700 mb-2">記事データ</h3>
+                        <div id="article-count" class="text-sm text-gray-600">
+                            確認中...
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-700 mb-2">テスト用コマンド</h3>
+                        <div class="space-y-2">
+                            <button onclick="testArticleSystem()" class="w-full bg-blue-500 text-white py-2 px-4 rounded text-sm hover:bg-blue-600">
+                                システムテスト実行
+                            </button>
+                            <button onclick="showDebugInfo()" class="w-full bg-green-500 text-white py-2 px-4 rounded text-sm hover:bg-green-600">
+                                デバッグ情報表示
+                            </button>
+                            <button onclick="clearTestData()" class="w-full bg-red-500 text-white py-2 px-4 rounded text-sm hover:bg-red-600">
+                                テストデータクリア
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記事一覧表示 -->
+        <div class="mt-12 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">投稿済み記事一覧</h2>
+            <div id="articles-list" class="space-y-4">
+                <div class="text-gray-500 text-center py-8">記事を投稿するとここに表示されます</div>
+            </div>
+        </div>
+
+        <!-- テスト結果表示 -->
+        <div id="test-results" class="mt-8 hidden">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 class="font-medium text-blue-800 mb-2">テスト結果</h3>
+                <div id="test-output" class="text-sm text-blue-700"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // テスト記事投稿処理
+        document.getElementById('test-article-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('test-title').value;
+            const category = document.getElementById('test-category').value;
+            const content = document.getElementById('test-content').value;
+            const status = document.querySelector('input[name="test-status"]:checked').value;
+            
+            try {
+                // 統合記事管理システムに記事を保存
+                if (window.unifiedArticleManager) {
+                    const articleData = {
+                        title: title,
+                        content: content,
+                        category: category,
+                        status: status,
+                        source: 'test-system'
+                    };
+                    
+                    const article = await window.unifiedArticleManager.saveArticle(articleData, 'test-system');
+                    
+                    // 成功メッセージ
+                    showTestResult(`テスト記事の投稿が完了しました！<br>記事ID: ${article.id}<br><a href="news-detail.html?id=${article.id}" class="text-blue-600 underline" target="_blank">記事詳細ページを開く</a>`);
+                    
+                    // 記事一覧を更新
+                    updateArticlesList();
+                    
+                } else {
+                    showTestResult('統合記事管理システムが利用できません。');
+                }
+                
+            } catch (error) {
+                showTestResult(`エラーが発生しました: ${error.message}`);
+                console.error('テスト記事投稿エラー:', error);
+            }
+        });
+
+        // システム状態の確認
+        function updateSystemStatus() {
+            const systemStatus = document.getElementById('system-status');
+            const articleCount = document.getElementById('article-count');
+            
+            if (window.unifiedArticleManager) {
+                systemStatus.innerHTML = '<span class="text-green-600">✓ 利用可能</span>';
+                const stats = window.unifiedArticleManager.getStats();
+                articleCount.innerHTML = `総記事数: ${stats.total}, 公開: ${stats.published}, 下書き: ${stats.draft}`;
+            } else {
+                systemStatus.innerHTML = '<span class="text-red-600">✗ 利用不可</span>';
+                articleCount.innerHTML = 'システムが読み込まれていません';
+            }
+        }
+
+        // 記事一覧の更新
+        function updateArticlesList() {
+            const articlesList = document.getElementById('articles-list');
+            
+            if (window.unifiedArticleManager) {
+                const articles = window.unifiedArticleManager.getArticles();
+                
+                if (articles.length === 0) {
+                    articlesList.innerHTML = '<div class="text-gray-500 text-center py-8">記事がありません</div>';
+                    return;
+                }
+                
+                const html = articles.map(article => `
+                    <div class="border-b border-gray-200 py-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-medium text-gray-800">${article.title}</h4>
+                                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                                    <span>ID: ${article.id}</span>
+                                    <span>カテゴリ: ${article.category}</span>
+                                    <span>ステータス: ${article.status}</span>
+                                    <span>ソース: ${article.source}</span>
+                                </div>
+                            </div>
+                            <a href="news-detail.html?id=${article.id}" 
+                               class="bg-orange-500 text-white px-4 py-2 rounded text-sm hover:bg-orange-600 transition-colors"
+                               target="_blank">
+                                詳細表示
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+                
+                articlesList.innerHTML = html;
+            }
+        }
+
+        // テスト結果の表示
+        function showTestResult(message) {
+            const testResults = document.getElementById('test-results');
+            const testOutput = document.getElementById('test-output');
+            
+            testOutput.innerHTML = message;
+            testResults.classList.remove('hidden');
+            
+            // 5秒後に非表示
+            setTimeout(() => {
+                testResults.classList.add('hidden');
+            }, 5000);
+        }
+
+        // システムテスト実行
+        function testArticleSystem() {
+            console.log('=== 記事システムテスト開始 ===');
+            
+            // 統合記事管理システムの確認
+            if (window.unifiedArticleManager) {
+                console.log('✓ 統合記事管理システム: 利用可能');
+                
+                // 記事の取得テスト
+                const articles = window.unifiedArticleManager.getArticles();
+                console.log(`✓ 記事取得: ${articles.length}件`);
+                
+                // 統計情報の取得テスト
+                const stats = window.unifiedArticleManager.getStats();
+                console.log('✓ 統計情報:', stats);
+                
+                showTestResult('システムテストが完了しました。コンソールで詳細を確認してください。');
+            } else {
+                console.log('✗ 統合記事管理システム: 利用不可');
+                showTestResult('統合記事管理システムが利用できません。');
+            }
+        }
+
+        // デバッグ情報表示
+        function showDebugInfo() {
+            console.log('=== デバッグ情報 ===');
+            console.log('window.unifiedArticleManager:', window.unifiedArticleManager);
+            console.log('localStorage:', localStorage.getItem('jaa-unified-articles'));
+            
+            if (window.debugArticleSystem) {
+                window.debugArticleSystem.showArticleStatus();
+            }
+            
+            showTestResult('デバッグ情報をコンソールに表示しました。');
+        }
+
+        // テストデータクリア
+        function clearTestData() {
+            if (confirm('テストデータをクリアしますか？')) {
+                localStorage.removeItem('jaa-unified-articles');
+                location.reload();
+            }
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 統合記事管理システムの準備完了を待つ
+            const checkSystem = setInterval(() => {
+                if (window.unifiedArticleManager) {
+                    clearInterval(checkSystem);
+                    updateSystemStatus();
+                    updateArticlesList();
+                }
+            }, 100);
+            
+            // 5秒後にタイムアウト
+            setTimeout(() => {
+                clearInterval(checkSystem);
+                updateSystemStatus();
+                updateArticlesList();
+            }, 5000);
+        });
+
+        // 統合記事管理システムの準備完了イベント
+        window.addEventListener('unified-article-manager-ready', () => {
+            updateSystemStatus();
+            updateArticlesList();
+        });
+    </script>
+</body>
+</html>

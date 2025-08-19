@@ -1,33 +1,64 @@
 {
-  "name": "jaa-hp",
+  "name": "jaa-hp-verification-kit",
   "version": "1.0.0",
-  "description": "日本学生アンバサダー協会公式ホームページ",
-  "main": "index.html",
+  "description": "JAA.HP ニュース記事投稿・表示システム 検証キット",
+  "main": "index.js",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "dev": "python -m http.server 8000",
-    "serve": "python -m http.server 8000",
-    "build": "echo 'Static site - no build required'",
-    "deploy": "echo 'Deploy via GitHub Actions'"
+    "test": "npm run test:e2e",
+    "test:e2e": "playwright test tests/e2e/news.spec.ts",
+    "test:e2e:headed": "playwright test tests/e2e/news.spec.ts --headed",
+    "test:e2e:debug": "playwright test tests/e2e/news.spec.ts --debug",
+    "test:api": "newman run tests/api/jaa.postman_collection.json",
+    "test:api:verbose": "newman run tests/api/jaa.postman_collection.json --reporters cli,json",
+    "test:all": "npm run test:e2e && npm run test:api",
+    "test:ci": "playwright test tests/e2e/news.spec.ts --reporter=html && newman run tests/api/jaa.postman_collection.json --reporters cli,json",
+    "install:browsers": "playwright install --with-deps",
+    "install:newman": "npm install -g newman",
+    "install:lighthouse": "npm install -g @lhci/cli",
+    "install:all": "npm run install:browsers && npm run install:newman && npm run install:lighthouse",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "echo 'Build process not configured'",
+    "build:analyze": "echo 'Bundle analysis not configured'",
+    "dev": "echo 'Development server not configured'",
+    "start": "echo 'Start command not configured'",
+    "clean": "rm -rf node_modules package-lock.json playwright-report test-results",
+    "setup": "npm install && npm run install:all",
+    "verify": "npm run test:all"
   },
   "keywords": [
-    "学生支援",
-    "人材育成",
-    "パートナーシップ",
-    "企業連携",
-    "就職支援",
-    "キャリア支援"
+    "jaa-hp",
+    "news-system",
+    "verification",
+    "testing",
+    "playwright",
+    "newman",
+    "lighthouse"
   ],
-  "author": "日本学生アンバサダー協会",
+  "author": "JAA.HP Team",
   "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "newman": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/JAA.HP-1.git"
+    "url": "https://github.com/kanta02cer/JAA.HP.git"
   },
-  "homepage": "https://your-username.github.io/JAA.HP-1/",
-  "engines": {
-    "node": ">=18.0.0"
+  "bugs": {
+    "url": "https://github.com/kanta02cer/JAA.HP/issues"
   },
-  "devDependencies": {},
-  "dependencies": {}
+  "homepage": "https://kanta02cer.github.io/JAA.HP"
 }

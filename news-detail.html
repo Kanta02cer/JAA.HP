@@ -210,6 +210,73 @@
     </footer>
 
     <script type="module" src="js/detail-loader.js"></script>
-
+    
+    <!-- デバッグ・テスト用のスクリプト -->
+    <script>
+        // 記事表示のデバッグ機能
+        window.debugArticleSystem = {
+            // 現在の記事IDを取得
+            getCurrentArticleId: () => {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('id');
+            },
+            
+            // ローカルストレージの記事一覧を表示
+            showLocalArticles: () => {
+                const articles = JSON.parse(localStorage.getItem('jaa-unified-articles') || '[]');
+                console.log('ローカルストレージの記事一覧:', articles);
+                return articles;
+            },
+            
+            // 特定の記事を検索
+            findArticle: (articleId) => {
+                const articles = JSON.parse(localStorage.getItem('jaa-unified-articles') || '[]');
+                return articles.find(a => a.id === articleId);
+            },
+            
+            // 強制更新
+            forceRefresh: () => {
+                if (window.forceArticleRefresh) {
+                    window.forceArticleRefresh();
+                } else {
+                    location.reload();
+                }
+            },
+            
+            // 記事データの状態を表示
+            showArticleStatus: () => {
+                const articleId = window.debugArticleSystem.getCurrentArticleId();
+                const article = window.debugArticleSystem.findArticle(articleId);
+                
+                console.log('=== 記事表示システムの状態 ===');
+                console.log('現在の記事ID:', articleId);
+                console.log('記事データ:', article);
+                console.log('統合記事管理システム:', window.unifiedArticleManager);
+                console.log('記事キャッシュ:', window.articleCache || []);
+                
+                return { articleId, article };
+            }
+        };
+        
+        // ページ読み込み完了後のデバッグ情報表示
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                console.log('=== news-detail.html デバッグ情報 ===');
+                window.debugArticleSystem.showArticleStatus();
+                
+                // 記事が見つからない場合のヘルプ表示
+                const articleId = window.debugArticleSystem.getCurrentArticleId();
+                if (articleId) {
+                    const article = window.debugArticleSystem.findArticle(articleId);
+                    if (!article) {
+                        console.warn(`記事ID "${articleId}" が見つかりません。`);
+                        console.warn('以下のコマンドで記事を確認できます:');
+                        console.warn('window.debugArticleSystem.showLocalArticles()');
+                        console.warn('window.debugArticleSystem.forceRefresh()');
+                    }
+                }
+            }, 2000);
+        });
+    </script>
 </body>
 </html>

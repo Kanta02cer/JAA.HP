@@ -73,10 +73,64 @@
         // 常にローカルストレージにも保存（バックアップ）
         await saveToLocalStorage(articleId, articleData, action);
         
+        // 強制的な同期処理を実行
+        await forceSyncToNewsDetail(articleId, articleData);
+        
       } catch (error) {
         console.error('統合記事管理システム同期エラー:', error);
         // エラーの場合はローカルストレージに保存
         await saveToLocalStorage(articleId, data, action);
+      }
+    }
+
+    // news-detail.htmlへの強制同期
+    async function forceSyncToNewsDetail(articleId, articleData) {
+      try {
+        // 1. カスタムイベントの発火
+        window.dispatchEvent(new CustomEvent('jaa-news-update', {
+          detail: {
+            action: 'save',
+            articleId: articleId,
+            article: articleData,
+            timestamp: Date.now(),
+            type: 'NEWS_UPDATE'
+          }
+        }));
+
+        // 2. localStorageの強制更新
+        const storageKey = 'jaa-unified-articles';
+        const existingArticles = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const existingIndex = existingArticles.findIndex(a => a.id === articleId);
+        
+        if (existingIndex >= 0) {
+          existingArticles[existingIndex] = { ...existingArticles[existingIndex], ...articleData };
+        } else {
+          existingArticles.unshift(articleData);
+        }
+        
+        // 記事を日付順でソート
+        existingArticles.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+          return dateB - dateA;
+        });
+        
+        localStorage.setItem(storageKey, JSON.stringify(existingArticles));
+
+        // 3. 強制更新トリガーの発火
+        const triggerKey = `jaa-news-update-${Date.now()}`;
+        localStorage.setItem(triggerKey, JSON.stringify({
+          action: 'save',
+          articleId: articleId,
+          article: articleData,
+          timestamp: Date.now(),
+          type: 'NEWS_UPDATE'
+        }));
+        localStorage.removeItem(triggerKey);
+
+        console.log(`news-detail.html強制同期完了: ${articleId}`);
+      } catch (error) {
+        console.error('news-detail.html強制同期エラー:', error);
       }
     }
 
@@ -982,5 +1036,3 @@
   </script>
 </body>
 </html>
-
-

@@ -134,12 +134,55 @@ class UnifiedArticleManager {
             // ページ間通信で通知
             this.broadcastToOtherPages('save', article.id, article);
 
+            // news-detail.htmlへの即座反映のための特別処理
+            this.ensureNewsDetailSync(article.id, article);
+
             console.log(`記事保存完了: ${article.id}`);
             return article;
 
         } catch (error) {
             console.error('記事保存エラー:', error);
             throw error;
+        }
+    }
+
+    // news-detail.htmlへの即座反映を確実にする
+    ensureNewsDetailSync(articleId, articleData) {
+        try {
+            // 1. カスタムイベントの発火
+            window.dispatchEvent(new CustomEvent('jaa-news-update', {
+                detail: {
+                    action: 'save',
+                    articleId: articleId,
+                    article: articleData,
+                    timestamp: Date.now(),
+                    type: 'NEWS_UPDATE'
+                }
+            }));
+
+            // 2. postMessageでの通知
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'FORCE_NEWS_REFRESH',
+                    articleId: articleId,
+                    timestamp: Date.now()
+                }, '*');
+            }
+
+            // 3. localStorageイベントの強制発火
+            const triggerKey = `jaa-news-update-${Date.now()}`;
+            localStorage.setItem(triggerKey, JSON.stringify({
+                action: 'save',
+                articleId: articleId,
+                article: articleData,
+                timestamp: Date.now(),
+                type: 'NEWS_UPDATE'
+            }));
+            localStorage.removeItem(triggerKey);
+
+            console.log(`news-detail.html同期処理完了: ${articleId}`);
+        } catch (error) {
+            console.error('news-detail.html同期処理エラー:', error);
         }
     }
 

@@ -280,32 +280,50 @@ function showFallbackNews(containerId, maxItems = 5) {
   // フォールバック用のサンプルニュース表示
   const fallbackNews = [
     {
+      title: '【プレスリリース】人材版令和の虎Tiger Funding出演のお知らせ',
+      date: '2025-07-03',
+      category: 'プレスリリース',
+      id: 'news-detail-4'
+    },
+    {
+      title: '【プレスリリース】InnoCom Square 3rd LAB. 公認アンバサダー就任のお知らせ',
+      date: '2025-09-05',
+      category: 'プレスリリース',
+      id: 'news-detail-5'
+    },
+    {
+      title: '【出演報告】Olly Club出演のご報告',
+      date: '2025-08-17',
+      category: '出演報告',
+      id: 'news-detail-6'
+    },
+    {
       title: 'Firebase Functionsなしでも記事管理が可能',
       date: '2025-01-21',
-      category: '技術情報'
+      category: '技術情報',
+      id: 'tech-article-1'
     },
     {
       title: 'テスト記事 - CMS機能確認',
       date: '2025-01-20',
-      category: 'お知らせ'
-    },
-    {
-      title: '一般社団法人化に関するお知らせ',
-      date: '2025-10-01',
-      category: 'プレスリリース'
+      category: 'お知らせ',
+      id: 'test-article-1'
     }
   ];
 
   const html = fallbackNews.slice(0, maxItems).map(news => `
-    <div class="block border-b border-gray-200 py-4">
+    <a href="${news.id.includes('news-detail') ? news.id + '.html' : 'news-detail.html?id=' + news.id}" class="block border-b border-gray-200 py-4 hover:bg-gray-50 transition-colors duration-200 group">
       <div class="flex items-center">
         <p class="text-sm text-gray-600 w-28">${news.date}</p>
         <span class="text-xs font-bold text-white bg-orange-500 px-3 py-1 rounded-full">
           ${news.category}
         </span>
-        <p class="ml-4 text-gray-800 font-medium flex-1">${news.title}</p>
+        <p class="ml-4 text-gray-800 font-medium flex-1 group-hover:text-orange-600 transition-colors duration-200">${news.title}</p>
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-orange-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
       </div>
-    </div>
+    </a>
   `).join('');
 
   newsContainer.innerHTML = html + `
@@ -604,17 +622,28 @@ async function loadNewsDetail(articleId) {
   if (!contentContainer) return;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/getNewsById?id=${articleId}`);
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success) {
-        displayNewsDetail(contentContainer, result.data);
-      } else {
-        throw new Error(result.error || '記事の取得に失敗しました');
+    // まずAPIから取得を試行
+    try {
+      const response = await fetch(`${API_BASE_URL}/getNewsById?id=${articleId}`);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          displayNewsDetail(contentContainer, result.data);
+          return;
+        }
       }
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    } catch (error) {
+      console.log('APIからの取得に失敗、フォールバック表示を使用');
     }
+
+    // フォールバック: 新しい記事の詳細表示
+    if (articleId.includes('news-detail')) {
+      displayFallbackNewsDetail(contentContainer, articleId);
+      return;
+    }
+
+    // その他の記事IDの場合
+    throw new Error('記事が見つかりません');
   } catch (error) {
     console.error('ニュース詳細読み込みエラー:', error);
     contentContainer.innerHTML = `
@@ -631,11 +660,27 @@ function displayNewsDetail(container, article) {
   const dateObj = new Date(article.updatedAt || article.createdAt);
   const postDate = dateObj.toLocaleDateString('ja-JP');
   
+  // カテゴリに応じたタグの色分け
+  const getCategoryTagClass = (category) => {
+    switch (category) {
+      case 'プレスリリース':
+        return 'bg-pink-600 text-white';
+      case '出演報告':
+        return 'bg-green-500 text-white';
+      case 'お知らせ':
+        return 'bg-blue-500 text-white';
+      case '技術情報':
+        return 'bg-purple-500 text-white';
+      default:
+        return 'bg-orange-500 text-white';
+    }
+  };
+  
   container.innerHTML = `
     <article class="max-w-4xl mx-auto">
       <header class="mb-8">
         <div class="mb-4">
-          <span class="inline-block bg-orange-500 text-white text-sm font-bold px-3 py-1 rounded-full mb-3">
+          <span class="inline-block ${getCategoryTagClass(article.category)} text-sm font-bold px-3 py-1 rounded-full mb-3">
             ${article.category || 'カテゴリなし'}
           </span>
           <time class="block text-gray-600 text-sm">${postDate}</time>
@@ -657,6 +702,62 @@ function displayNewsDetail(container, article) {
       </footer>
     </article>
   `;
+}
+
+// フォールバック用のニュース詳細表示
+function displayFallbackNewsDetail(container, articleId) {
+  const newsData = {
+    'news-detail-4': {
+      title: '【プレスリリース】人材版令和の虎Tiger Funding出演のお知らせ',
+      date: '2025-07-03',
+      category: 'プレスリリース',
+      content: `
+        <p>2025年7月3日、日本学生アンバサダー協会の代表理事である井上幹太が人材版令和の虎Tiger Fundingに出演し、5人の虎からの出資提案の結果、CBT‑Solutions代表・野口功司氏より満額1,500万円のご支援を受けることが決定しました。</p>
+        <p>井上は人材版令和の虎の舞台で、学生アンバサダー制度の確立と学生の社会進出支援について熱く語りました。学生が企業と連携して社会課題に取り組むことで、双方に大きな価値が生まれることを説明し、多くの虎から高い評価を得ました。</p>
+        <p>最終的に野口功司氏から満額1,500万円の出資提案を受け、学生アンバサダー制度の拡充と企業との共創プロジェクトの促進に活用させていただきます。</p>
+        <p>この度のご支援を糧に、学生一人ひとりが正当に評価され、挑戦できる社会の実現に向けて、さらに精進してまいります。</p>
+      `
+    },
+    'news-detail-5': {
+      title: '【プレスリリース】InnoCom Square 3rd LAB. 公認アンバサダー就任のお知らせ',
+      date: '2025-09-05',
+      category: 'プレスリリース',
+      content: `
+        <p>2025年9月5日、日本学生アンバサダー協会の代表理事・井上幹太がオープンイノベーション施設「InnoCom Square（イノコム・スクエア）」の3rd LAB公認アンバサダーに就任したことをご報告いたします。</p>
+        <p>井上は9月5日に開設された同施設で、学生と企業が共に学び、挑戦できる共創拠点づくりをテーマに活動します。特に「移動」や「距離」といった課題を乗り越えるため、企業との連携によって学生支援の仕組みを社会実装することを目指します。</p>
+        <h2>InnoCom Square 3rd LABとは</h2>
+        <p>イノコム・スクエアは、未来志向のオープンイノベーション施設として誕生しました。3rd LABはその中核となる共創拠点で、創造力と社会課題解決への情熱を持った若者たちが「アンバサダー」として選出され、社会課題に取り組むプロジェクトを推進します。</p>
+        <p>井上はこの理念に共感し、学生と企業が出会い、挑戦できる仕組みをつくることで日本社会全体のイノベーションを加速させたいと考えています。</p>
+      `
+    },
+    'news-detail-6': {
+      title: '【出演報告】Olly Club出演のご報告',
+      date: '2025-08-17',
+      category: '出演報告',
+      content: `
+        <p>日本学生アンバサダー協会代表理事・井上幹太が、社会課題を解決する活動家や企業経営者を学生がインタビューする番組「Olly Club（オリークラブ）」に出演したことをご報告いたします。</p>
+        <p>本編では、乙武洋匡さんをゲストに迎え、学生団体GUideの光村紀勝さん、司会の都丸じゅりさん、原田そらさんとともに『挑戦を文化に』をテーマに熱い議論を交わしました。</p>
+        <h2>Olly Clubについて</h2>
+        <p>Olly Clubは、学生団体ollyが運営するインタビュー型メディアで、社会課題に挑む経営者や活動家を学生目線で掘り下げ、視聴者に行動のきっかけを届けることを目的としています。</p>
+        <p>企業とコラボレーションしながら社会貢献の機会を提供し、何度も苦難を乗り越えてきた活動家のリアルなストーリーを学生が引き出す番組です。</p>
+        <h2>今後の展望</h2>
+        <p>今回の出演をきっかけに、当協会はOlly ClubやGUideとの連携を深め、学生が社会課題に挑戦するプラットフォームをさらに広げていきます。</p>
+        <p>「挑戦を文化に」というテーマのもと、失敗を恐れず挑戦する風土を社会全体に根付かせるための啓発活動も積極的に展開してまいります。</p>
+      `
+    }
+  };
+
+  const article = newsData[articleId];
+  if (!article) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-red-500">
+        <p>記事が見つかりません。</p>
+      </div>
+    `;
+    return;
+  }
+
+  displayNewsDetail(container, article);
 }
 
 // グローバル関数として公開
