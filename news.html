@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>お知らせ一覧 | 日本学生アンバサダー協会の最新情報・プレスリリース</title>
-    <meta name="description" content="日本学生アンバサダー協会の最新お知らせ一覧。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
-    <meta name="keywords" content="お知らせ,最新情報,プレスリリース,メディア掲載,イベント情報,採用情報,ニュース">
+    <title>公式Note | 日本学生アンバサダー協会の最新情報・プレスリリース</title>
+    <meta name="description" content="日本学生アンバサダー協会の公式note。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
+    <meta name="keywords" content="公式note,最新情報,プレスリリース,メディア掲載,イベント情報,採用情報,ニュース">
     <meta name="author" content="日本学生アンバサダー協会">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://kanta02cer.github.io/JAA.HP/news.html">
@@ -20,8 +20,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kanta02cer.github.io/JAA.HP/news.html">
-    <meta property="og:title" content="お知らせ一覧 | 日本学生アンバサダー協会の最新情報・プレスリリース">
-    <meta property="og:description" content="日本学生アンバサダー協会の最新お知らせ一覧。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
+    <meta property="og:title" content="公式Note | 日本学生アンバサダー協会の最新情報・プレスリリース">
+    <meta property="og:description" content="日本学生アンバサダー協会の公式note。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
     <meta property="og:image" content="https://i.ibb.co/6R5nX1YH/Rogo.jpg">
     <meta property="og:site_name" content="日本学生アンバサダー協会">
     <meta property="og:locale" content="ja_JP">
@@ -29,8 +29,8 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://kanta02cer.github.io/JAA.HP/news.html">
-    <meta name="twitter:title" content="お知らせ一覧 | 日本学生アンバサダー協会の最新情報・プレスリリース">
-    <meta name="twitter:description" content="日本学生アンバサダー協会の最新お知らせ一覧。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
+    <meta name="twitter:title" content="公式Note | 日本学生アンバサダー協会の最新情報・プレスリリース">
+    <meta name="twitter:description" content="日本学生アンバサダー協会の公式note。プレスリリース、メディア掲載情報、イベント情報、採用情報など最新の活動状況をお伝えします。">
     <meta name="twitter:image" content="https://i.ibb.co/6R5nX1YH/Rogo.jpg">
     
     <!-- Additional SEO -->
@@ -79,6 +79,14 @@
         .tag-media { background-color: #4f46e5; color: white; }
         .tag-event { background-color: #16a34a; color: white; }
         .tag-update { background-color: #059669; color: white; }
+        .tag-note { background-color: #f59e0b; color: white; }
+        .note-card { border-left: 4px solid #f59e0b; }
+        .note-article { transition: all 0.3s ease; }
+        .note-article:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .note-source { color: #f59e0b; font-weight: 600; }
+        .note-external-link { color: #3b82f6; text-decoration: underline; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 
     </style>
@@ -102,7 +110,7 @@
                 <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
                 <a href="ambassador.html" class="text-gray-600 hover:text-orange-500 transition">アンバサダー制度</a>
                 <a href="partnership.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
-                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
+                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">公式Note</a>
                 <a href="contact.html" class="btn btn-primary text-sm ml-4">お問い合わせ</a>
             </nav>
             <button id="mobile-menu-button" class="lg:hidden text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
@@ -112,7 +120,7 @@
                 <a href="about.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">協会について</a>
                 <a href="business.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">事業内容</a>
                 <a href="ambassador.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">アンバサダー制度</a>
-                <a href="news.html" class="block py-2 text-orange-500 font-bold">お知らせ</a>
+                <a href="news.html" class="block py-2 text-orange-500 font-bold">公式Note</a>
                 <a href="partnership.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">パートナーシップ</a>
                 <a href="contact.html" class="block mt-2 btn btn-primary text-center">お問い合わせ</a>
             </div>
@@ -120,19 +128,49 @@
     </header>
 
     <main>
-        <section class="page-header"><h1 class="text-4xl md:text-5xl font-black text-gray-800">お知らせ</h1><p class="mt-4 text-lg text-gray-600">協会の最新情報、プレスリリース、イベント情報などをお届けします。</p></section>
+        <section class="page-header"><h1 class="text-4xl md:text-5xl font-black text-gray-800">公式Note</h1><p class="mt-4 text-lg text-gray-600">協会の最新情報、プレスリリース、イベント情報などを公式noteでお届けします。</p></section>
         <div class="container mx-auto px-6 py-20">
-            <div class="border-b-2 pb-4 mb-8">
-                <div class="flex space-x-4">
-                    <button class="category-filter-btn font-bold text-orange-500" data-category="all">すべて</button>
-                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="プレスリリース">プレスリリース</button>
-                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="メディア掲載">メディア掲載</button>
-                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="イベント">イベント</button>
-                    <button class="category-filter-btn font-bold text-gray-500 hover:text-orange-500" data-category="お知らせ">お知らせ</button>
+            <!-- 公式Note埋め込みセクション -->
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-12 p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">公式Note</h2>
+                    </div>
+                    <p class="text-gray-600 mb-6">日本学生アンバサダー協会の公式noteです。最新のプレスリリース、イベント情報、協会の活動報告などを随時更新しています。</p>
+                    
+                    <!-- Note埋め込み表示 -->
+                    <div class="flex justify-center mb-6">
+                        <iframe class="note-embed" src="https://note.com/embed/notes/naa1531576674" 
+                                style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" 
+                                height="400"></iframe>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="https://note.com/jaa_official" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium">
+                            <span>公式noteで詳しく見る</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div id="news-list-all" class="space-y-6">
-                <!-- ニュース記事が動的にここに挿入されます -->
+                
+                <!-- 最新記事プレビュー -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">最新記事</h3>
+                    <div id="latest-articles-container" class="space-y-6">
+                        <div class="text-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                            <p class="text-gray-500">最新記事を読み込み中...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -179,8 +217,8 @@
         </div>
     </footer>
     <script src="js/news-loader.js"></script>
-    <script src="js/unified-article-manager.js"></script>
     <script src="js/unified-news-loader.js"></script>
+    <script src="js/note-integration.js"></script>
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -208,9 +246,81 @@
             }
         }
 
+        // Note記事表示関数
+        function displayNoteArticles(articles) {
+            const container = document.getElementById('note-articles-container');
+            if (!container) return;
+            
+            if (!articles || articles.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">現在、記事がありません</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const articlesHtml = articles.map(article => `
+                <div class="note-article bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="tag-note text-xs font-semibold px-2 py-1 rounded-full">公式Note</span>
+                                <span class="text-sm text-gray-500">${new Date(article.publishedAt).toLocaleDateString('ja-JP')}</span>
+                            </div>
+                            <a href="${article.link}" target="_blank" rel="noopener noreferrer" 
+                               class="note-external-link text-sm hover:text-blue-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">${article.title}</h3>
+                        
+                        <p class="text-gray-600 text-sm line-clamp-3 mb-3">${article.content}</p>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="note-source text-sm">${article.category}</span>
+                            <a href="${article.link}" target="_blank" rel="noopener noreferrer" 
+                               class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                記事を読む
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = articlesHtml;
+        }
+        
         // ページ読み込み時にCookie同意状態をチェック
         document.addEventListener('DOMContentLoaded', () => {
             checkCookieConsent();
+            
+            // Note記事表示の初期化
+            if (window.noteIntegrationManager) {
+                // Note記事更新イベントの監視
+                window.addEventListener('jaa-note-update', (event) => {
+                    console.log('Note記事更新イベントを受信:', event.detail);
+                    const pressReleases = window.noteIntegrationManager.getPressReleases();
+                    displayNoteArticles(pressReleases);
+                });
+                
+                // 初期表示
+                const pressReleases = window.noteIntegrationManager.getPressReleases();
+                if (pressReleases.length > 0) {
+                    displayNoteArticles(pressReleases);
+                }
+            }
             
             // 統合ニュースローダーの初期化
             if (window.unifiedNewsLoader) {

@@ -1,54 +1,19 @@
 {
-  "name": "jaa-hp-verification-kit",
+  "name": "jaa-hp",
   "version": "1.0.0",
-  "description": "JAA.HP ニュース記事投稿・表示システム 検証キット",
-  "main": "index.js",
+  "description": "JAA.HP ニュース記事投稿・表示システム",
+  "main": "index.html",
   "scripts": {
-    "test": "npm run test:e2e",
-    "test:e2e": "playwright test tests/e2e/news.spec.ts",
-    "test:e2e:headed": "playwright test tests/e2e/news.spec.ts --headed",
-    "test:e2e:debug": "playwright test tests/e2e/news.spec.ts --debug",
-    "test:api": "newman run tests/api/jaa.postman_collection.json",
-    "test:api:verbose": "newman run tests/api/jaa.postman_collection.json --reporters cli,json",
-    "test:all": "npm run test:e2e && npm run test:api",
-    "test:ci": "playwright test tests/e2e/news.spec.ts --reporter=html && newman run tests/api/jaa.postman_collection.json --reporters cli,json",
-    "install:browsers": "playwright install --with-deps",
-    "install:newman": "npm install -g newman",
-    "install:lighthouse": "npm install -g @lhci/cli",
-    "install:all": "npm run install:browsers && npm run install:newman && npm run install:lighthouse",
-    "lint": "eslint . --ext .js,.ts",
-    "lint:fix": "eslint . --ext .js,.ts --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "build": "echo 'Build process not configured'",
-    "build:analyze": "echo 'Bundle analysis not configured'",
-    "dev": "echo 'Development server not configured'",
-    "start": "echo 'Start command not configured'",
-    "clean": "rm -rf node_modules package-lock.json playwright-report test-results",
-    "setup": "npm install && npm run install:all",
-    "verify": "npm run test:all"
+    "start": "echo 'Static site - open index.html in browser'",
+    "build": "echo 'Static site - no build required'"
   },
   "keywords": [
     "jaa-hp",
     "news-system",
-    "verification",
-    "testing",
-    "playwright",
-    "newman",
-    "lighthouse"
+    "static-site"
   ],
   "author": "JAA.HP Team",
   "license": "MIT",
-  "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@types/node": "^20.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "newman": "^5.3.2"
-  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"

@@ -66,11 +66,14 @@ class UnifiedNewsLoader {
             // ローカルストレージから記事を取得（バックアップ）
             this.loadLocalArticles();
             
+            // 削除された記事を除外
+            this.filterDeletedArticles();
+            
             // 記事を日付順でソート
             this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             this.isLoaded = true;
-            console.log(`記事データ読み込み完了: ${this.articles.length}件`);
+            console.log(`記事データ読み込み完了: ${this.articles.length}件（削除済み記事を除外後）`);
         } catch (error) {
             console.error('記事データ読み込みエラー:', error);
             // エラーの場合はローカルストレージから読み込み
@@ -148,7 +151,22 @@ class UnifiedNewsLoader {
             this.loadArticles();
         }
 
-        let articles = [...this.articles];
+        // 削除された記事をフィルタリング
+        let articles = this.articles.filter(article => {
+            // 削除フラグがtrueの場合は除外
+            if (article.isDeleted === true) {
+                return false;
+            }
+            // 削除日時が設定されている場合は除外
+            if (article.deletedAt) {
+                return false;
+            }
+            // ステータスがdeletedの場合は除外
+            if (article.status === 'deleted') {
+                return false;
+            }
+            return true;
+        });
         
         // 最大件数で制限
         if (maxItems > 0) {
@@ -181,6 +199,37 @@ class UnifiedNewsLoader {
 
         container.innerHTML = html;
         console.log(`統合ニュース表示完了: ${containerId}, 件数: ${articles.length}`);
+    }
+
+    // 削除された記事をフィルタリング
+    filterDeletedArticles() {
+        const originalCount = this.articles.length;
+        
+        // 削除された記事を除外
+        this.articles = this.articles.filter(article => {
+            // 削除フラグがtrueの場合は除外
+            if (article.isDeleted === true) {
+                return false;
+            }
+            // 削除日時が設定されている場合は除外
+            if (article.deletedAt) {
+                return false;
+            }
+            // ステータスがdeletedの場合は除外
+            if (article.status === 'deleted') {
+                return false;
+            }
+            return true;
+        });
+        
+        const filteredCount = this.articles.length;
+        const deletedCount = originalCount - filteredCount;
+        
+        if (deletedCount > 0) {
+            console.log(`削除された記事を除外: ${deletedCount}件`);
+        }
+        
+        return deletedCount;
     }
 
     // 記事の詳細表示
@@ -419,6 +468,10 @@ class UnifiedNewsLoader {
         if (index >= 0) {
             this.articles.splice(index, 1);
             this.refreshAllContainers();
+            
+            // 削除イベントを発火
+            this.dispatchDeleteEvent(articleId);
+            
             console.log(`ニュース削除処理完了: ${articleId}`);
         }
     }
@@ -449,8 +502,46 @@ class UnifiedNewsLoader {
         if (index >= 0) {
             this.articles.splice(index, 1);
             this.refreshAllContainers();
+            
+            // 削除イベントを発火
+            this.dispatchDeleteEvent(articleId);
+            
             console.log(`記事削除処理完了: ${articleId}`);
         }
+    }
+
+    // 記事のソフト削除（論理削除）
+    softDeleteArticle(articleId) {
+        const index = this.articles.findIndex(a => a.id === articleId);
+        if (index >= 0) {
+            // 削除フラグを設定
+            this.articles[index].isDeleted = true;
+            this.articles[index].deletedAt = new Date().toISOString();
+            this.articles[index].status = 'deleted';
+            
+            // 削除された記事をフィルタリング
+            this.filterDeletedArticles();
+            
+            // 全コンテナを更新
+            this.refreshAllContainers();
+            
+            // 削除イベントを発火
+            this.dispatchDeleteEvent(articleId);
+            
+            console.log(`記事ソフト削除処理完了: ${articleId}`);
+        }
+    }
+
+    // 削除イベントを発火
+    dispatchDeleteEvent(articleId) {
+        const event = new CustomEvent('jaa-article-deleted', {
+            detail: {
+                articleId: articleId,
+                timestamp: Date.now(),
+                action: 'softDelete'
+            }
+        });
+        window.dispatchEvent(event);
     }
 
     // 記事のソート

@@ -119,10 +119,11 @@
     <script src="js/news-loader.js"></script>
     <script src="js/markdown-news-loader.js"></script>
     <script src="js/news-auto-updater.js"></script>
+    <script src="js/enhanced-ux.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            font-family: 'Yu Gothic', 'YuGothic', 'Inter', 'Noto Sans JP', sans-serif;
             background-color: #ffffff;
             color: #1f2937;
         }
@@ -140,6 +141,52 @@
             background-size: cover;
             background-position: center;
             opacity: 0.2;
+            transform: scale(1.1);
+            transition: transform 0.3s ease-out;
+        }
+        
+        /* パララックス効果の強化 */
+        .hero-section .hero-image[data-parallax] {
+            will-change: transform;
+        }
+        
+        /* アニメーション要素の初期状態 */
+        [data-animate] {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        [data-animate].animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* アニメーションが動作する場合の初期状態 */
+        body.animations-enabled [data-animate] {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        body.animations-enabled [data-animate].animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* インタラクティブ要素のホバー効果 */
+        [data-interactive="hover-lift"] {
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        [data-interactive="hover-lift"]:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* カードのホバー効果強化 */
+        .card[data-interactive="hover-lift"]:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
         .hero-content {
             position: relative;
@@ -160,6 +207,356 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #e5e7eb;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* セクション内のカード統一サイズ */
+        .section-card {
+            min-height: 350px;
+        }
+
+        .section-card .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 全カードの統一サイズ */
+        .card {
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card .card-footer {
+            margin-top: auto;
+        }
+
+        /* アンバサダー制度導入企業・団体のカード統一 */
+        #success-stories .card {
+            min-height: 380px;
+        }
+
+        /* 公式Noteカルーセルのカード統一 */
+        .carousel-3d-content {
+            min-height: 450px;
+        }
+
+        /* iframe用のスタイル */
+        .carousel-3d-iframe {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-3d-iframe iframe {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .carousel-3d-info {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .carousel-3d-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-3d-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-3d-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* 具体的な活動例の新しいデザイン */
+        .activity-example-card {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .activity-example-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .activity-example-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-example-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border-radius: 16px;
+        }
+
+        .activity-example-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .activity-example-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .activity-example-card:hover .activity-example-title::after {
+            width: 100%;
+        }
+
+        .activity-example-content {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .activity-example-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .activity-example-content li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .activity-example-content li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 0.875rem;
+        }
+
+        .activity-example-highlight {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .activity-example-card {
+                margin: 0.5rem;
+                padding: 1.5rem;
+            }
+        }
+
+        /* アンバサダー制度導入企業・団体の新しいデザイン */
+        .ambassador-company-card {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .ambassador-company-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .ambassador-company-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .ambassador-company-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .ambassador-company-category {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .ambassador-company-description {
+            color: #475569;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ambassador-company-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ambassador-company-tag {
+            padding: 0.375rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+            color: #3b82f6;
+            border: 1px solid rgba(59,130,246,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .ambassador-company-tag:hover {
+            background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2));
+            transform: translateY(-1px);
+        }
+
+        .ambassador-company-activities {
+            background: linear-gradient(135deg, rgba(248,250,252,0.8), rgba(241,245,249,0.8));
+            border-radius: 16px;
+            padding: 1.25rem;
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(135deg, #3b82f6, #8b5cf6) 1;
+        }
+
+        .ambassador-company-activities-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .ambassador-company-activities-content {
+            color: #475569;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .ambassador-company-highlight {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        @keyframes gradient-flow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .ambassador-company-card {
+                margin: 0.5rem;
+                padding: 1.5rem;
+            }
+            
+            .ambassador-company-logo {
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        /* 画面の左右空白を十分に確保 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* セクションの最大幅を制限して左右空白を確保 */
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* グリッドレイアウトの調整 */
+        .grid {
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                gap: 1.5rem;
+            }
         }
         .card:hover {
             transform: translateY(-5px);
@@ -288,6 +685,21 @@
             align-items: center;
             gap: 1.2em;
             text-align: center;
+        }
+
+        .opening-logo-image {
+            width: 120px;
+            height: auto;
+            margin-bottom: 1em;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .opening-logo-image.visible {
+            opacity: 1;
+            transform: scale(1);
         }
         
         .opening-logo.visible {
@@ -422,11 +834,13 @@
             .opening-main-title { font-size: 54px; }
             .opening-sub-title { font-size: 26px; }
             .opening-message { font-size: 34px; }
+            .opening-logo-image { width: 150px; }
         }
         @media (max-width: 600px) {
             .opening-main-title { font-size: 26px; }
             .opening-sub-title { font-size: 13px; }
             .opening-message { font-size: 18px; }
+            .opening-logo-image { width: 80px; }
             .skip-button {
                 bottom: 15px;
                 right: 15px;
@@ -451,6 +865,420 @@
         body.loaded main,
         body.loaded footer {
             opacity: 1;
+        }
+
+        /* フォールバック: オープンアニメーションが動作しない場合の対策 */
+        body:not(.loading):not(.loaded) #header,
+        body:not(.loading):not(.loaded) main,
+        body:not(.loading):not(.loaded) footer {
+            opacity: 1;
+        }
+
+        /* 強制的にアニメーション要素を表示 */
+        [data-animate] {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* アニメーションが動作しない場合の強制表示 */
+        body.loaded [data-animate],
+        body:not(.loading) [data-animate] {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* おしゃれな背景パターン */
+        .pattern-bg {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 40%, rgba(16, 185, 129, 0.05) 50%, transparent 60%);
+            background-size: 200px 200px, 300px 300px, 100px 100px;
+            background-position: 0 0, 100px 100px, 50px 50px;
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% { background-position: 0 0, 100px 100px, 50px 50px; }
+            100% { background-position: 200px 200px, 400px 400px, 150px 150px; }
+        }
+
+        /* セクション間の装飾要素 */
+        .section-divider {
+            position: relative;
+            height: 120px;
+            background: #ffffff;
+            overflow: hidden;
+            margin: 40px 0;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+            transform: translateY(-50%);
+        }
+
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #f97316, #ea580c, #dc2626);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.3));
+        }
+
+        .section-divider:hover::after {
+            box-shadow: 0 0 35px rgba(249, 115, 22, 0.7);
+            transform: translate(-50%, -50%) scale(1.3);
+            filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.5));
+        }
+
+        .section-divider:hover::before {
+            background: linear-gradient(90deg, transparent, #f97316, #f97316, transparent);
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+        }
+
+        /* フローティング装飾要素 */
+        .floating-element {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(59, 130, 246, 0.1));
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+
+
+        /* Sponsor Gradient Effect */
+        .sponsor-gradient {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        /* KITEN Forum Gradient Effects */
+        .kiten-title {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+            animation: kitenTitleGlow 4s ease-in-out infinite;
+        }
+
+        .kiten-subtitle {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: kitenSubtitleGlow 3s ease-in-out infinite;
+        }
+
+        .kiten-highlight {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .kiten-card-title {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .kiten-feature-title {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .kiten-cta-title {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        @keyframes kitenTitleGlow {
+            0%, 100% {
+                background: linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4, #f59e0b);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+            }
+            25% {
+                background: linear-gradient(135deg, #3b82f6, #06b6d4, #f59e0b, #8b5cf6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 50px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                background: linear-gradient(135deg, #06b6d4, #f59e0b, #8b5cf6, #3b82f6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 60px rgba(6, 182, 212, 0.6);
+            }
+            75% {
+                background: linear-gradient(135deg, #f59e0b, #8b5cf6, #3b82f6, #06b6d4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 50px rgba(245, 158, 11, 0.5);
+            }
+        }
+
+        @keyframes kitenSubtitleGlow {
+            0%, 100% {
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            50% {
+                background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4, #f59e0b);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            25% {
+                background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f59e0b, #3b82f6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            50% {
+                background: linear-gradient(135deg, #06b6d4, #f59e0b, #3b82f6, #8b5cf6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            75% {
+                background: linear-gradient(135deg, #f59e0b, #3b82f6, #8b5cf6, #06b6d4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        }
+
+        /* Global Floating Bubbles */
+        .global-floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            backdrop-filter: blur(2px);
+            animation: floatBubble 8s ease-in-out infinite;
+        }
+
+        .bubble-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+            animation-duration: 12s;
+        }
+
+        .bubble-2 {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            right: 8%;
+            animation-delay: 2s;
+            animation-duration: 15s;
+        }
+
+        .bubble-3 {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 3%;
+            animation-delay: 4s;
+            animation-duration: 10s;
+        }
+
+        .bubble-4 {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            right: 5%;
+            animation-delay: 6s;
+            animation-duration: 14s;
+        }
+
+        .bubble-5 {
+            width: 70px;
+            height: 70px;
+            top: 80%;
+            left: 10%;
+            animation-delay: 8s;
+            animation-duration: 11s;
+        }
+
+        .bubble-6 {
+            width: 90px;
+            height: 90px;
+            top: 15%;
+            left: 50%;
+            animation-delay: 1s;
+            animation-duration: 13s;
+        }
+
+        .bubble-7 {
+            width: 110px;
+            height: 110px;
+            top: 35%;
+            right: 15%;
+            animation-delay: 3s;
+            animation-duration: 16s;
+        }
+
+        .bubble-8 {
+            width: 50px;
+            height: 50px;
+            top: 55%;
+            left: 8%;
+            animation-delay: 5s;
+            animation-duration: 9s;
+        }
+
+        .bubble-9 {
+            width: 130px;
+            height: 130px;
+            top: 75%;
+            right: 12%;
+            animation-delay: 7s;
+            animation-duration: 17s;
+        }
+
+        .bubble-10 {
+            width: 85px;
+            height: 85px;
+            top: 25%;
+            left: 25%;
+            animation-delay: 9s;
+            animation-duration: 12s;
+        }
+
+                @keyframes floatBubble {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(-30px) translateX(15px) rotate(90deg) scale(1.1);
+                opacity: 1.0;
+            }
+            50% {
+                transform: translateY(-60px) translateX(-10px) rotate(180deg) scale(0.9);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(-30px) translateX(-20px) rotate(270deg) scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        /* カードの装飾 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316, #3b82f6, #10b981);
+            border-radius: 1rem 1rem 0 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* セクションタイトルの装飾 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316, #3b82f6);
+            transform: translateX(-50%);
+            border-radius: 2px;
         }
 
         /* Cookie同意バナー */
@@ -535,9 +1363,393 @@
                 justify-content: center;
             }
         }
+
+        /* 3D Carousel Styles */
+        .carousel-3d-container {
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .carousel-3d-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .carousel-3d-item {
+            position: absolute;
+            width: 500px;
+            height: 450px;
+            left: 50%;
+            top: 50%;
+            transform-origin: 50% 50% -400px;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+
+        .carousel-3d-item.active {
+            transform: translate(-50%, -50%) rotateY(0deg) scale(1.1);
+            z-index: 10;
+        }
+
+        .carousel-3d-item.prev {
+            transform: translate(-50%, -50%) rotateY(-60deg) scale(0.8);
+            z-index: 5;
+        }
+
+        .carousel-3d-item.next {
+            transform: translate(-50%, -50%) rotateY(60deg) scale(0.8);
+            z-index: 5;
+        }
+
+        .carousel-3d-item.hidden {
+            transform: translate(-50%, -50%) rotateY(120deg) scale(0.6);
+            z-index: 1;
+        }
+
+        .carousel-3d-item.hidden-reverse {
+            transform: translate(-50%, -50%) rotateY(-120deg) scale(0.6);
+            z-index: 1;
+        }
+
+        .carousel-3d-content {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .carousel-3d-content:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .carousel-3d-item.active .carousel-3d-content {
+            border-color: #f97316;
+            box-shadow: 0 25px 50px rgba(249, 115, 22, 0.2);
+        }
+
+        .carousel-3d-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .carousel-3d-image {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+        }
+
+        .carousel-3d-text {
+            padding: 16px;
+            height: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .carousel-3d-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .carousel-3d-date {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(156, 163, 175, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background: #f97316;
+            transform: scale(1.2);
+        }
+
+        .carousel-indicator:hover {
+            background: #f97316;
+            transform: scale(1.1);
+        }
+
+        /* Top Navigation Menu */
+        .top-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(249, 115, 22, 0.1));
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(249, 115, 22, 0.2);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            z-index: 100;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .top-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 15px 20px;
+            border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(255, 255, 255, 0.1));
+        }
+
+        .top-nav-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .top-nav-toggle {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 35px;
+            height: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav-toggle:hover {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(255, 255, 255, 0.2));
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .hamburger-line {
+            width: 18px;
+            height: 2px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            border-radius: 1px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .top-nav-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .top-nav-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .top-nav-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .top-nav-content {
+            padding: 15px 20px 20px 20px;
+            transition: all 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(249, 115, 22, 0.05));
+        }
+
+        .top-nav.expanded .top-nav-content {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .top-nav-section {
+            margin-bottom: 20px;
+        }
+
+        .top-nav-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .top-nav-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #f97316;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+            padding-bottom: 5px;
+        }
+
+        .top-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-nav-links li {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 10px 12px;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(255, 255, 255, 0.1));
+            color: #1f2937;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(255, 255, 255, 0.1));
+            color: #92400e;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        .side-toc-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f97316;
+        }
+
+        .side-toc-section {
+            margin-bottom: 20px;
+        }
+
+        .side-toc-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .side-toc-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-toc-links li {
+            margin-bottom: 6px;
+        }
+
+        .side-toc-links a {
+            font-size: 13px;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: block;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .side-toc-links a:hover {
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .side-toc-links a.active {
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.15);
+            font-weight: 500;
+        }
+
+        .top-nav:hover {
+            transform: translateY(-50%) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 8px 20px rgba(249, 115, 22, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .top-nav {
+                max-width: 280px;
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                max-width: 260px;
+                right: 10px;
+            }
+            
+            .top-nav-header {
+                padding: 15px 15px 12px 15px;
+            }
+            
+            .top-nav-content {
+                padding: 12px 15px 15px 15px;
+            }
+            
+            .top-nav-title {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body class="loading">
+    <!-- Global Floating Elements -->
+    <div class="global-floating-elements">
+        <div class="floating-bubble bubble-1"></div>
+        <div class="floating-bubble bubble-2"></div>
+        <div class="floating-bubble bubble-3"></div>
+        <div class="floating-bubble bubble-4"></div>
+        <div class="floating-bubble bubble-5"></div>
+        <div class="floating-bubble bubble-6"></div>
+        <div class="floating-bubble bubble-7"></div>
+        <div class="floating-bubble bubble-8"></div>
+        <div class="floating-bubble bubble-9"></div>
+        <div class="floating-bubble bubble-10"></div>
+    </div>
 
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMBL47D6"
@@ -548,11 +1760,12 @@
     <div id="opening-animation" class="opening-container">
         <canvas id="particleCanvas"></canvas>
         <div id="opening-logo" class="opening-logo">
+            <img src="https://i.ibb.co/1tJJ0ZVj/image.png" alt="日本学生アンバサダー協会 ロゴ" class="opening-logo-image">
             <span class="opening-main-title">Japan Ambassador Association</span>
             <span class="opening-sub-title">日本学生アンバサダー協会</span>
             <span id="opening-message" class="opening-message">責任ある学生と、想いをともに</span>
         </div>
-        <button id="skip-button" class="skip-button">SKIP</button>
+        <button id="skip-button" class="skip-button" onclick="skipOpening()">SKIP</button>
     </div>
 
     <!-- Cookie同意バナー -->
@@ -580,7 +1793,7 @@
                 <a href="about.html" class="text-gray-600 hover:text-orange-500 transition">協会について</a>
                 <a href="ambassador.html" class="text-gray-600 hover:text-orange-500 transition">アンバサダー制度</a>
                 <a href="partnership.html" class="text-gray-600 hover:text-orange-500 transition">パートナーシップ</a>
-                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">お知らせ</a>
+                <a href="news.html" class="text-gray-600 hover:text-orange-500 transition">公式Note</a>
                 <a href="contact.html" class="btn btn-primary text-sm ml-4">お問い合わせ</a>
             </nav>
             <button id="mobile-menu-button" class="lg:hidden text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
@@ -591,120 +1804,973 @@
                 <a href="business.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">事業内容</a>
                 <a href="ambassador.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">アンバサダー制度</a>
                 <a href="partnership.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">パートナーシップ</a>
-                <a href="news.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">お知らせ</a>
+                <a href="news.html" class="block py-2 text-gray-600 hover:text-orange-500 font-bold">公式Note</a>
                 <a href="contact.html" class="block mt-2 btn btn-primary text-center">お問い合わせ</a>
             </div>
         </div>
     </header>
 
-    <main>
+    <!-- Top Navigation Menu -->
+    <nav class="top-nav" id="top-nav">
+        <div class="top-nav-header">
+            <div class="top-nav-title">目次</div>
+            <button class="top-nav-toggle" id="top-nav-toggle" onclick="toggleTopNav()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+        <div class="top-nav-content" id="top-nav-content">
+            <div class="top-nav-section">
+                <div class="top-nav-section-title">カテゴリ</div>
+                <ul class="top-nav-links">
+                    <li><a href="#mission" class="nav-link">ミッション・ビジョン</a></li>
+                    <li><a href="#about" class="nav-link">協会について</a></li>
+                    <li><a href="#business" class="nav-link">事業内容</a></li>
+                    <li><a href="#ambassador-benefits" class="nav-link">アンバサダー特典</a></li>
+                    <li><a href="#reiwano-tora" class="nav-link">令和の虎出演</a></li>
+                    <li><a href="#statistics" class="nav-link">活動実績</a></li>
+                    <li><a href="#success-stories" class="nav-link">成功事例</a></li>
+                    <li><a href="#official-note-carousel" class="nav-link">公式note</a></li>
+                    <li><a href="#partnership" class="nav-link">パートナーシップ</a></li>
+                </ul>
+            </div>
+            
+            <div class="top-nav-section">
+                <div class="top-nav-section-title">最新記事</div>
+                <ul class="top-nav-links" id="top-nav-news">
+                    <!-- 最新記事が動的に挿入されます -->
+                </ul>
+            </div>
+            
+            <div class="top-nav-section">
+                <div class="top-nav-section-title">お問い合わせ</div>
+                <ul class="top-nav-links">
+                    <li><a href="contact.html" class="nav-link">お問い合わせフォーム</a></li>
+                    <li><a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" class="nav-link">学生AMB応募</a></li>
+                    <li><a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" class="nav-link">企業連携</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main style="position: relative; z-index: 10;">
         <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-image"></div>
-            <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center">
-                <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4 text-gray-800">学生の挑戦に寄り添う</h1>
-                <p class="text-lg md:text-xl mb-10 text-gray-600 font-medium">学生の力で企業の未来を共に創造する</p>
-                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-                    <a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" class="btn btn-primary">学生AMB応募はこちら</a>
-                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">企業連携はこちら</a>
+        <section class="hero-section relative overflow-hidden">
+            <div class="hero-image" data-parallax="0.3" data-direction="scale"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white"></div>
+            <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4 text-gray-800" 
+                    data-animate="fade-up" data-delay="0.2">学生の挑戦に寄り添う</h1>
+                <p class="text-lg md:text-xl mb-6 text-gray-600 font-medium" 
+                   data-animate="fade-up" data-delay="0.4">日本初の学生アンバサダー認定機関</p>
+                <p class="text-base md:text-lg mb-10 text-gray-500 max-w-3xl mx-auto" 
+                   data-animate="fade-up" data-delay="0.5">ZEN大学発・N/S高等学校卒業生による公益団体。学生一人ひとりの可能性を引き出し、企業や社会とつなげるハブとして活動しています。</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4" 
+                     data-animate="fade-up" data-delay="0.6">
+                    <a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-primary" data-interactive="hover-lift">学生アンバサダー応募</a>
+                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-secondary" data-interactive="hover-lift">企業連携・パートナーシップ</a>
+                </div>
+                <div class="mt-8 text-sm text-gray-500" data-animate="fade-up" data-delay="0.7">
+                    <p>2025年10月 一般社団法人設立予定</p>
                 </div>
             </div>
         </section>
 
         <div class="container mx-auto px-6 py-20">
             <!-- Mission/Vision Section -->
-            <section id="mission" class="mb-24 fade-in">
+            <section id="mission" class="mb-24 relative">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
                 <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="text-center md:text-left">
-                        <p class="section-subtitle">OUR MISSION</p>
+                    <div class="text-center md:text-left" data-animate="fade-right" data-delay="0.2">
+                        <p class="section-subtitle">OUR MISSION & VISION</p>
                         <h2 class="section-title text-3xl md:text-4xl mb-4">学生だから<br>信頼されないを、なくす。</h2>
-                        <p class="text-gray-600 leading-relaxed">私たちは、学生が持つ無限の可能性を信じています。年齢や経験だけで判断されることなく、一人ひとりの挑戦が正当に評価され、応援される社会の実現を目指します。</p>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/239g3jBP/1.png" alt="Mission Image" class="rounded-lg shadow-lg">
-                    </div>
-                </div>
-            </section>
-
-            <!-- About Section -->
-            <section id="about" class="mb-24 fade-in">
-                 <div class="text-center">
-                    <p class="section-subtitle">ABOUT US</p>
-                    <h2 class="section-title text-3xl md:text-4xl mb-4">日本学生アンバサダー協会について</h2>
-                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-8">私たちは、学生と企業、そして社会を繋ぐハブとなり、次世代を担う若者の円滑な社会進出をリードするパートナー団体です。</p>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <div class="card p-8">
-                        <h3 class="text-2xl font-bold mb-3">代表者メッセージ</h3>
-                        <div class="flex items-center mb-4">
-                            <img src="https://i.ibb.co/5W3fDRJs/WHO-Emergency-Health-Organization.jpg" alt="代表者 井上幹太" class="w-16 h-16 rounded-full mr-4 object-cover">
-                            <div>
-                                <p class="font-bold">井上幹太</p>
-                                <p class="text-sm text-gray-500">日本学生アンバサダー協会 代表</p>
+                        <p class="text-gray-600 leading-relaxed mb-6">私たちは、学生が持つ無限の可能性を信じています。年齢や経験だけで判断されることなく、一人ひとりの挑戦が正当に評価され、応援される社会の実現を目指します。</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div class="bg-orange-50 p-6 rounded-lg border-l-4 border-orange-500">
+                                <h3 class="font-bold text-orange-700 mb-2">Mission</h3>
+                                <p class="text-sm text-gray-600">学生だから信頼されない社会を変える</p>
+                            </div>
+                            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                                <h3 class="font-bold text-blue-700 mb-2">Vision</h3>
+                                <p class="text-sm text-gray-600">全ての企業に学生ポジションを確立する</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 mb-4">「すべての学生が、自身の可能性を信じ、挑戦できる社会へ。」</p>
-                        <a href="about.html#message" class="font-bold text-orange-500 hover:text-orange-600 transition">続きを読む &rarr;</a>
                     </div>
-                    <div class="card p-8 flex flex-col justify-between h-full" style="height: 100%; min-height: 420px;">
-                        <h3 class="text-2xl font-bold mb-3">団体概要</h3>
-                        <div class="hidden lg:flex justify-center my-4">
-                            <img src="https://i.ibb.co/sh8hccC/image.png" alt="団体概要イメージ" style="max-width:400px; width:100%; height:auto;">
+                    <div data-animate="fade-left" data-delay="0.4">
+                        <img src="https://i.ibb.co/239g3jBP/1.png" alt="Mission Image" 
+                             class="rounded-lg shadow-lg" data-interactive="tilt">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
+
+            <!-- About Section -->
+            <section id="about" class="mb-24">
+                 <div class="text-center" data-animate="fade-up" data-delay="0.2">
+                    <p class="section-subtitle">ABOUT US</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">日本学生アンバサダー協会について</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-8">アンバサダー制度の普及と促進を目的に設立された団体です。学生アンバサダーとは、企業や大学の魅力・価値を、学生ならではの視点で継続的に伝えていく役割を担う人のことです。</p>
+                </div>
+
+                <!-- 団体基本情報 -->
+                <div class="max-w-4xl mx-auto mb-16" data-animate="fade-up" data-delay="0.3">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/50">
+                        <div class="space-y-6">
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2">所在地</h3>
+                                <p class="text-gray-600 leading-relaxed">〒107-0052 東京都港区赤坂2丁目4−6 赤坂グリーンクロス/AKASAKA GREEN CROSS（仮事務所）</p>
+                            </div>
+                            
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2">設立</h3>
+                                <p class="text-gray-600 leading-relaxed">2025年7月 任意団体として設立<br>2025年10月末 一般社団法人として登記予定</p>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800 mb-2">略称</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    <span class="text-2xl font-bold text-orange-600">JAA</span> (Japan Ambassador Association)<br>
+                                    <span class="text-sm text-gray-500">100のKITEN Forum公式アンバサダーオーディション運営</span>
+                                </p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 mb-4 flex-1">協会の理念、役員、沿革など、私たちについての基本情報をご紹介します。</p>
-                        <div class="flex flex-col gap-2 mt-auto">
-                            <a href="about.html" class="font-bold text-orange-500 hover:text-orange-600 transition">詳しく見る &rarr;</a>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="card p-8" data-animate="fade-up" data-delay="0.4" data-interactive="hover-lift">
+                        <h3 class="text-2xl font-bold mb-3">代表理事メッセージ</h3>
+                        <div class="flex items-center mb-4">
+                            <img src="https://i.ibb.co/5W3fDRJs/WHO-Emergency-Health-Organization.jpg" alt="代表理事 井上幹太" 
+                                 class="w-16 h-16 rounded-full mr-4 object-cover" data-interactive="magnetic">
+                            <div>
+                                <p class="font-bold">井上幹太</p>
+                                <p class="text-sm text-gray-500">日本学生アンバサダー協会 代表理事</p>
+                                <p class="text-xs text-gray-400">ZEN大学 知能情報社会学部 / N/S高等学校卒業</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">「学生アンバサダー制度を通じて、学生一人ひとりの可能性を最大限に引き出し、企業や大学、そして社会全体の価値創造に貢献したい。学生ならではの視点と情熱が、新しい時代を切り拓く力になると信じています。」</p>
+                        <div class="text-sm text-gray-500 mb-4">
+                            <p><strong>経歴：</strong>長期不登校経験後、N/S高等学校で投資部4期生として活動。国際経済学オリンピック国内選抜大会2位、松下政経塾スピーチコンテスト優良賞受賞。2025年4月ZEN大学開学と同時に一期生として入学。</p>
+                        </div>
+                        <a href="about.html#message" class="font-bold text-orange-500 hover:text-orange-600 transition" 
+                           data-interactive="ripple">詳しい経歴を見る &rarr;</a>
+                    </div>
+                    
+                    <!-- アンバサダー制度詳細説明 -->
+                    <div class="card p-8" data-animate="fade-up" data-delay="0.5" data-interactive="hover-lift">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-600">学生アンバサダー制度とは</h3>
+                        <div class="space-y-4 text-gray-600">
+                            <p>学生アンバサダーとは、企業や大学の魅力・価値を、学生ならではの視点で継続的に伝えていく役割を担う人のことです。</p>
+                            
+                            <p>単に依頼された商品をSNSに投稿するだけでなく、<strong>企画 → 取材 → 編集 → 発信 → 分析・ふり返り</strong>まで一貫して担当することが多いのが特徴です。だからこそ、発信の質と当事者性が高まり、活動を通じてあなた自身の信用（パーソナル・ブランド）も育っていきます。✨</p>
+                            
+                            <p>また、活動の記録をポートフォリオとしてまとめることは、文部科学省が推進する「キャリア教育」（社会的・職業的自立に向けた資質形成）の観点からも、非常に価値のある経験となります。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- アンバサダー活動の具体例 -->
+                <div class="mt-16">
+                    <h3 class="text-3xl font-bold text-center mb-16" data-animate="fade-up" data-delay="0.6">
+                        <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+                            具体的な活動例
+                        </span>
+                    </h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="activity-example-card" data-animate="fade-up" data-delay="0.7">
+                            <div class="activity-example-icon bg-gradient-to-br from-blue-500 to-blue-600">
+                                <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v18a1 1 0 01-1 1H3a1 1 0 01-1-1V1a1 1 0 011-1h2a1 1 0 011 1v3m0 0h8m-8 0v16a1 1 0 001 1h6a1 1 0 001-1V4z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="activity-example-title">公式SNSでの発信</h4>
+                            <div class="activity-example-content">
+                                <ul>
+                                    <li><span class="activity-example-highlight">写真3枚＋150字程度</span>のテキスト投稿</li>
+                                    <li><span class="activity-example-highlight">30〜60秒程度</span>のショート動画（リールなど）の作成</li>
+                                    <li>イベントや学内の日常を伝える<span class="activity-example-highlight">リアルタイムレポ</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="activity-example-card" data-animate="fade-up" data-delay="0.8">
+                            <div class="activity-example-icon bg-gradient-to-br from-green-500 to-green-600">
+                                <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                            </div>
+                            <h4 class="activity-example-title">コンテンツの企画と編集</h4>
+                            <div class="activity-example-content">
+                                <p><span class="activity-example-highlight">ネタ出し</span>から、<span class="activity-example-highlight">撮影</span>、<span class="activity-example-highlight">キャプション作成</span>、<span class="activity-example-highlight">校閲</span>、<span class="activity-example-highlight">公開</span>までの一連の流れを担当します。</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-example-card" data-animate="fade-up" data-delay="0.9">
+                            <div class="activity-example-icon bg-gradient-to-br from-purple-500 to-purple-600">
+                                <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="activity-example-title">インタビュー記事の作成</h4>
+                            <div class="activity-example-content">
+                                <p>学生、教職員、企業の担当者などに<span class="activity-example-highlight">「5つの質問」</span>で深掘りし、<span class="activity-example-highlight">Q&A形式</span>の記事を作成します。</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-example-card" data-animate="fade-up" data-delay="1.0">
+                            <div class="activity-example-icon bg-gradient-to-br from-orange-500 to-orange-600">
+                                <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="activity-example-title">UGCとの連携</h4>
+                            <div class="activity-example-content">
+                                <p>他の学生による素敵な投稿（<span class="activity-example-highlight">UGC</span>）を探し、投稿者に<span class="activity-example-highlight">二次利用の同意</span>を得た上で、公式アカウントで紹介します。</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-example-card" data-animate="fade-up" data-delay="1.1">
+                            <div class="activity-example-icon bg-gradient-to-br from-indigo-500 to-indigo-600">
+                                <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="activity-example-title">活動レポートの作成</h4>
+                            <div class="activity-example-content">
+                                <p><span class="activity-example-highlight">保存率</span>や<span class="activity-example-highlight">リーチ数</span>、<span class="activity-example-highlight">指名検索</span>の推移などを<span class="activity-example-highlight">月次</span>でふり返り、次のアクションを考えます。</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    </div>
+                    <div class="card p-8 flex flex-col justify-between h-full" style="height: 100%; min-height: 420px;" 
+                         data-animate="fade-up" data-delay="0.6" data-interactive="hover-lift">
+                        <h3 class="text-2xl font-bold mb-3">設立経緯・ロードマップ</h3>
+                        <div class="space-y-4 flex-1">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-800 mb-2">設立準備期（2025年5月〜）</h4>
+                                <p class="text-sm text-gray-600">任意団体として準備委員会を立ち上げ、企業向け営業・広報活動を開始</p>
+                        </div>
+                            <div class="bg-orange-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-orange-800 mb-2">正式発表（2025年7月）</h4>
+                                <p class="text-sm text-gray-600">「人財版 令和の虎」で設立を正式発表。1,600万円の出資を獲得</p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-800 mb-2">法人設立（2025年10月予定）</h4>
+                                <p class="text-sm text-gray-600">一般社団法人として法人登記予定</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800 mb-2">将来ビジョン（2035年まで）</h4>
+                                <p class="text-sm text-gray-600">公益社団法人化を目指し、学生支援プラットフォームを本格稼働</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-4">
+                            <a href="about.html" class="font-bold text-orange-500 hover:text-orange-600 transition" 
+                               data-interactive="ripple">団体概要を見る &rarr;</a>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
 
             <!-- Business Section -->
-            <section id="business" class="mb-24 fade-in">
-                <div class="text-center">
+            <section id="business" class="mb-24">
+                <div class="text-center" data-animate="fade-up" data-delay="0.2">
                     <p class="section-subtitle">OUR BUSINESS</p>
-                    <h2 class="section-title text-3xl md:text-4xl mb-12">事業内容</h2>
+                    <h2 class="section-title text-3xl md:text-4xl mb-6">事業内容</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">前提として公益性・非営利事業を中心に構成し、学生アンバサダー制度の普及と促進を通じて社会に貢献します。</p>
                 </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                     <!-- Business Cards -->
-                    <div class="card p-6 flex flex-col items-center">
-                        <img src="https://i.ibb.co/ksdLDXdb/image.png" alt="アンバサダー認定サービス" class="w-full aspect-[16/9] object-cover rounded-lg mb-4">
-                        <h3 class="text-xl font-bold mb-2">アンバサダー認定サービス</h3>
-                        <p class="text-gray-600">独自の評価基準で学生の能力と情熱を可視化します。</p>
+                    <div class="card p-6 flex flex-col" data-animate="fade-up" data-delay="0.3" data-interactive="hover-lift">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                     </div>
-                    <div class="card p-6 flex flex-col items-center">
-                        <img src="https://i.ibb.co/KjZxWWbg/Chat-GPT-Image-2025-6-10-21-46-10.png" alt="教育・学習支援" class="w-full aspect-[16/9] object-cover rounded-lg mb-4">
-                        <h3 class="text-xl font-bold mb-2">教育・学習支援</h3>
-                        <p class="text-gray-600">次世代リーダーを育成するプログラムを提供します。</p>
+                        <h3 class="text-xl font-bold mb-3">学生アンバサダーコミュニティの設立、活動促進サービス</h3>
+                        <ul class="text-gray-600 text-sm leading-relaxed space-y-1">
+                            <li>• 学生アンバサダーコミュニティ設立支援</li>
+                            <li>• 学生向けマーケティング支援</li>
+                            <li>• 学生団体連携事業コンサル</li>
+                            <li>• 学生アンバサダー証明書発行</li>
+                            <li>• 学生アンバサダー認定試験開発、運営</li>
+                        </ul>
                     </div>
-                    <div class="card p-6 flex flex-col items-center">
-                        <img src="https://i.ibb.co/gc7Lbny/Chat-GPT-Image-2025-6-10-16-15-58.png" alt="ワカモノ向け広報・PR支援" class="w-full aspect-[16/9] object-cover rounded-lg mb-4">
-                        <h3 class="text-xl font-bold mb-2">ワカモノ向け広報・PR支援</h3>
-                        <p class="text-gray-600">学生の視点を活かしたリアルな企業ブランディングを支援します。</p>
+                    <div class="card p-6 flex flex-col" data-animate="fade-up" data-delay="0.4" data-interactive="hover-lift">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
                     </div>
+                        <h3 class="text-xl font-bold mb-3">学生向けキャリア支援</h3>
+                        <ul class="text-gray-600 text-sm leading-relaxed space-y-1">
+                            <li>• 検定試験の運営、企画、企業連携</li>
+                            <li>• 学生向け社会進出支援サービス（イベント登壇、取材、インタビュー等）</li>
+                            <li>• 不登校学生向け活動支援サービス（課外活動、学生支援サービス紹介等）</li>
+                        </ul>
                 </div>
-                 <div class="text-center mt-8">
-                    <a href="business.html" class="btn btn-primary">全ての事業を見る</a>
+                    <div class="card p-6 flex flex-col" data-animate="fade-up" data-delay="0.5" data-interactive="hover-lift">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M12 12h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">企業採用支援サービス</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">企業採用イベント運営、企画を通じて、学生と企業のマッチングを支援し、効果的な採用活動をサポートします。</p>
+                    </div>
+                    <div class="card p-6 flex flex-col" data-animate="fade-up" data-delay="0.6" data-interactive="hover-lift">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">生成AIを活用した企業ソフトウェア開発支援</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">最新の生成AI技術を活用し、企業のソフトウェア開発を支援。学生の技術的スキル向上と企業のDX推進を同時に実現します。</p>
+                    </div>
+
+
+                </div>
+                 <div class="text-center mt-8" data-animate="fade-up" data-delay="0.8">
+                    <a href="business.html" class="btn btn-primary" data-interactive="ripple">全ての事業詳細を見る</a>
                 </div>
             </section>
 
-            <!-- News Section -->
-            <section id="news" class="mb-24 fade-in">
-                <div class="text-center">
-                    <p class="section-subtitle">NEWS</p>
-                    <h2 class="section-title text-3xl md:text-4xl mb-12">お知らせ</h2>
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
+
+            <!-- Ambassador Benefits Section -->
+            <section id="ambassador-benefits" class="mb-24">
+                <div class="text-center mb-16" data-animate="fade-up" data-delay="0.2">
+                    <p class="section-subtitle">AMBASSADOR BENEFITS</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-6">学生アンバサダーが得られる経験</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed">日本を代表する一流企業へのアンバサダーとして「顔」になれる。選考特別免除等の特典を用意しております。</p>
                 </div>
-                <div class="space-y-4" id="news-list-home">
-                    <!-- 最新ニュースが動的にここに挿入されます -->
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="text-center" data-animate="fade-up" data-delay="0.3">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M12 12h.01"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">一流企業との直接連携</h3>
+                        <p class="text-gray-600">Google、積水ハウスなど、業界トップ企業との直接的なパートナーシップ</p>
+                    </div>
+                    <div class="text-center" data-animate="fade-up" data-delay="0.4">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">選考特別免除</h3>
+                        <p class="text-gray-600">企業によっては、通常の選考プロセスを経ずに採用される特典</p>
+                    </div>
+                    <div class="text-center" data-animate="fade-up" data-delay="0.5">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">実践的なスキル習得</h3>
+                        <p class="text-gray-600">AI活用、DX推進、社会課題解決など、最新テクノロジーの実践経験</p>
+                    </div>
                 </div>
-                <div class="text-center mt-8">
-                    <a href="news.html" class="btn btn-primary">お知らせ一覧へ &rarr;</a>
+
+                <!-- Additional Benefits -->
+                <div class="grid md:grid-cols-2 gap-8 mt-16">
+                    <div class="card p-8" data-animate="fade-up" data-delay="0.6" data-interactive="hover-lift">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-600">アンバサダー特典詳細</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                企業との直接的なネットワーキング機会
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                専門的なトレーニングプログラムへの参加
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                業界最先端のプロジェクトへの参画
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                メンターシッププログラムの提供
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card p-8" data-animate="fade-up" data-delay="0.7" data-interactive="hover-lift">
+                        <h3 class="text-2xl font-bold mb-4 text-blue-600">応募資格・条件</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                大学生・大学院生（学部・学科不問）
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                社会課題解決への強い関心
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                チームワークとリーダーシップの経験
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                週10時間以上の活動時間確保
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12" data-animate="fade-up" data-delay="0.8">
+                    <a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-primary text-lg px-8 py-4" data-interactive="ripple">アンバサダーに応募する</a>
                 </div>
             </section>
+
+            <!-- 令和の虎出演 Section -->
+            <section id="reiwano-tora" class="mb-24">
+                <div class="text-center mb-16" data-animate="fade-up" data-delay="0.2">
+                    <p class="section-subtitle">MEDIA APPEARANCE</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-6">「人財版 令和の虎」出演</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed">2025年7月、JAAの設立を正式発表する場として「人財版 令和の虎」に出演し、学生アンバサダー制度の意義を熱く訴えました。</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div data-animate="fade-right" data-delay="0.3">
+                        <div class="bg-gradient-to-br from-orange-50 to-red-50 p-8 rounded-2xl border border-orange-200">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-4">番組での挑戦</h3>
+                            <div class="space-y-4 text-gray-700">
+                                <div class="flex items-start">
+                                    <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</div>
+                            <div>
+                                        <p class="font-semibold">学歴よりも「挑戦する姿勢」を重視</p>
+                                        <p class="text-sm text-gray-600">経歴ではなく、想いや人間力で評価されることを実証</p>
+                            </div>
+                        </div>
+                                <div class="flex items-start">
+                                    <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</div>
+                                    <div>
+                                        <p class="font-semibold">学生アンバサダー制度の提案</p>
+                                        <p class="text-sm text-gray-600">「学生だから信用されない」をなくすためのラボ開設</p>
+                        </div>
+                    </div>
+                                <div class="flex items-start">
+                                    <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</div>
+                            <div>
+                                        <p class="font-semibold">1,600万円の出資獲得</p>
+                                        <p class="text-sm text-gray-600">審査員から資金調達に成功し、協会設立への道筋を確立</p>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div data-animate="fade-left" data-delay="0.4">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">井上幹太の想い</h3>
+                            <blockquote class="text-gray-700 italic mb-6 border-l-4 border-orange-500 pl-4">
+                                「経歴じゃなく、"想い"を評価されることがどれほど人を鼓舞するかを知ってほしい。自分を信じて声にするその一歩が未来の自分をつくる」
+                            </blockquote>
+                            <div class="space-y-3 text-sm text-gray-600">
+                                <p><strong>番組の意義：</strong>学歴や履歴書ではなく、志願者の熱意や人間力を評価して採用や支援の可否を決める挑戦型番組</p>
+                                <p><strong>出演の目的：</strong>JAAの理念と番組コンセプトの一致を強調し、挑戦する学生像を社会に示す</p>
+                                <p><strong>成果：</strong>注目番組への露出で協会の理念や設立への関心を集め、学生が想いを伝えることで道が開けることを実証</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
+
+            <!-- Success Stories Section -->
+            <section id="success-stories" class="mb-24">
+                <div class="text-center mb-16" data-animate="fade-up" data-delay="0.2">
+                    <p class="section-subtitle">AMBASSADOR PARTNERS</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-6">
+                        <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+                            アンバサダー制度導入企業・団体
+                        </span>
+                    </h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed">実際にアンバサダー制度を設けている企業・団体と、その取り組みの詳細をご紹介します。</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Google AI Ambassador -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.3">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">Google AI Ambassador</h3>
+                            <p class="ambassador-company-category">テクノロジー・AI</p>
+                            </div>
+                        <p class="ambassador-company-description">
+                            Googleが提供するAI技術の活用とキャリア支援をテーマに、学生が<span class="ambassador-company-highlight">AI技術の可能性</span>を企業に提案するプログラムです。生成AIを活用した技術的な課題解決や新規事業の提案など、多岐にわたる活動に取り組みます。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">生成AI活用</span>
+                            <span class="ambassador-company-tag">キャリア支援</span>
+                            <span class="ambassador-company-tag">技術教育</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">AI技術の社会実装</span>に向けたプロジェクトの推進、<span class="ambassador-company-highlight">学生向けの技術教育プログラム</span>の開発・提供
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- InnoCom Square by SEKISUI HOUSE -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.4">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">InnoCom Square by SEKISUI HOUSE</h3>
+                            <p class="ambassador-company-category">住環境・サステナビリティ</p>
+                            </div>
+                        <p class="ambassador-company-description">
+                            積水ハウスが運営する「InnoCom Square」という施設を拠点に、より良い住まいと環境問題の解決をテーマに、学生が<span class="ambassador-company-highlight">未来の住環境</span>を提案するプログラムです。SDGs達成に向けた具体的なソリューションの開発を目指します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">住環境改善</span>
+                            <span class="ambassador-company-tag">SDGs</span>
+                            <span class="ambassador-company-tag">サステナビリティ</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">サステナブルな住環境</span>に関するアイデアの提案、<span class="ambassador-company-highlight">環境配慮型住宅</span>の開発支援
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- CBT-Solutions -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.5">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">CBT-Solutions</h3>
+                            <p class="ambassador-company-category">DX・人材育成</p>
+                            </div>
+                        <p class="ambassador-company-description">
+                            CBT-Solutions社が主催する、DX人材の育成と人材不足問題の解決に貢献することを目的としたプログラムです。学生の視点を活かした<span class="ambassador-company-highlight">新しい人材育成プログラム</span>を共同で開発します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">DX人材育成</span>
+                            <span class="ambassador-company-tag">人材不足解決</span>
+                            <span class="ambassador-company-tag">キャリア支援</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">DX人材育成プログラム</span>の開発、<span class="ambassador-company-highlight">学生向けのキャリア支援</span>活動
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- NewsPicks Student Picker -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.6">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">NewsPicks Student Picker</h3>
+                            <p class="ambassador-company-category">ニュース・メディア</p>
+                </div>
+                        <p class="ambassador-company-description">
+                            ニュースメディア「NewsPicks」が運営する、学生コミュニティです。コミュニティ運営やイベント企画を通じて、学生が<span class="ambassador-company-highlight">ニュースや多様な価値観</span>について議論する場を創出します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">コミュニティ運営</span>
+                            <span class="ambassador-company-tag">イベント企画</span>
+                            <span class="ambassador-company-tag">学生議論</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                ニュースアプリ内での<span class="ambassador-company-highlight">学生向けカテゴリ</span>の企画・運営、<span class="ambassador-company-highlight">学生同士の価値観</span>を共有する場づくり
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ZONe Student Booster -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.7">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">ZONe Student Booster</h3>
+                            <p class="ambassador-company-category">エナジードリンク・マーケティング</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            エナジードリンク「ZONe」のブランドファン拡大と才能支援を目的とした、学生主体のマーケティングプログラムです。学生が企画する<span class="ambassador-company-highlight">イベントやプロモーション活動</span>を行います。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">エナジードリンク配布</span>
+                            <span class="ambassador-company-tag">学生主体マーケティング</span>
+                            <span class="ambassador-company-tag">ファン拡大</span>
+                            <span class="ambassador-company-tag">才能支援</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">エナジードリンクの配布プロモーション</span>、<span class="ambassador-company-highlight">新たな才能の発掘や支援</span>、<span class="ambassador-company-highlight">ブランドファン層の獲得</span>に向けたマーケティング活動
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- BaseMe Ambassador Community -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.8">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">BaseMe Ambassador Community</h3>
+                            <p class="ambassador-company-category">キャリア支援・Z世代</p>
+                </div>
+                        <p class="ambassador-company-description">
+                            Z世代のキャリア形成を支援するプラットフォーム「BaseMe」が運営するコミュニティです。認知拡大やSNS運営、イベント運営を通じて、学生が<span class="ambassador-company-highlight">自分らしいキャリア</span>を見つけるサポートをします。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">キャリア支援</span>
+                            <span class="ambassador-company-tag">SNS・PR活動</span>
+                            <span class="ambassador-company-tag">イベント運営</span>
+                            <span class="ambassador-company-tag">Z世代コミュニティ</span>
+                </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">3ヶ月間のキャリア形成プログラム</span>の実施、<span class="ambassador-company-highlight">就職先獲得</span>に向けた支援、<span class="ambassador-company-highlight">SNSやPR活動</span>を通じたコミュニティの認知拡大
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- お茶の水女子大学 -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="0.9">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">お茶の水女子大学 学生アンバサダー</h3>
+                            <p class="ambassador-company-category">大学広報・学生支援</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            学生の視点から大学の魅力を伝えるための広報活動を行うプログラムです。キャンパスツアーの案内、SNSや広報誌での<span class="ambassador-company-highlight">取材・撮影</span>などを担当します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">大学PR</span>
+                            <span class="ambassador-company-tag">キャンパスツアー</span>
+                            <span class="ambassador-company-tag">グッズ企画</span>
+                            <span class="ambassador-company-tag">SNS運営</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">オープンキャンパス</span>でのガイド業務、大学の<span class="ambassador-company-highlight">オリジナルグッズ企画</span>、<span class="ambassador-company-highlight">公式SNSアカウント</span>での情報発信
+                            </p>
+                        </div>
+                </div>
+                
+                    <!-- 津田塾大学 -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.0">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">津田塾大学 学生アンバサダー</h3>
+                            <p class="ambassador-company-category">大学広報・受験生向けPR</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            2025年に創設されたプログラムで、受験生や保護者に向けて大学の魅力を発信します。学生自身の<span class="ambassador-company-highlight">情報発信力や表現力</span>の養成にもつながることを目指しています。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">受験生向け広報</span>
+                            <span class="ambassador-company-tag">学生生活紹介</span>
+                            <span class="ambassador-company-tag">情報発信力</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                大学の<span class="ambassador-company-highlight">学びの環境</span>や<span class="ambassador-company-highlight">学生生活</span>の魅力を紹介、<span class="ambassador-company-highlight">受験生向けの広報活動</span>
+                            </p>
+                    </div>
+                </div>
+                
+                    <!-- Progate Path -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.1">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">Progate Path 学生アンバサダー</h3>
+                            <p class="ambassador-company-category">プログラミング学習・教育支援</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            オンラインプログラミング学習サービス「Progate Path」の利用促進を目的としたプログラムです。所属コミュニティでの<span class="ambassador-company-highlight">学習内容の共有</span>や、勉強会、LT（ライトニングトーク）イベントを開催します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">学習支援</span>
+                            <span class="ambassador-company-tag">LT・勉強会</span>
+                            <span class="ambassador-company-tag">ライセンス配布</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">Progate Pathの無制限ライセンス配布</span>、<span class="ambassador-company-highlight">LTや勉強会</span>を通じた学習支援、<span class="ambassador-company-highlight">限定イベントやコワーキングスペース</span>の利用特典
+                            </p>
+                        </div>
+                    </div>
+                
+                    <!-- UT-LAB -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.2">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">UT-LAB 公認アンバサダー</h3>
+                            <p class="ambassador-company-category">AIオープンイノベーション・施設PR</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            東京大学近くにあるAIオープンイノベーション施設「UT-LAB」の魅力を学生に伝えるPR活動やイベント紹介を行うプログラムです。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">AIオープンイノベーション</span>
+                            <span class="ambassador-company-tag">学生向けPR</span>
+                            <span class="ambassador-company-tag">イベント紹介</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">AIオープンイノベーション施設</span>の広報活動、<span class="ambassador-company-highlight">学生向けのイベント</span>告知や運営支援
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 愛媛大学 -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.3">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">愛媛大学 学生広報アンバサダー</h3>
+                            <p class="ambassador-company-category">大学SNS広報・Instagram運営</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            愛媛大学の公式SNS（主にInstagram）の投稿や学内情報の発信を強化する目的で活動するプログラムです。月1〜2回の<span class="ambassador-company-highlight">戦略ミーティングや研修</span>も実施されます。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">大学SNS広報</span>
+                            <span class="ambassador-company-tag">Instagram運営</span>
+                            <span class="ambassador-company-tag">戦略ミーティング</span>
+                            <span class="ambassador-company-tag">ボランティア</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">ボランティア制度</span>に基づくSNS活用強化、大学の<span class="ambassador-company-highlight">ブランド力向上</span>を目指した情報発信
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- LinkedIn Student -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.4">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">LinkedIn Student Club</h3>
+                            <p class="ambassador-company-category">SNS活用・キャリア支援</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            ビジネス向けSNS「LinkedIn」が主導する、学生のキャリアオーナーシップを育成するプログラムです。キャリアイベントの自主企画・運営を通じて、全国の学生が参加しています。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">SNS活用促進</span>
+                            <span class="ambassador-company-tag">キャリアイベント</span>
+                            <span class="ambassador-company-tag">自主企画</span>
+                            <span class="ambassador-company-tag">キャリアオーナーシップ</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">「LinkedIn Student Club」</span>の運営、<span class="ambassador-company-highlight">キャリアイベント「LinkedIn Student Career Week」</span>の開催、<span class="ambassador-company-highlight">企業パートナー</span>と連携したイベントの企画・運営
+                            </p>
+                    </div>
+                </div>
+
+                    <!-- Notion Student -->
+                    <div class="ambassador-company-card" data-animate="fade-up" data-delay="1.5">
+                        <div class="ambassador-company-header">
+                            <h3 class="ambassador-company-title">Notion Students Japan</h3>
+                            <p class="ambassador-company-category">学習・プロジェクト管理・ツール活用</p>
+                        </div>
+                        <p class="ambassador-company-description">
+                            オールインワンワークスペース「Notion」の活用を促進するための学生コミュニティ「Notion Students Japan」です。学習やプロジェクト管理に役立つテンプレートの共有や、月1回のワークショップを開催します。
+                        </p>
+                        <div class="ambassador-company-tags">
+                            <span class="ambassador-company-tag">学習/プロジェクト管理</span>
+                            <span class="ambassador-company-tag">テンプレート共有</span>
+                            <span class="ambassador-company-tag">ワークショップ</span>
+                            <span class="ambassador-company-tag">学生コミュニティ</span>
+                        </div>
+                        <div class="ambassador-company-activities">
+                            <p class="ambassador-company-activities-title">主な活動内容</p>
+                            <p class="ambassador-company-activities-content">
+                                <span class="ambassador-company-highlight">Discord</span>を活用した学生同士の交流、<span class="ambassador-company-highlight">月1回のミートアップ・ワークショップ</span>の開催、<span class="ambassador-company-highlight">Notionの活用方法</span>を広めるための情報発信
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Official Note 3D Carousel Section -->
+            <section id="official-note-carousel" class="mb-24">
+                <div class="text-center" data-animate="fade-up" data-delay="0.2">
+                    <p class="section-subtitle">OFFICIAL NOTE</p>
+                    <h2 class="section-title text-3xl md:text-4xl mb-6">公式note</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">公式Noteで公開されている最新の記事をご覧いただけます。</p>
+                </div>
+                
+                <!-- Multiple Note Articles Display -->
+                <div class="max-w-7xl mx-auto" data-animate="fade-up" data-delay="0.4">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                                                <!-- Article 1: 日本学生アンバサダー協会について -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="text-center mb-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-3">日本学生アンバサダー協会について</h3>
+                                <p class="text-sm text-gray-600">協会概要</p>
+                            </div>
+                            <div class="flex justify-center">
+                                <iframe class="note-embed" src="https://note.com/embed/notes/nb14eebccd7ef" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
+                            </div>
+                </div>
+                
+                        <!-- Article 2: 学生アンバサダー制度の詳細 -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="text-center mb-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-3">学生アンバサダー制度の詳細</h3>
+                                <p class="text-sm text-gray-600">制度案内</p>
+                            </div>
+                    <div class="flex justify-center">
+                                <iframe class="note-embed" src="https://note.com/embed/notes/naa1531576674" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
+                            </div>
+                        </div>
+
+                        <!-- Article 3: 新着記事 -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="text-center mb-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-3">新着記事</h3>
+                                <p class="text-sm text-gray-600">最新情報</p>
+                    </div>
+                    <div class="flex justify-center">
+                                <iframe class="note-embed" src="https://note.com/embed/notes/n753a104903d0" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-16" data-animate="fade-up" data-delay="0.6">
+                    <a href="https://note.com/japan_ambassador" target="_blank" class="btn btn-primary" data-interactive="ripple">公式Noteで詳しく見る &rarr;</a>
+                </div>
+            </section>
+            
+            <script async src="https://note.com/scripts/embed.js" charset="utf-8"></script>
+
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
+
+            <!-- KITEN Forum Section -->
+            <section id="kiten-forum" class="py-24 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-600/5 via-blue-600/5 to-indigo-600/5"></div>
+                <div class="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-full blur-xl"></div>
+                <div class="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-xl"></div>
+                <div class="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-lg"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center mb-16" data-animate="fade-up" data-delay="0.2">
+                        <p class="text-purple-600 font-semibold text-lg mb-4">FLAGSHIP PROGRAM</p>
+                        <h2 class="text-5xl md:text-6xl font-bold mb-6 kiten-title">KITEN Forum</h2>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-8 kiten-subtitle">公式アンバサダーオーディション</h3>
+                        <p class="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+                            <span class="kiten-highlight">100のKITEN Forum</span>公式アンバサダーオーディションの運営を行います。<br>
+                            学生の<span class="kiten-highlight">創造性</span>と<span class="kiten-highlight">リーダーシップ</span>を発揮する機会を提供し、<br>
+                            <span class="kiten-highlight">次世代のイノベーター</span>を育成します。
+                        </p>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left Side - Logo and Description -->
+                        <div class="text-center lg:text-left" data-animate="fade-right" data-delay="0.4">
+                            <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                                <div class="mb-8">
+                                    <img src="https://i.ibb.co/ycZrwzFM/2025-08-23-9-20-56.png" alt="KITEN Forum" class="w-full max-w-sm mx-auto lg:mx-0 object-contain">
+                                </div>
+                                <h4 class="text-2xl font-bold mb-4 kiten-card-title">学生100人が挑む</h4>
+                                <p class="text-gray-700 text-lg leading-relaxed">
+                                    社会課題に挑む<span class="kiten-highlight">3時間スプリント</span>で、<br>
+                                    <span class="kiten-highlight">チーム結成 → アイデア創出 → 1分即興ピッチ</span>を一気通貫で実施。<br>
+                                    <span class="kiten-highlight">100名中10名</span>を後援企業の直接投票で選出します。
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Side - Features -->
+                        <div class="space-y-6" data-animate="fade-left" data-delay="0.6">
+                            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-bold kiten-feature-title">学生100人参加</h4>
+                                </div>
+                                <p class="text-gray-700">多様な背景を持つ学生が集結し、社会課題解決に向けたアイデアを創出します。</p>
+                            </div>
+                            
+                            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-bold kiten-feature-title">3時間スプリント</h4>
+                                </div>
+                                <p class="text-gray-700">短時間でも深い学びとアウトプットを生む集中設計で、効率的なアイデア創出を実現。</p>
+                            </div>
+                            
+                            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-bold kiten-feature-title">企業直接投票</h4>
+                                </div>
+                                <p class="text-gray-700">後援企業が直接投票し、その場で10名を「学生アンバサダー」に選出。即座にキャリアの扉が開きます。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Call to Action -->
+                    <div class="text-center mt-16" data-animate="fade-up" data-delay="0.8">
+                        <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 max-w-2xl mx-auto">
+                            <h4 class="text-2xl font-bold mb-4 kiten-cta-title">参加費無料・応募受付中</h4>
+                            <p class="text-gray-700 mb-6">学生の挑戦を応援する企業と共に、新しい未来を創りませんか？</p>
+                            <a href="https://kanta02cer.github.io/kiten-hp/" target="_blank" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                詳細・申し込みはこちら
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Divider -->
+            <div class="section-divider pattern-bg"></div>
 
             <!-- Partnership Section -->
-            <section id="partnership" class="fade-in">
-                <div class="text-center">
+            <section id="partnership">
+                <div class="text-center" data-animate="fade-up" data-delay="0.2">
                     <p class="section-subtitle">PARTNERSHIP</p>
                     <h2 class="section-title text-3xl md:text-4xl mb-4">学生の未来を、共に創る。</h2>
                     <p class="max-w-3xl mx-auto text-gray-600 leading-relaxed mb-12">私たちの活動は、理念に共感してくださる多くの企業・個人の皆様からのご支援によって支えられています。</p>
@@ -713,7 +2779,7 @@
                 <div class="text-center mb-16">
                     <h3 class="text-2xl font-bold text-gray-800 mb-8">パートナー企業</h3>
                     <div class="flex justify-center items-center">
-                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md" data-interactive="hover-lift">
                             <div class="flex flex-col items-center">
                                 <!-- CBTS Logo Image -->
                                 <img src="https://i.ibb.co/4yHrGyd/CBTS-1.jpg" alt="株式会社CBT-Solutions" class="w-64 h-32 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -749,15 +2815,57 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-12">
-                    <a href="partnership.html" class="btn btn-secondary">パートナーシップについて</a>
+
+                <!-- Student Ambassador Sponsor Companies Section -->
+                <div class="text-center mb-16">
+                    <h3 class="text-2xl font-bold mb-8 sponsor-gradient">学生アンバサダー後援企業</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                        <!-- De Fimans -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-interactive="hover-lift">
+                            <div class="flex flex-col items-center">
+                                <img src="https://i.ibb.co/tPqQMSvS/De-Fimans-logo-landscape-black.png" alt="De Fimans" class="w-full h-24 object-contain mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800 text-center">De Fimans</h4>
+                                <p class="text-sm text-gray-600 text-center mt-2">SBIグループ</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 3rd Lab -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-interactive="hover-lift">
+                            <div class="flex flex-col items-center">
+                                <img src="https://i.ibb.co/sdgbB8kg/3rd-Lab-logo-enhanced-removebg-preview.png" alt="3rd Lab" class="w-full h-24 object-contain mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800 text-center">3rd Lab</h4>
+                                <p class="text-sm text-gray-600 text-center mt-2">InnoCom Square by SEKISUI HOUSE</p>
+                            </div>
+                        </div>
+                        
+                        <!-- SCD -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-interactive="hover-lift">
+                            <div class="flex flex-col items-center">
+                                <img src="https://i.ibb.co/DfNfk4Fm/scd-logo-1-1.png" alt="SCD" class="w-full h-24 object-contain mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800 text-center">SCD</h4>
+                                <p class="text-sm text-gray-600 text-center mt-2">住友商事グループ</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Prairie Card -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-interactive="hover-lift">
+                            <div class="flex flex-col items-center">
+                                <img src="https://i.ibb.co/RkLC1SWX/Prairie-Card-C1-moji.png" alt="Prairie Card" class="w-full h-24 object-contain mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800 text-center">Prairie Card</h4>
+                                <p class="text-sm text-gray-600 text-center mt-2">株式会社スタジオプレーリー</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-12" data-animate="fade-up" data-delay="0.4">
+                    <a href="partnership.html" class="btn btn-secondary" data-interactive="ripple">パートナーシップについて</a>
                 </div>
             </section>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16">
+    <footer class="bg-gray-800 text-white mt-16" style="position: relative; z-index: 10;">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
@@ -776,7 +2884,7 @@
                     <h4 class="font-bold mb-4">リンク</h4>
                     <ul class="space-y-2 text-sm">
                                         <li><a href="business.html" class="text-gray-300 hover:text-white">事業内容</a></li>
-                <li><a href="news.html" class="text-gray-300 hover:text-white">お知らせ</a></li>
+                                        <li><a href="news.html" class="text-gray-300 hover:text-white">公式Note</a></li>
                 <li><a href="partnership.html" class="text-gray-300 hover:text-white">パートナーシップ</a></li>
                 <li><a href="contact.html" class="text-gray-300 hover:text-white">お問い合わせ</a></li>
                     </ul>
@@ -803,14 +2911,10 @@
         // オープニングアニメーション用の変数
         const container = document.getElementById('opening-animation');
         const logo = document.getElementById('opening-logo');
+        const logoImage = document.querySelector('.opening-logo-image');
         const message = document.getElementById('opening-message');
         const canvas = document.getElementById('particleCanvas');
         const skipButton = document.getElementById('skip-button');
-        const ctx = canvas.getContext('2d');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-        let animationFrameId;
 
         // パーティクル設定
         const PARTICLE_COUNT = 80;
@@ -821,6 +2925,70 @@
             'rgba(203, 213, 225, 0.15)'  // スレートグレー（非常に薄い）
         ];
         let particles = [];
+
+        // アニメーション完了処理
+        function completeAnimation() {
+            if (container) {
+                container.classList.add('fade-out');
+            }
+            document.body.classList.remove('loading');
+            document.body.classList.add('loaded');
+            
+            // パーティクルアニメーションを停止
+            if (window.animationFrameId) {
+                cancelAnimationFrame(window.animationFrameId);
+            }
+            
+            setTimeout(() => {
+                if (container) {
+                    container.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        // スキップボタン処理
+        function skipOpening() {
+            completeAnimation();
+        }
+
+        // グローバルスコープに関数を公開
+        window.completeAnimation = completeAnimation;
+        window.skipOpening = skipOpening;
+
+        // アニメーションシーケンス開始
+        function startOpeningAnimation() {
+            // 0.5秒後にロゴ画像を表示
+            setTimeout(() => {
+                if (logoImage) {
+                    logoImage.classList.add('visible');
+                }
+            }, 500);
+
+            // 1.0秒後にロゴ全体を表示
+            setTimeout(() => {
+                if (logo) {
+                    logo.classList.add('visible');
+                }
+            }, 1000);
+
+            // 1.8秒後にメッセージを表示
+            setTimeout(() => {
+                if (message) {
+                    message.classList.add('visible');
+                }
+            }, 1800);
+
+            // 4秒後にフェードアウト開始
+            setTimeout(() => {
+                completeAnimation();
+            }, 4000);
+        }
+
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+            let animationFrameId;
 
         // リサイズ対応
         window.addEventListener('resize', () => {
@@ -882,51 +3050,40 @@
                 p.update();
                 p.draw();
             });
-            animationFrameId = requestAnimationFrame(animate);
-        }
+                window.animationFrameId = requestAnimationFrame(animate);
+            }
 
-        // アニメーション完了処理
-        function completeAnimation() {
-            container.classList.add('fade-out');
-            document.body.classList.remove('loading');
-            document.body.classList.add('loaded');
-            
-            setTimeout(() => {
-                cancelAnimationFrame(animationFrameId);
-                container.style.display = 'none';
-            }, 1000);
+            // パーティクルアニメーション付きのアニメーション開始
+            function startOpeningAnimationWithParticles() {
+                initParticles();
+                animate();
+                startOpeningAnimation();
         }
 
         // スキップボタン処理
+            if (skipButton) {
         skipButton.addEventListener('click', () => {
             completeAnimation();
         });
+            }
 
-        // アニメーションシーケンス開始
-        function startOpeningAnimation() {
-            initParticles();
-            animate();
-
-            // 0.8秒後にロゴを表示
-            setTimeout(() => {
-                logo.classList.add('visible');
-            }, 800);
-
-            // 1.5秒後にメッセージを表示
-            setTimeout(() => {
-                message.classList.add('visible');
-            }, 1500);
-
-            // 3秒後にフェードアウト開始
-            setTimeout(() => {
+            // ページ読み込み完了後にアニメーション開始
+            window.addEventListener('load', () => {
+                startOpeningAnimationWithParticles();
+            });
+        } else {
+            // canvasが存在しない場合のフォールバック
+            if (skipButton) {
+                skipButton.addEventListener('click', () => {
                 completeAnimation();
-            }, 3000);
+                });
         }
 
         // ページ読み込み完了後にアニメーション開始
         window.addEventListener('load', () => {
             startOpeningAnimation();
         });
+        }
 
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -1055,41 +3212,59 @@
             }
         }
 
-        // 統合記事管理システムとニュースローダーの読み込み
+        // スキップボタンの処理
+        function skipOpening() {
+            const openingContainer = document.getElementById('opening-animation');
+            if (openingContainer) {
+                openingContainer.classList.add('fade-out');
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                
+                // Enhanced UX Systemの初期化
+                if (window.enhancedUX) {
+                    window.enhancedUX.init();
+                }
+            }
+        }
+
+        // グローバルスコープにスキップ関数を公開
+        window.skipOpening = skipOpening;
+
+        // 統合ニュースローダーの読み込み
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                // 1. 統合記事管理システムの読み込み
-                const articleManagerScript = document.createElement('script');
-                articleManagerScript.src = 'js/unified-article-manager.js';
-                document.head.appendChild(articleManagerScript);
-                
-                // 2. 統合ニュースローダーの読み込み
-                articleManagerScript.onload = () => {
-                    const newsLoaderScript = document.createElement('script');
-                    newsLoaderScript.src = 'js/unified-news-loader.js';
-                    newsLoaderScript.onload = () => {
-                        // スクリプト読み込み完了後、ニュースを表示
-                        if (window.unifiedNewsLoader) {
+                // 統合ニュースローダーの読み込み
+                const newsLoaderScript = document.createElement('script');
+                newsLoaderScript.src = 'js/unified-news-loader.js';
+                newsLoaderScript.onload = () => {
+                    // スクリプト読み込み完了後、ニュースを表示
+                    if (window.unifiedNewsLoader) {
+                        window.unifiedNewsLoader.loadNews('news-list-home', 5);
+                        
+                        // ページ間通信の監視を開始
+                        window.addEventListener('jaa-news-update', (event) => {
+                            console.log('ニュース更新イベントを受信:', event.detail);
+                            // ニュースを再読み込み
                             window.unifiedNewsLoader.loadNews('news-list-home', 5);
-                            
-                            // ページ間通信の監視を開始
-                            window.addEventListener('jaa-news-update', (event) => {
-                                console.log('ニュース更新イベントを受信:', event.detail);
-                                // ニュースを再読み込み
-                                window.unifiedNewsLoader.loadNews('news-list-home', 5);
-                            });
-                            
-                            // postMessageの監視
-                            window.addEventListener('message', (event) => {
-                                if (event.data.type === 'FORCE_NEWS_REFRESH') {
-                                    console.log('ニュース強制更新を受信');
-                                    window.unifiedNewsLoader.forceRefresh();
-                                }
-                            });
-                        }
-                    };
-                    document.head.appendChild(newsLoaderScript);
+                        });
+                        
+                        // 記事削除イベントの監視
+                        window.addEventListener('jaa-article-deleted', (event) => {
+                            console.log('記事削除イベントを受信:', event.detail);
+                            // 削除された記事を非表示にして再読み込み
+                            window.unifiedNewsLoader.loadNews('news-list-home', 5);
+                        });
+                        
+                        // postMessageの監視
+                        window.addEventListener('message', (event) => {
+                            if (event.data.type === 'FORCE_NEWS_REFRESH') {
+                                console.log('ニュース強制更新を受信');
+                                window.unifiedNewsLoader.forceRefresh();
+                            }
+                        });
+                    }
                 };
+                document.head.appendChild(newsLoaderScript);
             } catch (error) {
                 console.error('ニュース読み込みエラー:', error);
             }
@@ -1113,6 +3288,277 @@
             });
         }
 
+        // 3D Carousel Management
+
+        class Carousel3D {
+            constructor() {
+                this.currentIndex = 0;
+                this.items = [];
+                this.track = document.getElementById('carousel-track');
+                this.indicators = document.getElementById('carousel-indicators');
+                this.init();
+            }
+
+            init() {
+                this.loadCarouselItems();
+                this.createIndicators();
+                this.updateCarousel();
+                this.startAutoPlay();
+            }
+
+            async loadCarouselItems() {
+                try {
+                    // サンプルデータ（実際のニュースデータに置き換え）
+                    this.items = [
+                        {
+                            title: "日本学生アンバサダー協会が正式発足",
+                            date: "2025年1月15日",
+                            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
+                            url: "#"
+                        },
+                        {
+                            title: "Google AI Ambassador プログラム開始",
+                            date: "2025年1月10日",
+                            image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?q=80&w=2025&auto=format&fit=crop",
+                            url: "#"
+                        },
+                        {
+                            title: "積水ハウスとのパートナーシップ締結",
+                            date: "2025年1月5日",
+                            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073&auto=format&fit=crop",
+                            url: "#"
+                        },
+                        {
+                            title: "学生向けDX人材育成プログラム",
+                            date: "2024年12月28日",
+                            image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
+                            url: "#"
+                        },
+                        {
+                            title: "企業連携フォーラム開催決定",
+                            date: "2024年12月20日",
+                            image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2080&auto=format&fit=crop",
+                            url: "#"
+                        }
+                    ];
+                    this.renderItems();
+                } catch (error) {
+                    console.error('カルーセルアイテムの読み込みエラー:', error);
+                }
+            }
+
+            renderItems() {
+                this.track.innerHTML = '';
+                this.items.forEach((item, index) => {
+                    const carouselItem = document.createElement('div');
+                    carouselItem.className = 'carousel-3d-item';
+                    carouselItem.innerHTML = `
+                        <div class="carousel-3d-content" onclick="window.open('${item.url}', '_blank')">
+                            <img src="${item.image}" alt="${item.title}" class="carousel-3d-image">
+                            <div class="carousel-3d-text">
+                                <div class="carousel-3d-title">${item.title}</div>
+                                <div class="carousel-3d-date">${item.date}</div>
+                            </div>
+                        </div>
+                    `;
+                    this.track.appendChild(carouselItem);
+                });
+            }
+
+            createIndicators() {
+                this.indicators.innerHTML = '';
+                this.items.forEach((_, index) => {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'carousel-indicator';
+                    indicator.onclick = () => this.goToSlide(index);
+                    this.indicators.appendChild(indicator);
+                });
+            }
+
+            updateCarousel() {
+                const items = this.track.querySelectorAll('.carousel-3d-item');
+                const indicators = this.indicators.querySelectorAll('.carousel-indicator');
+                
+                items.forEach((item, index) => {
+                    item.className = 'carousel-3d-item';
+                    if (index === this.currentIndex) {
+                        item.classList.add('active');
+                    } else if (index === this.getPrevIndex()) {
+                        item.classList.add('prev');
+                    } else if (index === this.getNextIndex()) {
+                        item.classList.add('next');
+                    } else if (index > this.currentIndex) {
+                        item.classList.add('hidden');
+                    } else {
+                        item.classList.add('hidden-reverse');
+                    }
+                });
+
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            getPrevIndex() {
+                return this.currentIndex === 0 ? this.items.length - 1 : this.currentIndex - 1;
+            }
+
+            getNextIndex() {
+                return this.currentIndex === this.items.length - 1 ? 0 : this.currentIndex + 1;
+            }
+
+            goToSlide(index) {
+                this.currentIndex = index;
+                this.updateCarousel();
+            }
+
+            next() {
+                this.currentIndex = this.getNextIndex();
+                this.updateCarousel();
+            }
+
+            prev() {
+                this.currentIndex = this.getPrevIndex();
+                this.updateCarousel();
+            }
+
+            startAutoPlay() {
+                setInterval(() => {
+                    this.next();
+                }, 5000);
+            }
+        }
+
+        // Side TOC Management
+        class TopNav {
+            constructor() {
+                this.nav = document.getElementById('top-nav');
+                this.links = this.nav.querySelectorAll('.nav-link');
+                this.init();
+            }
+
+            init() {
+                this.setupScrollSpy();
+                this.updateTopNavNews();
+                this.setupSmoothScroll();
+            }
+
+            setupScrollSpy() {
+                const sections = document.querySelectorAll('section[id]');
+                const observerOptions = {
+                    threshold: 0.3,
+                    rootMargin: '-20% 0px -20% 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            this.updateActiveLink(entry.target.id);
+                        }
+                    });
+                }, observerOptions);
+
+                sections.forEach(section => {
+                    observer.observe(section);
+                });
+            }
+
+            updateActiveLink(sectionId) {
+                this.links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            setupSmoothScroll() {
+                this.links.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        
+                        if (targetElement) {
+                            const headerHeight = document.querySelector('header').offsetHeight;
+                            const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                            
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+
+            async updateTopNavNews() {
+                try {
+                    // トップナビの最新記事を更新
+                    const topNavNews = document.getElementById('top-nav-news');
+                    const latestNews = [
+                        { title: "当協会について", url: "https://note.com/japan_ambassador/n/nb14eebccd7ef" },
+                        { title: "学生アンバサダー制度について", url: "https://note.com/japan_ambassador/n/naa1531576674" },
+                        { title: "新着記事", url: "https://note.com/embed/notes/n753a104903d0" }
+                    ];
+
+                    topNavNews.innerHTML = latestNews.map(news => 
+                        `<li><a href="${news.url}" target="_blank" class="nav-link">${news.title}</a></li>`
+                    ).join('');
+                } catch (error) {
+                    console.error('トップナビニュース更新エラー:', error);
+                }
+            }
+        }
+
+        // Global carousel functions
+        let carousel3D;
+        let noteCarousel3D;
+        
+        function rotateCarousel(direction) {
+            if (carousel3D) {
+                if (direction > 0) {
+                    carousel3D.next();
+                } else {
+                    carousel3D.prev();
+                }
+            }
+        }
+
+
+
+        // Top Navigation toggle function
+        function toggleTopNav() {
+            const topNav = document.getElementById('top-nav');
+            const toggle = document.getElementById('top-nav-toggle');
+            
+            topNav.classList.toggle('expanded');
+            toggle.classList.toggle('active');
+        }
+
+
+
+                // アニメーション機能の初期化
+        function initAnimations() {
+            const animatedElements = document.querySelectorAll('[data-animate]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
         // Cookie管理を初期化
         document.addEventListener('DOMContentLoaded', () => {
             new CookieManager();
@@ -1120,7 +3566,45 @@
             // 画像読み込みチェック
             checkImageLoad();
             
-            // 最新ニュースは Firebase 連携ローダーが自動描画します
+            // 3Dカルーセルとサイド目次の初期化
+            carousel3D = new Carousel3D();
+            new TopNav();
+            
+            // アニメーション機能の初期化
+            initAnimations();
+            
+            // フォールバック: オープンアニメーションが動作しない場合の対策
+        setTimeout(() => {
+            if (document.body.classList.contains('loading')) {
+                console.log('オープンアニメーションのフォールバック処理を実行');
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                const openingContainer = document.getElementById('opening-animation');
+                if (openingContainer) {
+                    openingContainer.style.display = 'none';
+                }
+            }
+        }, 5000); // 5秒後にフォールバック処理を実行
+
+        // 緊急修正: 即座にコンテンツを表示
+        setTimeout(() => {
+            document.body.classList.remove('loading');
+            document.body.classList.add('loaded');
+        }, 1000); // 1秒後に強制的にコンテンツを表示
+
+        // アニメーション要素のフォールバック処理
+        setTimeout(() => {
+            const animatedElements = document.querySelectorAll('[data-animate]');
+            animatedElements.forEach(element => {
+                if (!element.classList.contains('animated')) {
+                    element.classList.add('animated');
+                }
+            });
+        }, 2000);
+
+
+            
+            // 最新ニュースは統合ニュースローダーが自動描画します
         });
 
 
@@ -1128,4 +3612,7 @@
 
 </body>
 </html>
+
+
+
 

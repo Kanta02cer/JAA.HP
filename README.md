@@ -12,6 +12,10 @@
 - **アクセシビリティ**: WCAG準拠のデザイン
 - **Cookie管理**: GDPR準拠のCookie同意システム
 - **Google Analytics**: アクセス解析機能
+- **Enhanced UX System**: パララックス効果、アニメーション、マイクロインタラクション
+- **オープンアニメーション**: 魅力的なサイトオープニング演出
+- **企業事例紹介**: 具体的な成功事例と社会課題解決テーマ
+- **公式Note連携**: リアルタイムでの記事表示と埋め込み
 
 ### ニュース機能（CMS対応）
 - **動的コンテンツ**: JavaScriptによる動的ニュース表示
@@ -19,6 +23,16 @@
 - **管理画面**: Netlify CMSによる記事管理
 - **簡易ニュース投稿システム**: Firebase Functionsなしでも記事管理可能
 - **自動デプロイ**: GitHub Actionsによる自動更新
+- **記事削除管理**: ソフト削除・完全削除の両方に対応
+- **削除記事フィルタリング**: 削除された記事は自動的に非表示
+
+### 公式Note連携機能
+- **リアルタイム連携**: 公式noteのRSSフィードから記事を自動取得
+- **プレスリリース表示**: noteで投稿されたプレスリリースを公式サイトで表示
+- **自動更新**: 30分間隔での記事データ同期
+- **キャッシュ機能**: ローカルストレージでの高速表示
+- **カテゴリ判定**: プレスリリースの自動分類
+- **画像抽出**: 記事内の画像URLを自動検出
 
 ## 技術スタック
 
@@ -54,8 +68,10 @@ JAA.HP-1/
 ├── business.html           # 事業内容
 ├── ambassador.html         # アンバサダー制度
 ├── partnership.html        # パートナーシップ
-├── news.html              # ニュース一覧
+├── news.html              # ニュース一覧（Note連携対応）
 ├── news-detail.html       # 動的ニュース詳細
+├── note-test.html         # Note連携テストページ
+├── delete-test.html       # 記事削除機能テストページ
 ├── contact.html           # お問い合わせ
 ├── privacy.html           # プライバシーポリシー
 ├── robots.txt             # 検索エンジン設定
@@ -70,6 +86,8 @@ JAA.HP-1/
 ├── js/
 │   ├── news-loader.js           # ニュース管理スクリプト
 │   ├── unified-news-loader.js   # 統合ニュースローダー（Firebase連携）
+│   ├── note-integration.js      # 公式Note連携システム
+│   ├── enhanced-ux.js           # Enhanced UX System（パララックス・アニメーション）
 │   └── detail-loader.js         # 記事詳細表示
 ├── .github/
 │   └── workflows/
@@ -98,6 +116,23 @@ php -S localhost:8000
 ```
 
 ### 3. CMS管理画面へのアクセス
+
+### 4. 公式Note連携機能の設定
+```bash
+# Note連携のテスト
+open note-test.html
+
+# 公式noteのURL設定（js/note-integration.js内）
+const noteUrl = 'https://note.com/jaa_official'; // 実際のnote URLに変更
+const rssUrl = 'https://note.com/jaa_official/rss'; // 実際のRSS URLに変更
+```
+
+#### Note連携の特徴
+- **自動記事取得**: RSSフィードから最新20件の記事を自動取得
+- **プレスリリース判定**: キーワードベースでの自動分類
+- **キャッシュ管理**: 30分間のキャッシュで高速表示
+- **エラーハンドリング**: ネットワークエラー時のフォールバック機能
+- **レスポンシブ対応**: モバイル・デスクトップ両対応の表示
 ```
 http://localhost:8000/admin/
 ```
