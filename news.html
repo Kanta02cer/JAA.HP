@@ -88,7 +88,50 @@
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 2rem 1rem;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .grid {
+                gap: 1.5rem;
+            }
+            
+            .news-card {
+                margin-bottom: 1rem;
+            }
+            
+            .note-article {
+                margin-bottom: 1rem;
+            }
+            
+            .category-tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.6rem;
+            }
+        }
 
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .news-card {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .note-article {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>

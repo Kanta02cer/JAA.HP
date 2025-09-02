@@ -120,6 +120,8 @@
     <script src="js/markdown-news-loader.js"></script>
     <script src="js/news-auto-updater.js"></script>
     <script src="js/enhanced-ux.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -181,6 +183,46 @@
         [data-interactive="hover-lift"]:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Touch Optimization */
+        @media (hover: none) and (pointer: coarse) {
+            [data-interactive="hover-lift"]:hover {
+                transform: none;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            
+            [data-interactive="hover-lift"]:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            .btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+            
+            .nav-link:active {
+                background-color: rgba(249, 115, 22, 0.1);
+                transform: scale(0.95);
+                transition: all 0.1s ease;
+            }
+        }
+
+        /* Image Optimization */
+        img {
+            max-width: 100%;
+            height: auto;
+            loading: lazy;
+        }
+
+        /* Performance Optimization */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn, .nav-link, [data-interactive] {
+            -webkit-tap-highlight-color: rgba(249, 115, 22, 0.1);
         }
         
         /* カードのホバー効果強化 */
@@ -1720,6 +1762,8 @@
             .top-nav {
                 max-width: 260px;
                 right: 10px;
+                top: 60px;
+                transform: none;
             }
             
             .top-nav-header {
@@ -1732,6 +1776,36 @@
             
             .top-nav-title {
                 font-size: 1.1rem;
+            }
+            
+            .nav-link {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-nav {
+                max-width: 240px;
+                right: 5px;
+                top: 50px;
+            }
+            
+            .top-nav-header {
+                padding: 12px 12px 10px 12px;
+            }
+            
+            .top-nav-content {
+                padding: 10px 12px 12px 12px;
+            }
+            
+            .top-nav-title {
+                font-size: 1rem;
+            }
+            
+            .nav-link {
+                padding: 6px 8px;
+                font-size: 0.85rem;
             }
         }
     </style>

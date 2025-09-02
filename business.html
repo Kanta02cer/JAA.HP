@@ -91,7 +91,43 @@
             flex-grow: 1;
         }
 
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 2rem 1rem;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .grid {
+                gap: 1.5rem;
+            }
+            
+            .business-card {
+                margin-bottom: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+        }
 
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .business-card {
+                margin: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
