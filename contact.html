@@ -214,32 +214,97 @@
     </header>
 
     <main>
-        <section class="page-header"><h1 class="text-4xl md:text-5xl font-black text-gray-800">お問い合わせ</h1><p class="mt-4 text-lg text-gray-600">ご用の内容に合わせて、以下の窓口よりご連絡ください。</p></section>
+        <section class="page-header">
+            <h1 class="text-4xl md:text-5xl font-black text-gray-800">お問い合わせ</h1>
+            <p class="mt-4 text-lg text-gray-600">日本学生アンバサダー協会へのお問い合わせは、以下のフォームよりお送りください。</p>
+        </section>
+        
         <div class="container mx-auto px-6 py-20">
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- For Students -->
-                <div class="contact-card">
-                    <h3 class="text-2xl font-bold mb-2">学生・学生団体の皆様</h3>
-                    <p class="text-gray-600 mb-6">アンバサダーへの応募、活動に関するご相談はこちらから。</p>
-                    <a href="https://forms.gle/aVZqauokPLb51Jbn9" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">応募・相談フォームへ</a>
-                </div>
-                <!-- For Corporations -->
-                <div class="contact-card">
-                    <h3 class="text-2xl font-bold mb-2">企業・団体の皆様</h3>
-                    <p class="text-gray-600 mb-6">事業連携、共同プロジェクト、その他協業に関するご相談はこちら。</p>
-                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">連携に関するお問い合わせ</a>
-                </div>
-                <!-- For Media -->
-                <div class="contact-card">
-                    <h3 class="text-2xl font-bold mb-2">メディア関係者の皆様</h3>
-                    <p class="text-gray-600 mb-6">取材、インタビュー、登壇依頼などはこちらからご連絡ください。</p>
-                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">取材・登壇依頼フォームへ</a>
-                </div>
-                <!-- For Donation -->
-                <div class="contact-card lg:col-span-3">
-                    <h3 class="text-2xl font-bold mb-2">寄付・支援をご検討の皆様</h3>
-                    <p class="text-gray-600 mb-6">私たちの活動は、皆様からの温かいご支援によって支えられています。寄付に関するお問い合わせはこちらからお願いいたします。</p>
-                    <a href="https://forms.gle/sHA9i4zsxTfqPocu6" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full max-w-md mx-auto">寄付に関するお問い合わせ</a>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <form id="contactForm" class="space-y-6">
+                        <!-- お名前 -->
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">お名前 <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="山田 太郎">
+                        </div>
+
+                        <!-- メールアドレス -->
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                            <input type="email" id="email" name="email" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="example@email.com">
+                        </div>
+
+                        <!-- 電話番号 -->
+                        <div>
+                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">電話番号</label>
+                            <input type="tel" id="phone" name="phone" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="090-1234-5678">
+                        </div>
+
+                        <!-- 所属・団体名 -->
+                        <div>
+                            <label for="organization" class="block text-sm font-semibold text-gray-700 mb-2">所属・団体名</label>
+                            <input type="text" id="organization" name="organization" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="○○大学 経済学部">
+                        </div>
+
+                        <!-- お問い合わせ種別 -->
+                        <div>
+                            <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">お問い合わせ種別 <span class="text-red-500">*</span></label>
+                            <select id="category" name="category" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
+                                <option value="">選択してください</option>
+                                <option value="student">学生・学生団体からのお問い合わせ</option>
+                                <option value="corporate">企業・団体からのお問い合わせ</option>
+                                <option value="media">メディア関係者からのお問い合わせ</option>
+                                <option value="donation">寄付・支援に関するお問い合わせ</option>
+                                <option value="other">その他</option>
+                            </select>
+                        </div>
+
+                        <!-- 件名 -->
+                        <div>
+                            <label for="subject" class="block text-sm font-semibold text-gray-700 mb-2">件名 <span class="text-red-500">*</span></label>
+                            <input type="text" id="subject" name="subject" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="お問い合わせの件名を入力してください">
+                        </div>
+
+                        <!-- お問い合わせ内容 -->
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">お問い合わせ内容 <span class="text-red-500">*</span></label>
+                            <textarea id="message" name="message" rows="6" required 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-vertical"
+                                      placeholder="お問い合わせの詳細内容をご記入ください"></textarea>
+                        </div>
+
+                        <!-- プライバシーポリシー同意 -->
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" id="privacy" name="privacy" required 
+                                   class="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <label for="privacy" class="text-sm text-gray-600">
+                                <a href="privacy.html" target="_blank" class="text-orange-600 hover:text-orange-700 underline">プライバシーポリシー</a>に同意します <span class="text-red-500">*</span>
+                            </label>
+                        </div>
+
+                        <!-- 送信ボタン -->
+                        <div class="pt-4">
+                            <button type="submit" id="submitBtn" 
+                                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                                送信する
+                            </button>
+                        </div>
+
+                        <!-- 送信結果メッセージ -->
+                        <div id="resultMessage" class="hidden mt-4 p-4 rounded-lg"></div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -313,7 +378,71 @@
             }
         }
 
-        // ページ読み込み時にCookie同意状態をチェック
+        // フォーム送信処理
         document.addEventListener("DOMContentLoaded", () => {
             checkCookieConsent();
+            
+            const contactForm = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const resultMessage = document.getElementById('resultMessage');
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // 送信ボタンを無効化
+                submitBtn.disabled = true;
+                submitBtn.textContent = '送信中...';
+                
+                try {
+                    const formData = new FormData(contactForm);
+                    const data = Object.fromEntries(formData);
+                    
+                    // メール送信のためのmailtoリンクを生成
+                    const subject = encodeURIComponent(`[JAAお問い合わせ] ${data.subject}`);
+                    const body = encodeURIComponent(`
+お名前: ${data.name}
+メールアドレス: ${data.email}
+電話番号: ${data.phone || '未入力'}
+所属・団体名: ${data.organization || '未入力'}
+お問い合わせ種別: ${data.category}
+件名: ${data.subject}
+
+お問い合わせ内容:
+${data.message}
+
+---
+このメールは日本学生アンバサダー協会のお問い合わせフォームから送信されました。
+                    `);
+                    
+                    const mailtoLink = `mailto:japan.ambassador.association@gmail.com?subject=${subject}&body=${body}`;
+                    
+                    // メールクライアントを開く
+                    window.location.href = mailtoLink;
+                    
+                    // 成功メッセージを表示
+                    showMessage('お問い合わせありがとうございます。メールクライアントが開きますので、内容を確認して送信してください。', 'success');
+                    
+                    // フォームをリセット
+                    contactForm.reset();
+                    
+                } catch (error) {
+                    console.error('送信エラー:', error);
+                    showMessage('送信に失敗しました。しばらく時間をおいて再度お試しください。', 'error');
+                } finally {
+                    // 送信ボタンを有効化
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '送信する';
+                }
+            });
+            
+            function showMessage(message, type) {
+                resultMessage.className = `mt-4 p-4 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+                resultMessage.textContent = message;
+                resultMessage.classList.remove('hidden');
+                
+                // 5秒後にメッセージを非表示
+                setTimeout(() => {
+                    resultMessage.classList.add('hidden');
+                }, 5000);
+            }
         });
