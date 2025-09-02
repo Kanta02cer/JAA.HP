@@ -70,14 +70,211 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
-        .page-header { background-color: #f9fafb; padding: 4rem 1.5rem; text-align: center; }
+        body { 
+            font-family: 'Inter', 'Noto Sans JP', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 幾何学的な螺旋状背景 */
+        .geometric-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .spiral-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            animation: spiralFloat 20s infinite linear;
+        }
+        
+        .spiral-shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+            animation-duration: 25s;
+        }
+        
+        .spiral-shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            right: -100px;
+            animation-delay: -5s;
+            animation-duration: 30s;
+        }
+        
+        .spiral-shape:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            left: 10%;
+            animation-delay: -10s;
+            animation-duration: 35s;
+        }
+        
+        .spiral-shape:nth-child(4) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 20%;
+            animation-delay: -15s;
+            animation-duration: 20s;
+        }
+        
+        .spiral-shape:nth-child(5) {
+            width: 250px;
+            height: 250px;
+            top: 10%;
+            left: 50%;
+            animation-delay: -20s;
+            animation-duration: 28s;
+        }
+        
+        @keyframes spiralFloat {
+            0% {
+                transform: rotate(0deg) translateX(0px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(100px) rotate(-360deg);
+            }
+        }
+        .page-header { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            padding: 4rem 1.5rem; 
+            text-align: center; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .page-header h1 {
+            background: linear-gradient(135deg, #ffffff, #f0f9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+        }
+        
+        .page-header p {
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .contact-card {
-            background-color: #fff;
-            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
             padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.2);
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* フォーム要素のスタイリング */
+        .form-input {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+            border-color: rgba(249, 115, 22, 0.5);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1), 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        /* 丸いサークル回転ボタン */
+        .circular-submit-btn {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .circular-submit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .circular-submit-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .circular-submit-btn .btn-text {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .circular-submit-btn .spinning-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+        
+        .circular-submit-btn .spinning-ring:nth-child(2) {
+            width: 90%;
+            height: 90%;
+            border-top-color: rgba(255,255,255,0.2);
+            animation-duration: 1.5s;
+            animation-direction: reverse;
+        }
+        
+        .circular-submit-btn .spinning-ring:nth-child(3) {
+            width: 80%;
+            height: 80%;
+            border-top-color: rgba(255,255,255,0.1);
+            animation-duration: 1s;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .circular-submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .circular-submit-btn:disabled .spinning-ring {
+            animation-play-state: paused;
         }
         .btn { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; border-radius: 9999px; padding: 12px 30px; transition: all 0.3s ease; gap: 0.5rem; }
         .btn-primary { background-color: #f97316; color: white; }
@@ -213,6 +410,15 @@
         </div>
     </header>
 
+    <!-- 幾何学的な螺旋状背景 -->
+    <div class="geometric-background">
+        <div class="spiral-shape"></div>
+        <div class="spiral-shape"></div>
+        <div class="spiral-shape"></div>
+        <div class="spiral-shape"></div>
+        <div class="spiral-shape"></div>
+    </div>
+
     <main>
         <section class="page-header">
             <h1 class="text-4xl md:text-5xl font-black text-gray-800">お問い合わせ</h1>
@@ -225,41 +431,41 @@
                     <form id="contactForm" class="space-y-6">
                         <!-- お名前 -->
                         <div>
-                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">お名前 <span class="text-red-500">*</span></label>
+                            <label for="name" class="form-label block text-sm font-semibold mb-2">お名前 <span class="text-red-500">*</span></label>
                             <input type="text" id="name" name="name" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                    placeholder="山田 太郎">
                         </div>
 
                         <!-- メールアドレス -->
                         <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                            <label for="email" class="form-label block text-sm font-semibold mb-2">メールアドレス <span class="text-red-500">*</span></label>
                             <input type="email" id="email" name="email" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                    placeholder="example@email.com">
                         </div>
 
                         <!-- 電話番号 -->
                         <div>
-                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">電話番号</label>
+                            <label for="phone" class="form-label block text-sm font-semibold mb-2">電話番号</label>
                             <input type="tel" id="phone" name="phone" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                    placeholder="090-1234-5678">
                         </div>
 
                         <!-- 所属・団体名 -->
                         <div>
-                            <label for="organization" class="block text-sm font-semibold text-gray-700 mb-2">所属・団体名</label>
+                            <label for="organization" class="form-label block text-sm font-semibold mb-2">所属・団体名</label>
                             <input type="text" id="organization" name="organization" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                    placeholder="○○大学 経済学部">
                         </div>
 
                         <!-- お問い合わせ種別 -->
                         <div>
-                            <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">お問い合わせ種別 <span class="text-red-500">*</span></label>
+                            <label for="category" class="form-label block text-sm font-semibold mb-2">お問い合わせ種別 <span class="text-red-500">*</span></label>
                             <select id="category" name="category" required 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
+                                    class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
                                 <option value="">選択してください</option>
                                 <option value="student">学生・学生団体からのお問い合わせ</option>
                                 <option value="corporate">企業・団体からのお問い合わせ</option>
@@ -271,17 +477,17 @@
 
                         <!-- 件名 -->
                         <div>
-                            <label for="subject" class="block text-sm font-semibold text-gray-700 mb-2">件名 <span class="text-red-500">*</span></label>
+                            <label for="subject" class="form-label block text-sm font-semibold mb-2">件名 <span class="text-red-500">*</span></label>
                             <input type="text" id="subject" name="subject" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                    placeholder="お問い合わせの件名を入力してください">
                         </div>
 
                         <!-- お問い合わせ内容 -->
                         <div>
-                            <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">お問い合わせ内容 <span class="text-red-500">*</span></label>
+                            <label for="message" class="form-label block text-sm font-semibold mb-2">お問い合わせ内容 <span class="text-red-500">*</span></label>
                             <textarea id="message" name="message" rows="6" required 
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-vertical"
+                                      class="form-input w-full px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-vertical"
                                       placeholder="お問い合わせの詳細内容をご記入ください"></textarea>
                         </div>
 
@@ -295,10 +501,12 @@
                         </div>
 
                         <!-- 送信ボタン -->
-                        <div class="pt-4">
-                            <button type="submit" id="submitBtn" 
-                                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                                送信する
+                        <div class="pt-8 flex justify-center">
+                            <button type="submit" id="submitBtn" class="circular-submit-btn">
+                                <div class="spinning-ring"></div>
+                                <div class="spinning-ring"></div>
+                                <div class="spinning-ring"></div>
+                                <span class="btn-text">送信</span>
                             </button>
                         </div>
 
@@ -391,7 +599,7 @@
                 
                 // 送信ボタンを無効化
                 submitBtn.disabled = true;
-                submitBtn.textContent = '送信中...';
+                submitBtn.querySelector('.btn-text').textContent = '送信中...';
                 
                 try {
                     const formData = new FormData(contactForm);
@@ -431,7 +639,7 @@ ${data.message}
                 } finally {
                     // 送信ボタンを有効化
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '送信する';
+                    submitBtn.querySelector('.btn-text').textContent = '送信';
                 }
             });
             
