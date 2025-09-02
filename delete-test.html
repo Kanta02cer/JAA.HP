@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記事削除テスト | 日本学生アンバサダー協会</title>
+    <meta name="description" content="記事削除機能のテストページ">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        .article-card { transition: all 0.3s ease; }
+        .article-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .deleted-article { opacity: 0.5; background-color: #f3f4f6; }
+        .deleted-article .deleted-badge { background-color: #ef4444; color: white; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-12">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">記事削除機能テスト</h1>
+                <p class="text-lg text-gray-600">記事の削除・非表示機能のテストページ</p>
+            </div>
+
+            <!-- テストコントロール -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">テストコントロール</h2>
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <button id="add-test-article" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                        テスト記事を追加
+                    </button>
+                    <button id="soft-delete-last" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                        最新記事をソフト削除
+                    </button>
+                    <button id="hard-delete-last" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                        最新記事を完全削除
+                    </button>
+                    <button id="restore-deleted" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        削除された記事を復元
+                    </button>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <p>ステータス: <span id="status">初期化中...</span></p>
+                    <p>総記事数: <span id="total-count">0</span>件</p>
+                    <p>表示記事数: <span id="display-count">0</span>件</p>
+                    <p>削除済み記事数: <span id="deleted-count">0</span>件</p>
+                </div>
+            </div>
+
+            <!-- 記事一覧 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">記事一覧</h2>
+                <div id="articles-container" class="space-y-4">
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                        <p class="text-gray-500">記事を読み込み中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 削除された記事一覧 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                <h2 class="text-xl font-bold mb-4">削除された記事一覧</h2>
+                <div id="deleted-articles-container" class="space-y-4">
+                    <p class="text-center text-gray-500">削除された記事はありません</p>
+                </div>
+            </div>
+
+            <!-- デバッグ情報 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                <h2 class="text-xl font-bold mb-4">デバッグ情報</h2>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <pre id="debug-info" class="text-sm text-gray-700 whitespace-pre-wrap">初期化中...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/unified-news-loader.js"></script>
+    <script>
+        // テスト用の制御機能
+        document.addEventListener('DOMContentLoaded', () => {
+            const addBtn = document.getElementById('add-test-article');
+            const softDeleteBtn = document.getElementById('soft-delete-last');
+            const hardDeleteBtn = document.getElementById('hard-delete-last');
+            const restoreBtn = document.getElementById('restore-deleted');
+            const statusSpan = document.getElementById('status');
+            const totalCountSpan = document.getElementById('total-count');
+            const displayCountSpan = document.getElementById('display-count');
+            const deletedCountSpan = document.getElementById('deleted-count');
+            const articlesContainer = document.getElementById('articles-container');
+            const deletedArticlesContainer = document.getElementById('deleted-articles-container');
+            const debugInfo = document.getElementById('debug-info');
+
+            let testArticleCounter = 1;
+
+            // テスト記事を追加
+            addBtn.addEventListener('click', () => {
+                const testArticle = {
+                    id: `test-${Date.now()}-${testArticleCounter}`,
+                    title: `テスト記事 ${testArticleCounter}`,
+                    content: `これはテスト記事 ${testArticleCounter} の内容です。記事の削除機能をテストするために作成されました。`,
+                    category: 'テスト',
+                    createdAt: new Date().toISOString(),
+                    status: 'published',
+                    source: 'test'
+                };
+
+                if (window.unifiedNewsLoader) {
+                    window.unifiedNewsLoader.handleArticleSave(testArticle.id, testArticle);
+                    testArticleCounter++;
+                    statusSpan.textContent = 'テスト記事を追加しました';
+                    updateDisplay();
+                }
+            });
+
+            // 最新記事をソフト削除
+            softDeleteBtn.addEventListener('click', () => {
+                if (window.unifiedNewsLoader && window.unifiedNewsLoader.articles.length > 0) {
+                    const lastArticle = window.unifiedNewsLoader.articles[0];
+                    window.unifiedNewsLoader.softDeleteArticle(lastArticle.id);
+                    statusSpan.textContent = '最新記事をソフト削除しました';
+                    updateDisplay();
+                }
+            });
+
+            // 最新記事を完全削除
+            hardDeleteBtn.addEventListener('click', () => {
+                if (window.unifiedNewsLoader && window.unifiedNewsLoader.articles.length > 0) {
+                    const lastArticle = window.unifiedNewsLoader.articles[0];
+                    window.unifiedNewsLoader.handleArticleDelete(lastArticle.id);
+                    statusSpan.textContent = '最新記事を完全削除しました';
+                    updateDisplay();
+                }
+            });
+
+            // 削除された記事を復元
+            restoreBtn.addEventListener('click', () => {
+                if (window.unifiedNewsLoader) {
+                    // 削除フラグをリセット
+                    window.unifiedNewsLoader.articles.forEach(article => {
+                        if (article.isDeleted) {
+                            article.isDeleted = false;
+                            article.deletedAt = null;
+                            article.status = 'published';
+                        }
+                    });
+                    
+                    // 表示を更新
+                    window.unifiedNewsLoader.refreshAllContainers();
+                    statusSpan.textContent = '削除された記事を復元しました';
+                    updateDisplay();
+                }
+            });
+
+            // 表示更新
+            function updateDisplay() {
+                if (!window.unifiedNewsLoader) return;
+
+                const allArticles = window.unifiedNewsLoader.articles;
+                const activeArticles = allArticles.filter(article => !article.isDeleted && !article.deletedAt && article.status !== 'deleted');
+                const deletedArticles = allArticles.filter(article => article.isDeleted || article.deletedAt || article.status === 'deleted');
+
+                totalCountSpan.textContent = allArticles.length;
+                displayCountSpan.textContent = activeArticles.length;
+                deletedCountSpan.textContent = deletedArticles.length;
+
+                // アクティブ記事の表示
+                if (activeArticles.length === 0) {
+                    articlesContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-gray-500">記事がありません</p>
+                        </div>
+                    `;
+                } else {
+                    const articlesHtml = activeArticles.map(article => `
+                        <div class="article-card bg-gray-50 rounded-lg p-4 hover:bg-gray-100">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-500 text-white">${article.category || 'カテゴリなし'}</span>
+                                    <span class="text-sm text-gray-500">${new Date(article.createdAt || article.date).toLocaleDateString('ja-JP')}</span>
+                                </div>
+                                <span class="text-xs text-gray-500">ID: ${article.id}</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">${article.title}</h3>
+                            <p class="text-gray-600 text-sm">${article.content}</p>
+                        </div>
+                    `).join('');
+                    
+                    articlesContainer.innerHTML = articlesHtml;
+                }
+
+                // 削除された記事の表示
+                if (deletedArticles.length === 0) {
+                    deletedArticlesContainer.innerHTML = '<p class="text-center text-gray-500">削除された記事はありません</p>';
+                } else {
+                    const deletedArticlesHtml = deletedArticles.map(article => `
+                        <div class="deleted-article bg-gray-100 rounded-lg p-4 border-l-4 border-red-500">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="deleted-badge text-xs font-semibold px-2 py-1 rounded-full">削除済み</span>
+                                    <span class="text-sm text-gray-500">${new Date(article.createdAt || article.date).toLocaleDateString('ja-JP')}</span>
+                                    ${article.deletedAt ? `<span class="text-xs text-red-500">削除日: ${new Date(article.deletedAt).toLocaleDateString('ja-JP')}</span>` : ''}
+                                </div>
+                                <span class="text-xs text-gray-500">ID: ${article.id}</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-700 mb-2">${article.title}</h3>
+                            <p class="text-gray-600 text-sm">${article.content}</p>
+                        </div>
+                    `).join('');
+                    
+                    deletedArticlesContainer.innerHTML = deletedArticlesHtml;
+                }
+
+                // デバッグ情報更新
+                const debugData = {
+                    totalArticles: allArticles.length,
+                    activeArticles: activeArticles.length,
+                    deletedArticles: deletedArticles.length,
+                    lastUpdate: new Date().toISOString(),
+                    managerStatus: {
+                        isLoaded: window.unifiedNewsLoader.isLoaded,
+                        pageId: window.unifiedNewsLoader.pageId
+                    }
+                };
+                
+                debugInfo.textContent = JSON.stringify(debugData, null, 2);
+            }
+
+            // 記事削除イベントの監視
+            window.addEventListener('jaa-article-deleted', (event) => {
+                console.log('記事削除イベントを受信:', event.detail);
+                statusSpan.textContent = '記事削除イベントを受信しました';
+                updateDisplay();
+            });
+
+            // 記事更新イベントの監視
+            window.addEventListener('jaa-news-update', (event) => {
+                console.log('ニュース更新イベントを受信:', event.detail);
+                statusSpan.textContent = 'ニュース更新イベントを受信しました';
+                updateDisplay();
+            });
+
+            // 初期表示
+            setTimeout(() => {
+                if (window.unifiedNewsLoader) {
+                    statusSpan.textContent = '初期化完了';
+                    updateDisplay();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

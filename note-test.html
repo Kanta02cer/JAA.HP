@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note連携テスト | 日本学生アンバサダー協会</title>
+    <meta name="description" content="公式note連携機能のテストページ">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        .note-card { border-left: 4px solid #f59e0b; }
+        .note-article { transition: all 0.3s ease; }
+        .note-article:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .tag-note { background-color: #f59e0b; color: white; }
+        .note-source { color: #f59e0b; font-weight: 600; }
+        .note-external-link { color: #3b82f6; text-decoration: underline; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-12">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Note連携テスト</h1>
+                <p class="text-lg text-gray-600">公式noteからの記事取得・表示機能のテストページ</p>
+            </div>
+
+            <!-- テストコントロール -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">テストコントロール</h2>
+                <div class="flex flex-wrap gap-4">
+                    <button id="fetch-articles" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        記事を取得
+                    </button>
+                    <button id="clear-cache" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                        キャッシュクリア
+                    </button>
+                    <button id="force-refresh" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                        強制更新
+                    </button>
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p>ステータス: <span id="status">初期化中...</span></p>
+                    <p>記事数: <span id="article-count">0</span>件</p>
+                    <p>プレスリリース: <span id="press-release-count">0</span>件</p>
+                </div>
+            </div>
+
+            <!-- Note記事一覧 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">取得された記事</h2>
+                <div id="articles-container" class="space-y-4">
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                        <p class="text-gray-500">記事を読み込み中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- デバッグ情報 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                <h2 class="text-xl font-bold mb-4">デバッグ情報</h2>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <pre id="debug-info" class="text-sm text-gray-700 whitespace-pre-wrap">初期化中...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/note-integration.js"></script>
+    <script>
+        // テスト用の制御機能
+        document.addEventListener('DOMContentLoaded', () => {
+            const fetchBtn = document.getElementById('fetch-articles');
+            const clearCacheBtn = document.getElementById('clear-cache');
+            const forceRefreshBtn = document.getElementById('force-refresh');
+            const statusSpan = document.getElementById('status');
+            const articleCountSpan = document.getElementById('article-count');
+            const pressReleaseCountSpan = document.getElementById('press-release-count');
+            const articlesContainer = document.getElementById('articles-container');
+            const debugInfo = document.getElementById('debug-info');
+
+            // 記事取得ボタン
+            fetchBtn.addEventListener('click', async () => {
+                statusSpan.textContent = '記事取得中...';
+                try {
+                    await window.noteIntegrationManager.fetchLatestArticles();
+                    statusSpan.textContent = '記事取得完了';
+                    updateDisplay();
+                } catch (error) {
+                    statusSpan.textContent = 'エラー: ' + error.message;
+                    console.error('記事取得エラー:', error);
+                }
+            });
+
+            // キャッシュクリアボタン
+            clearCacheBtn.addEventListener('click', () => {
+                localStorage.removeItem('jaa-note-cache');
+                statusSpan.textContent = 'キャッシュクリア完了';
+                updateDisplay();
+            });
+
+            // 強制更新ボタン
+            forceRefreshBtn.addEventListener('click', async () => {
+                statusSpan.textContent = '強制更新中...';
+                try {
+                    await window.noteIntegrationManager.forceRefresh();
+                    statusSpan.textContent = '強制更新完了';
+                    updateDisplay();
+                } catch (error) {
+                    statusSpan.textContent = 'エラー: ' + error.message;
+                    console.error('強制更新エラー:', error);
+                }
+            });
+
+            // 表示更新
+            function updateDisplay() {
+                const articles = window.noteIntegrationManager.noteArticles;
+                const pressReleases = window.noteIntegrationManager.getPressReleases();
+                
+                articleCountSpan.textContent = articles.length;
+                pressReleaseCountSpan.textContent = pressReleases.length;
+
+                // 記事表示
+                if (articles.length === 0) {
+                    articlesContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-gray-500">記事がありません</p>
+                        </div>
+                    `;
+                } else {
+                    const articlesHtml = articles.map(article => `
+                        <div class="note-article bg-gray-50 rounded-lg p-4 hover:bg-gray-100">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="tag-note text-xs font-semibold px-2 py-1 rounded-full">公式Note</span>
+                                    <span class="text-sm text-gray-500">${new Date(article.publishedAt).toLocaleDateString('ja-JP')}</span>
+                                    ${article.isPressRelease ? '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">PR</span>' : ''}
+                                </div>
+                                <a href="${article.link}" target="_blank" rel="noopener noreferrer" 
+                                   class="note-external-link text-sm hover:text-blue-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">${article.title}</h3>
+                            
+                            <p class="text-gray-600 text-sm line-clamp-3 mb-3">${article.content}</p>
+                            
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="note-source">${article.category}</span>
+                                <span class="text-gray-500">ID: ${article.id}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    articlesContainer.innerHTML = articlesHtml;
+                }
+
+                // デバッグ情報更新
+                const debugData = {
+                    totalArticles: articles.length,
+                    pressReleases: pressReleases.length,
+                    lastUpdate: new Date().toISOString(),
+                    cacheInfo: {
+                        hasCache: !!localStorage.getItem('jaa-note-cache'),
+                        cacheSize: localStorage.getItem('jaa-note-cache')?.length || 0
+                    },
+                    managerStatus: {
+                        isLoaded: window.noteIntegrationManager.isLoaded,
+                        noteUrl: window.noteIntegrationManager.noteUrl,
+                        rssUrl: window.noteIntegrationManager.rssUrl
+                    }
+                };
+                
+                debugInfo.textContent = JSON.stringify(debugData, null, 2);
+            }
+
+            // Note記事更新イベントの監視
+            window.addEventListener('jaa-note-update', (event) => {
+                console.log('Note記事更新イベントを受信:', event.detail);
+                statusSpan.textContent = '記事更新完了';
+                updateDisplay();
+            });
+
+            // 初期表示
+            setTimeout(() => {
+                if (window.noteIntegrationManager) {
+                    statusSpan.textContent = '初期化完了';
+                    updateDisplay();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
