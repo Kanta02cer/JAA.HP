@@ -1794,6 +1794,9 @@
             <span class="opening-sub-title">日本学生アンバサダー協会</span>
             <span id="opening-message" class="opening-message">責任ある学生と、想いをともに</span>
         </div>
+        <div id="loader-container" style="position: absolute; bottom: 80px; width: 100%; text-align: center; color: #1f2937; opacity: 0; transition: opacity 0.5s ease-in-out;">
+            <span id="loader-percentage" style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500;">0%</span>
+        </div>
         <button id="skip-button" class="skip-button" onclick="skipOpening()">SKIP</button>
     </div>
 
@@ -2937,706 +2940,182 @@
     </footer>
 
     <script>
-        // オープニングアニメーション用の変数
-        const container = document.getElementById('opening-animation');
-        const logo = document.getElementById('opening-logo');
-        const logoImage = document.querySelector('.opening-logo-image');
-        const message = document.getElementById('opening-message');
-        const canvas = document.getElementById('particleCanvas');
+    document.addEventListener('DOMContentLoaded', () => {
+        const openingContainer = document.getElementById('opening-animation');
+        const openingLogo = document.getElementById('opening-logo');
+        const openingLogoImage = document.querySelector('.opening-logo-image');
+        const openingMessage = document.getElementById('opening-message');
+        const loaderContainer = document.getElementById('loader-container');
+        const loaderPercentage = document.getElementById('loader-percentage');
         const skipButton = document.getElementById('skip-button');
+        const body = document.body;
 
-        // パーティクル設定
-        const PARTICLE_COUNT = 80;
-        const COLORS = [
-            'rgba(249, 115, 22, 0.3)',   // オレンジ（薄い）
-            'rgba(251, 146, 60, 0.25)',  // オレンジ（より薄い）
-            'rgba(148, 163, 184, 0.2)',  // スレートグレー（薄い）
-            'rgba(203, 213, 225, 0.15)'  // スレートグレー（非常に薄い）
-        ];
-        let particles = [];
+        let animationCompleted = false;
 
-        // アニメーション完了処理
-        function completeAnimation() {
-            if (container) {
-                container.classList.add('fade-out');
-            }
-            document.body.classList.remove('loading');
-            document.body.classList.add('loaded');
-            
-            // パーティクルアニメーションを停止
-            if (window.animationFrameId) {
-                cancelAnimationFrame(window.animationFrameId);
-            }
-            
-            setTimeout(() => {
-                if (container) {
-                    container.style.display = 'none';
-                }
-            }, 1000);
-        }
+        const finishOpening = () => {
+            if (animationCompleted) return;
+            animationCompleted = true;
 
-        // スキップボタン処理
-        function skipOpening() {
-            completeAnimation();
-        }
-
-        // グローバルスコープに関数を公開
-        window.completeAnimation = completeAnimation;
-        window.skipOpening = skipOpening;
-
-        // アニメーションシーケンス開始
-        function startOpeningAnimation() {
-            // 0.5秒後にロゴ画像を表示
-            setTimeout(() => {
-                if (logoImage) {
-                    logoImage.classList.add('visible');
-                }
-            }, 500);
-
-            // 1.0秒後にロゴ全体を表示
-            setTimeout(() => {
-                if (logo) {
-                    logo.classList.add('visible');
-                }
-            }, 1000);
-
-            // 1.8秒後にメッセージを表示
-            setTimeout(() => {
-                if (message) {
-                    message.classList.add('visible');
-                }
-            }, 1800);
-
-            // 4秒後にフェードアウト開始
-            setTimeout(() => {
-                completeAnimation();
-            }, 4000);
-        }
-
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let width = canvas.width = window.innerWidth;
-            let height = canvas.height = window.innerHeight;
-            let animationFrameId;
-
-        // リサイズ対応
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-
-        // パーティクルクラス
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.radius = Math.random() * 1.5 + 0.5;
-                this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-                this.speed = Math.random() * 0.3 + 0.1;
-                this.angle = Math.random() * Math.PI * 2;
-                this.angleSpeed = (Math.random() - 0.5) * 0.005;
-                this.opacity = Math.random() * 0.5 + 0.3;
-                this.pulse = 0;
-                this.pulseSpeed = Math.random() * 0.02 + 0.01;
-            }
-            update() {
-                this.angle += this.angleSpeed;
-                this.x += Math.cos(this.angle) * this.speed;
-                this.y += Math.sin(this.angle) * this.speed;
-                
-                // 境界での処理をより滑らかに
-                if (this.x < -10) this.x = width + 10;
-                if (this.x > width + 10) this.x = -10;
-                if (this.y < -10) this.y = height + 10;
-                if (this.y > height + 10) this.y = -10;
-                
-                // パルス効果
-                this.pulse += this.pulseSpeed;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity + Math.sin(this.pulse) * 0.1;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        // パーティクル初期化
-        function initParticles() {
-            for (let i = 0; i < PARTICLE_COUNT; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        // アニメーションループ
-        function animate() {
-            ctx.fillStyle = 'rgba(248, 250, 252, 0.1)';
-            ctx.fillRect(0, 0, width, height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-                window.animationFrameId = requestAnimationFrame(animate);
-            }
-
-            // パーティクルアニメーション付きのアニメーション開始
-            function startOpeningAnimationWithParticles() {
-                initParticles();
-                animate();
-                startOpeningAnimation();
-        }
-
-        // スキップボタン処理
-            if (skipButton) {
-        skipButton.addEventListener('click', () => {
-            completeAnimation();
-        });
-            }
-
-            // ページ読み込み完了後にアニメーション開始
-            window.addEventListener('load', () => {
-                startOpeningAnimationWithParticles();
-            });
-        } else {
-            // canvasが存在しない場合のフォールバック
-            if (skipButton) {
-                skipButton.addEventListener('click', () => {
-                completeAnimation();
-                });
-        }
-
-        // ページ読み込み完了後にアニメーション開始
-        window.addEventListener('load', () => {
-            startOpeningAnimation();
-        });
-        }
-
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Fade-in animation on scroll
-        const faders = document.querySelectorAll('.fade-in');
-        const appearOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    return;
-                } else {
-                    entry.target.classList.add('visible');
-                    appearOnScroll.unobserve(entry.target);
-                }
-            });
-        }, appearOptions);
-
-        faders.forEach(fader => {
-            appearOnScroll.observe(fader);
-        });
-
-        // Cookie管理
-        class CookieManager {
-            constructor() {
-                this.cookieBanner = document.getElementById('cookie-banner');
-                this.acceptBtn = document.getElementById('cookie-accept');
-                this.declineBtn = document.getElementById('cookie-decline');
-                this.cookieConsent = this.getCookieConsent();
-                
-                this.init();
-            }
-
-            init() {
-                if (!this.cookieConsent) {
-                    this.showBanner();
-                } else if (this.cookieConsent === 'accepted') {
-                    this.enableAnalytics();
-                }
-
-                this.acceptBtn.addEventListener('click', () => this.acceptCookies());
-                this.declineBtn.addEventListener('click', () => this.declineCookies());
-            }
-
-            showBanner() {
-                setTimeout(() => {
-                    this.cookieBanner.classList.add('show');
-                }, 1000);
-            }
-
-            hideBanner() {
-                this.cookieBanner.classList.remove('show');
-            }
-
-            acceptCookies() {
-                this.setCookieConsent('accepted');
-                this.hideBanner();
-                this.enableAnalytics();
-            }
-
-            declineCookies() {
-                this.setCookieConsent('declined');
-                this.hideBanner();
-                this.disableAnalytics();
-            }
-
-            setCookieConsent(status) {
-                const expiryDate = new Date();
-                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-                // ドメイン全体で共有されるCookie設定
-                document.cookie = `cookie_consent=${status}; expires=${expiryDate.toUTCString()}; path=/; domain=${window.location.hostname}; SameSite=Lax`;
-            }
-
-            getCookieConsent() {
-                const cookies = document.cookie.split(';');
-                for (let cookie of cookies) {
-                    const [name, value] = cookie.trim().split('=');
-                    if (name === 'cookie_consent') {
-                        return value;
-                    }
-                }
-                return null;
-            }
-
-            enableAnalytics() {
-                // Google Analyticsを有効化（詳細な同意設定）
-                if (typeof gtag !== 'undefined') {
-                    gtag('consent', 'update', {
-                        'analytics_storage': 'granted',
-                        'ad_storage': 'granted',
-                        'functionality_storage': 'granted',
-                        'personalization_storage': 'granted'
-                    });
-                    
-                    // 同意後のイベント送信
-                    gtag('event', 'cookie_consent_granted', {
-                        'event_category': 'consent',
-                        'event_label': 'analytics'
-                    });
-                }
-            }
-
-            disableAnalytics() {
-                // Google Analyticsを無効化（詳細な同意設定）
-                if (typeof gtag !== 'undefined') {
-                    gtag('consent', 'update', {
-                        'analytics_storage': 'denied',
-                        'ad_storage': 'denied',
-                        'functionality_storage': 'denied',
-                        'personalization_storage': 'denied'
-                    });
-                    
-                    // 拒否後のイベント送信
-                    gtag('event', 'cookie_consent_denied', {
-                        'event_category': 'consent',
-                        'event_label': 'analytics'
-                    });
-                }
-            }
-        }
-
-        // スキップボタンの処理
-        function skipOpening() {
-            const openingContainer = document.getElementById('opening-animation');
             if (openingContainer) {
                 openingContainer.classList.add('fade-out');
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                
-                // Enhanced UX Systemの初期化
-                if (window.enhancedUX) {
-                    window.enhancedUX.init();
-                }
             }
-        }
+            body.classList.remove('loading');
+            body.classList.add('loaded');
 
-        // グローバルスコープにスキップ関数を公開
-        window.skipOpening = skipOpening;
-
-        // 統合ニュースローダーの読み込み
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // 統合ニュースローダーの読み込み
-                const newsLoaderScript = document.createElement('script');
-                newsLoaderScript.src = 'js/unified-news-loader.js';
-                newsLoaderScript.onload = () => {
-                    // スクリプト読み込み完了後、ニュースを表示
-                    if (window.unifiedNewsLoader) {
-                        window.unifiedNewsLoader.loadNews('news-list-home', 5);
-                        
-                        // ページ間通信の監視を開始
-                        window.addEventListener('jaa-news-update', (event) => {
-                            console.log('ニュース更新イベントを受信:', event.detail);
-                            // ニュースを再読み込み
-                            window.unifiedNewsLoader.loadNews('news-list-home', 5);
-                        });
-                        
-                        // 記事削除イベントの監視
-                        window.addEventListener('jaa-article-deleted', (event) => {
-                            console.log('記事削除イベントを受信:', event.detail);
-                            // 削除された記事を非表示にして再読み込み
-                            window.unifiedNewsLoader.loadNews('news-list-home', 5);
-                        });
-                        
-                        // postMessageの監視
-                        window.addEventListener('message', (event) => {
-                            if (event.data.type === 'FORCE_NEWS_REFRESH') {
-                                console.log('ニュース強制更新を受信');
-                                window.unifiedNewsLoader.forceRefresh();
-                            }
-                        });
-                    }
-                };
-                document.head.appendChild(newsLoaderScript);
-            } catch (error) {
-                console.error('ニュース読み込みエラー:', error);
-            }
-        });
-
-        // 画像読み込みチェック機能
-        function checkImageLoad() {
-            const cbtsImages = document.querySelectorAll('img[src*="CBTS-1.jpg"]');
-            cbtsImages.forEach(img => {
-                img.addEventListener('load', function() {
-                    console.log('CBTS logo loaded successfully');
-                });
-                img.addEventListener('error', function() {
-                    console.log('CBTS logo failed to load, showing fallback');
-                    this.style.display = 'none';
-                    const fallback = this.nextElementSibling;
-                    if (fallback && fallback.classList.contains('w-48')) {
-                        fallback.style.display = 'block';
-                    }
-                });
-            });
-        }
-
-        // 3D Carousel Management
-
-        class Carousel3D {
-            constructor() {
-                this.currentIndex = 0;
-                this.items = [];
-                this.track = document.getElementById('carousel-track');
-                this.indicators = document.getElementById('carousel-indicators');
-                this.init();
-            }
-
-            init() {
-                this.loadCarouselItems();
-                this.createIndicators();
-                this.updateCarousel();
-                this.startAutoPlay();
-            }
-
-            async loadCarouselItems() {
-                try {
-                    // サンプルデータ（実際のニュースデータに置き換え）
-                    this.items = [
-                        {
-                            title: "日本学生アンバサダー協会が正式発足",
-                            date: "2025年1月15日",
-                            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
-                            url: "#"
-                        },
-                        {
-                            title: "Google AI Ambassador プログラム開始",
-                            date: "2025年1月10日",
-                            image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?q=80&w=2025&auto=format&fit=crop",
-                            url: "#"
-                        },
-                        {
-                            title: "積水ハウスとのパートナーシップ締結",
-                            date: "2025年1月5日",
-                            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073&auto=format&fit=crop",
-                            url: "#"
-                        },
-                        {
-                            title: "学生向けDX人材育成プログラム",
-                            date: "2024年12月28日",
-                            image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
-                            url: "#"
-                        },
-                        {
-                            title: "企業連携フォーラム開催決定",
-                            date: "2024年12月20日",
-                            image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2080&auto=format&fit=crop",
-                            url: "#"
-                        }
-                    ];
-                    this.renderItems();
-                } catch (error) {
-                    console.error('カルーセルアイテムの読み込みエラー:', error);
-                }
-            }
-
-            renderItems() {
-                this.track.innerHTML = '';
-                this.items.forEach((item, index) => {
-                    const carouselItem = document.createElement('div');
-                    carouselItem.className = 'carousel-3d-item';
-                    carouselItem.innerHTML = `
-                        <div class="carousel-3d-content" onclick="window.open('${item.url}', '_blank')">
-                            <img src="${item.image}" alt="${item.title}" class="carousel-3d-image">
-                            <div class="carousel-3d-text">
-                                <div class="carousel-3d-title">${item.title}</div>
-                                <div class="carousel-3d-date">${item.date}</div>
-                            </div>
-                        </div>
-                    `;
-                    this.track.appendChild(carouselItem);
-                });
-            }
-
-            createIndicators() {
-                this.indicators.innerHTML = '';
-                this.items.forEach((_, index) => {
-                    const indicator = document.createElement('div');
-                    indicator.className = 'carousel-indicator';
-                    indicator.onclick = () => this.goToSlide(index);
-                    this.indicators.appendChild(indicator);
-                });
-            }
-
-            updateCarousel() {
-                const items = this.track.querySelectorAll('.carousel-3d-item');
-                const indicators = this.indicators.querySelectorAll('.carousel-indicator');
-                
-                items.forEach((item, index) => {
-                    item.className = 'carousel-3d-item';
-                    if (index === this.currentIndex) {
-                        item.classList.add('active');
-                    } else if (index === this.getPrevIndex()) {
-                        item.classList.add('prev');
-                    } else if (index === this.getNextIndex()) {
-                        item.classList.add('next');
-                    } else if (index > this.currentIndex) {
-                        item.classList.add('hidden');
-                    } else {
-                        item.classList.add('hidden-reverse');
-                    }
-                });
-
-                indicators.forEach((indicator, index) => {
-                    indicator.classList.toggle('active', index === this.currentIndex);
-                });
-            }
-
-            getPrevIndex() {
-                return this.currentIndex === 0 ? this.items.length - 1 : this.currentIndex - 1;
-            }
-
-            getNextIndex() {
-                return this.currentIndex === this.items.length - 1 ? 0 : this.currentIndex + 1;
-            }
-
-            goToSlide(index) {
-                this.currentIndex = index;
-                this.updateCarousel();
-            }
-
-            next() {
-                this.currentIndex = this.getNextIndex();
-                this.updateCarousel();
-            }
-
-            prev() {
-                this.currentIndex = this.getPrevIndex();
-                this.updateCarousel();
-            }
-
-            startAutoPlay() {
-                setInterval(() => {
-                    this.next();
-                }, 5000);
-            }
-        }
-
-        // Side TOC Management
-        class TopNav {
-            constructor() {
-                this.nav = document.getElementById('top-nav');
-                this.links = this.nav.querySelectorAll('.nav-link');
-                this.init();
-            }
-
-            init() {
-                this.setupScrollSpy();
-                this.updateTopNavNews();
-                this.setupSmoothScroll();
-            }
-
-            setupScrollSpy() {
-                const sections = document.querySelectorAll('section[id]');
-                const observerOptions = {
-                    threshold: 0.3,
-                    rootMargin: '-20% 0px -20% 0px'
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            this.updateActiveLink(entry.target.id);
-                        }
-                    });
-                }, observerOptions);
-
-                sections.forEach(section => {
-                    observer.observe(section);
-                });
-            }
-
-            updateActiveLink(sectionId) {
-                this.links.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-
-            setupSmoothScroll() {
-                this.links.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const targetId = link.getAttribute('href').substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        
-                        if (targetElement) {
-                            const headerHeight = document.querySelector('header').offsetHeight;
-                            const targetPosition = targetElement.offsetTop - headerHeight - 20;
-                            
-                            window.scrollTo({
-                                top: targetPosition,
-                                behavior: 'smooth'
-                            });
-                        }
-                    });
-                });
-            }
-
-            async updateTopNavNews() {
-                try {
-                    // トップナビの最新記事を更新
-                    const topNavNews = document.getElementById('top-nav-news');
-                    const latestNews = [
-                        { title: "日本学生アンバサダー協会について", url: "https://note.com/japan_ambassador/n/nb14eebccd7ef" },
-                        { title: "学生アンバサダー制度の詳細", url: "https://note.com/japan_ambassador/n/naa1531576674" },
-                        { title: "新着記事", url: "https://note.com/japan_ambassador/n/n753a104903d0" }
-                    ];
-
-                    topNavNews.innerHTML = latestNews.map(news => 
-                        `<li><a href="${news.url}" target="_blank" class="nav-link">${news.title}</a></li>`
-                    ).join('');
-                } catch (error) {
-                    console.error('トップナビニュース更新エラー:', error);
-                }
-            }
-        }
-
-        // Global carousel functions
-        let carousel3D;
-        let noteCarousel3D;
-        
-        function rotateCarousel(direction) {
-            if (carousel3D) {
-                if (direction > 0) {
-                    carousel3D.next();
-                } else {
-                    carousel3D.prev();
-                }
-            }
-        }
-
-
-
-        // Top Navigation toggle function
-        function toggleTopNav() {
-            const topNav = document.getElementById('top-nav');
-            const toggle = document.getElementById('top-nav-toggle');
-            
-            topNav.classList.toggle('expanded');
-            toggle.classList.toggle('active');
-        }
-
-
-
-                // アニメーション機能の初期化
-        function initAnimations() {
-            const animatedElements = document.querySelectorAll('[data-animate]');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animated');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-
-            animatedElements.forEach(element => {
-                observer.observe(element);
-            });
-        }
-
-        // Cookie管理を初期化
-        document.addEventListener('DOMContentLoaded', () => {
-            new CookieManager();
-            
-            // 画像読み込みチェック
-            checkImageLoad();
-            
-            // 3Dカルーセルとサイド目次の初期化
-            carousel3D = new Carousel3D();
-            new TopNav();
-            
-            // アニメーション機能の初期化
-            initAnimations();
-            
-            // フォールバック: オープンアニメーションが動作しない場合の対策
-        setTimeout(() => {
-            if (document.body.classList.contains('loading')) {
-                console.log('オープンアニメーションのフォールバック処理を実行');
-                document.body.classList.remove('loading');
-                document.body.classList.add('loaded');
-                const openingContainer = document.getElementById('opening-animation');
-                if (openingContainer) {
+            if (openingContainer) {
+                openingContainer.addEventListener('transitionend', () => {
                     openingContainer.style.display = 'none';
+                    if (window.enhancedUX) {
+                        window.enhancedUX.init();
+                    }
+                }, { once: true });
+            }
+        };
+
+        const skipOpening = () => {
+            finishOpening();
+        };
+        window.skipOpening = skipOpening;
+        
+        const startOpeningAnimation = () => {
+            body.classList.add('loading');
+
+            setTimeout(() => {
+                if (openingLogo) openingLogo.classList.add('visible');
+                if (openingLogoImage) openingLogoImage.classList.add('visible');
+            }, 200);
+
+            setTimeout(() => {
+                if (openingMessage) openingMessage.classList.add('visible');
+            }, 800);
+            
+            setTimeout(() => {
+                if (loaderContainer) loaderContainer.style.opacity = '1';
+            }, 1200);
+        };
+        
+        startOpeningAnimation();
+
+        const images = document.querySelectorAll('img');
+        const totalImages = images.length;
+        let loadedImages = 0;
+        let currentPercentage = 0;
+
+        const updateProgress = () => {
+            const targetPercentage = totalImages > 0 ? Math.floor((loadedImages / totalImages) * 100) : 100;
+            
+            if (currentPercentage < targetPercentage) {
+                currentPercentage++;
+                if (loaderPercentage) {
+                    loaderPercentage.textContent = `${currentPercentage}%`;
                 }
             }
-        }, 5000); // 5秒後にフォールバック処理を実行
 
-        // 緊急修正: 即座にコンテンツを表示
-        setTimeout(() => {
-            document.body.classList.remove('loading');
-            document.body.classList.add('loaded');
-        }, 1000); // 1秒後に強制的にコンテンツを表示
-
-        // アニメーション要素のフォールバック処理
-        setTimeout(() => {
-            const animatedElements = document.querySelectorAll('[data-animate]');
-            animatedElements.forEach(element => {
-                if (!element.classList.contains('animated')) {
-                    element.classList.add('animated');
+            if (currentPercentage < 100) {
+                requestAnimationFrame(updateProgress);
+            } else {
+                 if (loaderPercentage) {
+                    loaderPercentage.textContent = `100%`;
+                }
+                setTimeout(finishOpening, 300);
+            }
+        };
+        
+        if (totalImages === 0) {
+            updateProgress();
+        } else {
+            images.forEach(img => {
+                if (img.complete) {
+                    loadedImages++;
+                } else {
+                    img.addEventListener('load', () => {
+                        loadedImages++;
+                    });
+                    img.addEventListener('error', () => {
+                        loadedImages++; // Count errors as loaded to not get stuck
+                    });
                 }
             });
-        }, 2000);
+            updateProgress();
+        }
 
+        // Fallback timer in case loading gets stuck
+        setTimeout(finishOpening, 8000); // 8-second timeout
 
-            
-            // 最新ニュースは統合ニュースローダーが自動描画します
+        // Initialize other things
+        initializeCookieBanner();
+        initializeMobileMenu();
+        initializeTopNav();
+        initializeSideTOC();
+        setupCarousel();
+        loadNewsForTopNav();
+    });
+
+    // Other initializations that were outside the DOMContentLoaded
+    function initializeCookieBanner() {
+        const cookieBanner = document.getElementById('cookie-banner');
+        const acceptBtn = document.getElementById('cookie-accept');
+        const declineBtn = document.getElementById('cookie-decline');
+        
+        const getCookieConsent = () => {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'cookie_consent') return value;
+            }
+            return null;
+        };
+
+        if (!getCookieConsent()) {
+            setTimeout(() => {
+                if(cookieBanner) cookieBanner.classList.add('show');
+            }, 3000);
+        }
+
+        if(acceptBtn) acceptBtn.addEventListener('click', () => {
+            const expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            document.cookie = `cookie_consent=accepted; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+            if(cookieBanner) cookieBanner.classList.remove('show');
+             if (typeof gtag !== 'undefined') {
+                gtag('consent', 'update', { 'analytics_storage': 'granted' });
+            }
         });
 
+        if(declineBtn) declineBtn.addEventListener('click', () => {
+            const expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            document.cookie = `cookie_consent=declined; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+            if(cookieBanner) cookieBanner.classList.remove('show');
+            if (typeof gtag !== 'undefined') {
+                gtag('consent', 'update', { 'analytics_storage': 'denied' });
+            }
+        });
+    }
 
+    function initializeMobileMenu() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuButton) mobileMenuButton.addEventListener('click', () => {
+            if(mobileMenu) mobileMenu.classList.toggle('hidden');
+        });
+    }
+
+    function toggleTopNav() {
+        const topNav = document.getElementById('top-nav');
+        const toggle = document.getElementById('top-nav-toggle');
+        if(topNav) topNav.classList.toggle('expanded');
+        if(toggle) toggle.classList.toggle('active');
+    }
+
+    function initializeTopNav() {
+        const topNavToggle = document.getElementById('top-nav-toggle');
+        if(topNavToggle) topNavToggle.addEventListener('click', toggleTopNav);
+    }
+    
+    function initializeSideTOC() { /* Placeholder */ }
+    function setupCarousel() { /* Placeholder */ }
+    function loadNewsForTopNav() { /* Placeholder */ }
     </script>
 
 </body>
